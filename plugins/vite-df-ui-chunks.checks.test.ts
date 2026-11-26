@@ -104,7 +104,7 @@ describe('checkChunkPurity', () => {
         modules: { [POPUP]: 100, [HELPER]: 50 },
       },
     ]);
-    const { errors } = checkChunkPurity({
+    const errors = checkChunkPurity({
       bundle,
       manualChunks: MANUAL_CHUNKS,
       getModuleInfo: makeGetModuleInfo({ [HELPER]: [POPUP] }),
@@ -127,7 +127,7 @@ describe('checkChunkPurity', () => {
         imports: ['chunks/Popup.mjs'],
       },
     ]);
-    const { errors } = checkChunkPurity({
+    const errors = checkChunkPurity({
       bundle,
       manualChunks: MANUAL_CHUNKS,
       getModuleInfo: makeGetModuleInfo({ [HELPER]: [POPUP, BUTTON] }),
@@ -153,7 +153,7 @@ describe('checkChunkPurity', () => {
         imports: ['chunks/Popup.mjs'],
       },
     ]);
-    const { errors } = checkChunkPurity({
+    const errors = checkChunkPurity({
       bundle,
       manualChunks: MANUAL_CHUNKS,
       // Хелпер импортируют только через index.ts, который лежит в том же чанке
@@ -179,7 +179,7 @@ describe('checkChunkPurity', () => {
         imports: ['chunks/Tooltip-auto.mjs'],
       },
     ]);
-    const { errors } = checkChunkPurity({
+    const errors = checkChunkPurity({
       bundle,
       manualChunks: MANUAL_CHUNKS,
       getModuleInfo: makeGetModuleInfo({ [foreignTooltip]: [BUTTON] }),
@@ -196,7 +196,7 @@ describe('checkChunkPurity', () => {
         modules: { [POPUP]: 100, [HELPER]: 0 },
       },
     ]);
-    const { errors } = checkChunkPurity({
+    const errors = checkChunkPurity({
       bundle,
       manualChunks: MANUAL_CHUNKS,
       getModuleInfo: makeGetModuleInfo({ [HELPER]: [BUTTON] }),

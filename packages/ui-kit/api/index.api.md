@@ -2148,13 +2148,13 @@ export { Accordion }
 
 export { AccordionItem }
 
-// @public (undocumented)
+// @public
 export const ACTION_BUTTON_WIDTH_ESTIMATE = 100;
 
 // @public (undocumented)
 export type ActiveTheme = 'light' | 'dark' | 'highContrastLight' | 'highContrastDark' | 'betaCoreLight' | 'betaCoreDark';
 
-// @public (undocumented)
+// @public
 type ActiveTheme_2 = TableColorTheme;
 
 // @public (undocumented)
@@ -2169,17 +2169,12 @@ export type ActiveViewModsType = Exclude<keyof ViewMods, 'bothTypes'>;
 // @public (undocumented)
 type ActiveViewModsType_2 = Exclude<keyof ViewMods_2, 'bothTypes'>;
 
-// @public (undocumented)
+// @public
 export interface AdaptiveFiltersBreakpointConfig {
-    // (undocumented)
     customActions?: Record<string, any>;
-    // (undocumented)
     hidden?: string[];
-    // (undocumented)
     inOverlay?: string[];
-    // (undocumented)
     modifications?: Record<string, ItemModifications>;
-    // (undocumented)
     visible: string[];
 }
 
@@ -2193,7 +2188,7 @@ export const addSkeletonToCellInRow: <RowType extends ObjectForExtending = Objec
     SKELETON_CELLS_XXXXXXXXX: Set<string>;
 };
 
-// @public (undocumented)
+// @public
 export const AiAgentInput: ForwardRefExoticComponent<Omit<AiAgentInputProps, "ref"> & RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
@@ -2203,7 +2198,7 @@ export type AiAgentInputProps = Omit<TextAreaProps_2, 'contentRight'> & {
     maxHeight?: number;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentLeftPanelActionItem = AiAgentLeftPanelItemBase & {
     onClick: (event: MouseEvent_2<HTMLButtonElement>) => void;
     titleIcon?: never;
@@ -2211,7 +2206,7 @@ export type AiAgentLeftPanelActionItem = AiAgentLeftPanelItemBase & {
     content?: never;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentLeftPanelItem = AiAgentLeftPanelSectionItem | AiAgentLeftPanelActionItem;
 
 // @public (undocumented)
@@ -2222,10 +2217,10 @@ type AiAgentLeftPanelItemBase = {
     disabled?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentLeftPanelItemPlacement = 'top' | 'bottom';
 
-// @public (undocumented)
+// @public
 export type AiAgentLeftPanelProps = {
     items: AiAgentLeftPanelItem[];
     activeKey?: string | null;
@@ -2233,7 +2228,7 @@ export type AiAgentLeftPanelProps = {
     onActiveKeyChange?: (key: string | null) => void;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentLeftPanelSectionItem = AiAgentLeftPanelItemBase & {
     titleIcon?: ReactNode;
     title: ReactNode;
@@ -2244,10 +2239,10 @@ export type AiAgentLeftPanelSectionItem = AiAgentLeftPanelItemBase & {
 // @public (undocumented)
 export const AiAgentPopover: ({ opened: externalOpened, onToggle, children, target, offset: defaultOffset, placement, trigger, contentContainerClassNames, dragBoundary, draggable, positionState: externalPositionState, ignoreToggleOnDrag, defaultPosition, onPositionChange, calculateOffset, calculatePlacement, useStorage, resizable, onResizeStart, onResizeEnd, targetDataAttributes, ...rest }: AiAgentPopoverProps) => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type AiAgentPopoverCustomPlacement = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
-// @public (undocumented)
+// @public
 type AiAgentPopoverDragBoundary = {
     top?: number;
     right?: number;
@@ -2258,7 +2253,7 @@ type AiAgentPopoverDragBoundary = {
 // @public (undocumented)
 type AiAgentPopoverPlacement = PopoverProps['placement'] | AiAgentPopoverCustomPlacement;
 
-// @public (undocumented)
+// @public
 type AiAgentPopoverPosition = {
     x: number;
     y: number;
@@ -2290,13 +2285,13 @@ export type AiAgentPopoverProps = Omit<PopoverProps, 'view' | 'placement' | 'res
     targetDataAttributes?: DataAttributes_3;
 };
 
-// @public (undocumented)
+// @public
 type AiAgentPopoverResizableConfig = Exclude<PopoverProps['resizable'], boolean | undefined>;
 
-// @public (undocumented)
+// @public
 export const AiAgentPopup: ForwardRefExoticComponent<Omit<AiAgentPopupProps, "ref"> & RefAttributes<HTMLDivElement>>;
 
-// @public (undocumented)
+// @public
 export type AiAgentPopupDragBoundary = {
     top?: number;
     right?: number;
@@ -2304,10 +2299,10 @@ export type AiAgentPopupDragBoundary = {
     left?: number;
 };
 
-// @public (undocumented)
+// @public
 type AiAgentPopupFrame = PopupProps_2['frame'];
 
-// @public (undocumented)
+// @public
 export type AiAgentPopupPosition = {
     x: number;
     y: number;
@@ -2338,22 +2333,22 @@ export type AiAgentPopupProps = Omit<PopupProps_2, 'children' | 'isOpen' | 'plac
     onSizeChange?: (size: AiAgentPopupSize) => void;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentPopupResizableConfig = Exclude<PopupProps_2['resizable'], boolean | undefined>;
 
-// @public (undocumented)
+// @public
 export type AiAgentPopupSize = {
     width: number;
     height: number;
 };
 
-// @public (undocumented)
+// @public
 export type AiAgentPopupTargetGap = number | {
     x?: number;
     y?: number;
 };
 
-// @public (undocumented)
+// @public
 type AllowedFillDirections = 'horizontal' | 'vertical' | 'orthogonal' | 'any';
 
 // @public (undocumented)
@@ -2560,34 +2555,23 @@ type AnalyticalWidgetFixedChipProps = ChipCompProps & {
 
 // @public (undocumented)
 interface AnalyticalWidgetHeaderProps {
-    // (undocumented)
     badge?: string;
-    // (undocumented)
     badgeStyles?: CSSProperties;
-    // (undocumented)
     className?: string;
-    // (undocumented)
+    // @deprecated (undocumented)
     href?: string;
-    // (undocumented)
+    // @deprecated (undocumented)
     hrefProps?: {
         onClick?: MouseEventHandler<HTMLAnchorElement>;
         onKeyDown?: KeyboardEventHandler<HTMLAnchorElement>;
     };
-    // (undocumented)
     infoTooltipProps?: Omit<TooltipProps, 'text' | 'target'>;
-    // (undocumented)
     infoTooltipText?: string;
-    // (undocumented)
     rightSlot?: ReactNode;
-    // (undocumented)
     subtitle?: ReactNode;
-    // (undocumented)
     subtitleTooltipProps?: Omit<TooltipProps, 'text' | 'target'>;
-    // (undocumented)
     title?: ReactNode;
-    // (undocumented)
     titleLinkProps?: Omit<LinkCompProps, 'ref'>;
-    // (undocumented)
     titleTooltipProps?: Omit<TooltipProps, 'text' | 'target'>;
 }
 
@@ -2606,19 +2590,19 @@ export type AnalyticalWidgetProps = {
 // @public (undocumented)
 export type AnalyticalWidgetSize = 'l' | 'm' | 's';
 
-// @public (undocumented)
+// @public
 export const ANIMATION_COMPLETE_DELAY = 550;
 
-// @public (undocumented)
+// @public
 export const ANIMATION_DURATION = 300;
 
-// @public (undocumented)
+// @public
 type AppearanceConfig = {
     variant?: AppearanceVariant;
     zebra?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type AppearanceVariant = 'default' | 'clean';
 
 // @public (undocumented)
@@ -2732,7 +2716,7 @@ export type BlockGradientScrollOptions = {
     variant?: BlockGradientScrollVariant;
 };
 
-// @public (undocumented)
+// @public
 export type BlockGradientScrollPadding = number | {
     top?: number;
     inline?: number;
@@ -2860,7 +2844,7 @@ export { borderRadiusXxl }
 
 export { borderRadiusXxs }
 
-// @public (undocumented)
+// @public
 type BordersConfig<RowType = ObjectForExtending_2> = {
     vertical?: boolean;
     horizontal?: boolean;
@@ -2882,7 +2866,7 @@ type BordersConfig<RowType = ObjectForExtending_2> = {
     }) => CellBorderVisibility | undefined;
 };
 
-// @public (undocumented)
+// @public
 export type BottomSheetConfig = {
     enabled?: boolean;
     height?: string | number;
@@ -3180,7 +3164,7 @@ type BoxCSSProperties = Pick<CSSProperties_2, 'width' | 'maxWidth' | 'minWidth' 
 // @public (undocumented)
 export type BoxProps = ComponentProps<typeof Box> & BoxBaseProps;
 
-// @public (undocumented)
+// @public
 export const br: {
     readonly none: "none";
     readonly xxs: "var(--border-radius-xxs, 0.25rem)";
@@ -3226,17 +3210,11 @@ export interface BreakpointProviderProps extends PropsWithChildren {
 
 // @public (undocumented)
 export interface BreakpointReturn {
-    // (undocumented)
     between: (start: Breakpoint, end: Breakpoint) => boolean;
-    // (undocumented)
     breakpoint: Breakpoint;
-    // (undocumented)
     down: (token: Breakpoint) => boolean;
-    // (undocumented)
     not: (token: Breakpoint) => boolean;
-    // (undocumented)
     only: (token: Breakpoint) => boolean;
-    // (undocumented)
     up: (token: Breakpoint) => boolean;
 }
 
@@ -3256,7 +3234,7 @@ export type BreakPointsKeys = keyof typeof breakP;
 // @public (undocumented)
 export type BreakPointsObj = typeof breakP;
 
-// @public (undocumented)
+// @public
 export function bubble<T = unknown>(element: HTMLElement | Node | Document | Window, eventName: string, detail?: T, params?: Omit<CustomEventInit<T>, 'detail'> & {
     bubbles?: boolean;
     cancelable?: boolean;
@@ -3312,13 +3290,13 @@ export { CalendarStateType }
 // @public (undocumented)
 type CanvasContent = ReactElement | string;
 
-// @public (undocumented)
+// @public
 interface CanvasDropdownApi {
     // (undocumented)
     close: () => void;
 }
 
-// @public (undocumented)
+// @public
 interface CanvasDropdownErrorApi extends CanvasDropdownApi {
     // (undocumented)
     error: unknown;
@@ -3332,7 +3310,7 @@ type CanvasDropdownItem = DropdownItemOption;
 // @public (undocumented)
 type CanvasEl = ReactElement;
 
-// @public (undocumented)
+// @public
 type CanvasNodeDropdownProps = Pick<DropdownProps, 'placement' | 'offset' | 'listWidth' | 'listMaxHeight' | 'variant' | 'zIndex' | 'closeOnSelect' | 'renderItem' | 'beforeList' | 'afterList'> & {
     trigger?: 'click' | 'hover';
     mouseEnterDelay?: number;
@@ -3349,7 +3327,7 @@ type CanvasNodeDropdownProps = Pick<DropdownProps, 'placement' | 'offset' | 'lis
     onClose?: () => void;
 };
 
-// @public (undocumented)
+// @public
 type CanvasNodePopoverProps = Pick<PopoverBetaCompProps, 'placement' | 'offset' | 'hasTail' | 'flip' | 'shift' | 'zIndex' | 'resizable'> & {
     trigger?: 'click' | 'hover';
     mouseEnterDelay?: number;
@@ -3362,14 +3340,14 @@ type CanvasNodePopoverProps = Pick<PopoverBetaCompProps, 'placement' | 'offset' 
     onClose?: () => void;
 };
 
-// @public (undocumented)
+// @public
 type CanvasNodeTooltipConfig = string | (CanvasNodeTooltipProps & {
     text: string;
     mouseEnterDelay?: number;
     mouseLeaveDelay?: number;
 });
 
-// @public (undocumented)
+// @public
 type CanvasNodeTooltipProps = Pick<TooltipProps, 'placement' | 'view' | 'minWidth' | 'maxWidth'> & {
     preserveLineBreaks?: boolean;
     offsetX?: number;
@@ -3401,7 +3379,7 @@ type CellActiveState = {
     rowActive: boolean;
 };
 
-// @public (undocumented)
+// @public
 type CellBorderVisibility = {
     top?: boolean;
     right?: boolean;
@@ -3430,7 +3408,7 @@ type CellContextMenuDropDownProps<RowType, SummaryRowType> = {
     }, event?: React.SyntheticEvent) => void;
 } & ContextMenuDropDownProps;
 
-// @public (undocumented)
+// @public
 type CellContextMenuDropdownProps<RowType extends ObjectForExtending_2, SummaryRowType, CustomCtxs extends ObjectForExtending_2 = ObjectForExtending_2> = ContextMenuDropdownProps & {
     type: 'dropdown';
     getDropdownItems: (params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>) => DropdownProps['items'];
@@ -3503,7 +3481,7 @@ type CellReadOnlyEditorGlideInstanceStaticProps = {
     contentAlign: 'right' | 'left' | 'center';
 };
 
-// @public (undocumented)
+// @public
 type CellsSelectionConfig = {
     mode?: CellsSelectionMode;
     enableColumnSelection?: boolean;
@@ -3515,7 +3493,7 @@ type CellsSelectionConfig = {
     focusOnStateChange?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type CellsSelectionMode = 'cell' | 'range-cell' | 'multi-range-cell' | 'disabled';
 
 export { CellTextbox }
@@ -3533,7 +3511,7 @@ type CellThemeOverrideResult = Partial<{
     cellVerticalPadding: number;
 }>;
 
-// @public (undocumented)
+// @public
 type CellTransferCellInfo = {
     row: ObjectForExtending_2;
     column: TransferColumnConfig;
@@ -3544,7 +3522,7 @@ type CellTransferCellInfo = {
     formattedValue: string;
 };
 
-// @public (undocumented)
+// @public
 type CellTransferConfig = {
     enabled?: boolean;
     hotkeys?: {
@@ -3560,7 +3538,7 @@ type CellTransferConfig = {
 
 export { Checkbox }
 
-// @public (undocumented)
+// @public
 export type CheckboxConfig = {
     checked: boolean;
     onChange: (checked: boolean) => void;
@@ -3607,16 +3585,13 @@ export { ChipGroup }
 
 export { ChipProps }
 
-// @public (undocumented)
+// @public
 export const clamp: (min: number, value: number, max: number) => number;
 
 // @public (undocumented)
 export abstract class ClickStream {
-    // (undocumented)
     abstract getOperationId: (action: string) => string;
-    // (undocumented)
     abstract getProcess: (name: string, isStart?: boolean) => TPropertyItem;
-    // (undocumented)
     abstract sendClickStreamEvent: TSendClickStreamEvent;
 }
 
@@ -3638,7 +3613,7 @@ export { ColCount }
 // @public (undocumented)
 export const Collapse: ({ orientation, isOpen, children, duration, animation, sizeOnClose, sizeOnOpen, unMountOnClose, intContainerCss, extContainerCss, }: CollapseProps) => JSX_2.Element | null;
 
-// @public (undocumented)
+// @public
 export const COLLAPSE_BUTTON_WIDTH = 24;
 
 // @public (undocumented)
@@ -3812,14 +3787,14 @@ type ColumnConfig_2<Row extends ObjectForExtending_2, SummRow = unknown, CustomC
     mergedCellsAlign?: MergedCellsAlign | ((row: Row) => MergedCellsAlign | undefined);
 };
 
-// @public (undocumented)
+// @public
 type ColumnConfigInternal<R extends ObjectForExtending_2, SR = unknown> = ColumnConfig_2<R, SR> & Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys> & {
     spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
     hasOwnRenderCell?: boolean;
     subRowHasOwnRenderCell?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type ColumnDefault<TRow, TSummaryRow = unknown> = {
     readonly name: string | ReactElement;
     readonly key: string;
@@ -3949,7 +3924,6 @@ export interface ColumnGroupConfig<R extends ObjectForExtending, SR = unknown> {
     readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
     // (undocumented)
     readonly headerCellClass?: Maybe<string>;
-    // (undocumented)
     readonly key: string;
     // (undocumented)
     readonly name: string | ReactElement;
@@ -3957,13 +3931,9 @@ export interface ColumnGroupConfig<R extends ObjectForExtending, SR = unknown> {
 
 // @public (undocumented)
 interface ColumnGroupConfig_2<R extends ObjectForExtending_2, SR = unknown> {
-    // (undocumented)
     readonly children: readonly ColumnOrColumnGroupConfig_2<R, SR>[];
-    // (undocumented)
     readonly key: string;
-    // (undocumented)
     readonly name: string | ReactElement;
-    // (undocumented)
     readonly squashedHeaderAlign?: HeaderAlignment;
 }
 
@@ -4084,7 +4054,7 @@ type ColumnsControlConfig_2 = {
     switchDomMetadata?: DomMetadata_2;
 };
 
-// @public (undocumented)
+// @public
 type ColumnsGroupingConfig = {
     squashEmptyCells?: boolean;
     squashedHeaderAlign?: HeaderAlignment;
@@ -4116,19 +4086,19 @@ type Comparator_2<Row extends ObjectForExtending_2> = (a: Row, b: Row) => number
 
 export { compatible_typo_theme }
 
-// @public (undocumented)
+// @public
 export type CompPopoverProps = PopoverCompProps;
 
-// @public (undocumented)
+// @public
 export const COMPRESSION_CALCULATION_DELAY = 50;
 
-// @public (undocumented)
+// @public
 export const Container: FC<ContainerProps>;
 
-// @public (undocumented)
+// @public
 export const CONTAINER_PADDING_HORIZONTAL: number;
 
-// @public (undocumented)
+// @public
 export type ContainerProps = ISplitContainerProps | INotSplitContainerProps;
 
 // @public (undocumented)
@@ -4156,7 +4126,7 @@ export type ContentFormat = 'number' | CustomFormat | NumberFormatOptions;
 // @public (undocumented)
 type ContentFormat_2 = 'number' | CustomFormat_2 | NumberFormatOptions_2;
 
-// @public (undocumented)
+// @public
 type ContextMenuDropdownItem = NonNullable<DropdownProps['items']>[number];
 
 // @public (undocumented)
@@ -4165,7 +4135,7 @@ type ContextMenuDropdownItem_2 = NonNullable<DropdownProps['items']>[number];
 // @public (undocumented)
 type ContextMenuDropDownProps = Omit<DropdownProps, 'children' | 'items' | 'placement' | 'closeOnOverlayClick' | 'portal' | 'openByRightClick' | 'onItemClick' | 'hoverIndex' | 'size' | 'alwaysOpened' | 'trigger' | 'hasArrow' | 'onItemSelect'>;
 
-// @public (undocumented)
+// @public
 type ContextMenuDropdownProps = Omit<DropdownProps, 'children' | 'items' | 'placement' | 'closeOnOverlayClick' | 'portal' | 'openByRightClick' | 'onItemClick' | 'hoverIndex' | 'alwaysOpened' | 'trigger' | 'hasArrow' | 'onItemSelect'>;
 
 // @public (undocumented)
@@ -4259,7 +4229,7 @@ export type ContractDeleteOneBody = ObjectAny;
 // @public (undocumented)
 export type ContractDeleteOneResponse = ContractDeleteOneBody;
 
-// @public (undocumented)
+// @public
 export type ContractQueryParams = {
     [Q_PARAMS.sort]?: string | null;
     [Q_PARAMS.page]?: string | null;
@@ -4406,7 +4376,7 @@ type ControlBlockConfig_2 = {
     };
 };
 
-// @public (undocumented)
+// @public
 type ControlBlockSize = 'm' | 's' | 'xs';
 
 // @public (undocumented)
@@ -4414,7 +4384,7 @@ export const ControlBlockSwitch: ({ checked, ...rest }: {
     checked: boolean;
 } & SwitchProps) => JSX_2.Element;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 const controlButtonDefaultProps: {
     readonly size: "s";
     readonly view: "linkDefault";
@@ -4426,7 +4396,7 @@ const controlButtonDefaultProps_2: {
     readonly view: "linkDefault";
 };
 
-// @public (undocumented)
+// @public
 type CopyMeta = {
     range: Rectangle;
     cells: CellTransferCellInfo[][];
@@ -4434,10 +4404,10 @@ type CopyMeta = {
 
 export { Counter }
 
-// @public (undocumented)
+// @public
 export const COUNTER_WIDTH_ESTIMATE = 90;
 
-// @public (undocumented)
+// @public
 export type CounterConfig = {
     selectedCount: number;
     totalCount?: number;
@@ -4451,7 +4421,7 @@ export { counterTokens }
 // @public (undocumented)
 export const createClickStreamEventValue: (values: string[], userAction?: string) => string;
 
-// @public (undocumented)
+// @public
 export const createSafeResizeObserver: (callback: ResizeObserverCallback) => ResizeObserver;
 
 // @public (undocumented)
@@ -4485,21 +4455,21 @@ type CtxsType<Customs extends ObjectForExtending_2 | void = {}> = {
 // @public (undocumented)
 export const CUSTOM_TOKENS: {
     readonly zIndexCell: "var(--zIndexCell)";
+    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     readonly headerColor: "var(--headerColor)";
     readonly editableCellColor: "var(--editableCellColor)";
     readonly editableCellHoverColor: "var(--editableCellHoverColor)";
-    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const CUSTOM_TOKENS_KEYS: {
     readonly zIndexCell: "--zIndexCell";
+    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     readonly headerColor: "--headerColor";
     readonly editableCellColor: "--editableCellColor";
     readonly editableCellHoverColor: "--editableCellHoverColor";
-    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -4522,20 +4492,20 @@ export const customColorGlobalVars: (theme: ActiveTheme) => string;
 
 // @public (undocumented)
 export const customColorTokens: {
+    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     headerColor: "var(--headerColor)";
     editableCellColor: "var(--editableCellColor)";
     editableCellHoverColor: "var(--editableCellHoverColor)";
-    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const customColorTokensKeys: {
+    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     headerColor: "--headerColor";
     editableCellColor: "--editableCellColor";
     editableCellHoverColor: "--editableCellHoverColor";
-    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -4543,7 +4513,7 @@ export type CustomFormat = CommonFormat & {
     customFormat: (value: string) => React.ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type CustomFormat_2 = {
     alignContent?: 'right' | 'left' | 'center';
     customFormat?: (value: string) => React.ReactNode;
@@ -4643,11 +4613,6 @@ type DataAttributes_2 = {
 
 // @public (undocumented)
 type DataAttributes_3 = {
-    [K in `data-${string}`]?: string;
-};
-
-// @public (undocumented)
-type DataAttributes_4 = {
     [K in `data-${string}`]?: string;
 };
 
@@ -4795,33 +4760,23 @@ export { dataGreenTransparentActive }
 
 export { dataGreenTransparentHover }
 
-// @public (undocumented)
+// @public
 interface DataGridPropsDefault<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
     // (undocumented)
     'data-testid'?: Maybe<string>;
-    // (undocumented)
     bottomSummaryRows?: Maybe<readonly SR[]>;
-    // (undocumented)
     columns: readonly ColumnOrColumnGroup<R, SR>[];
     // (undocumented)
     defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
-    // (undocumented)
     direction?: Maybe<Direction>;
-    // (undocumented)
     enableVirtualization?: Maybe<boolean>;
-    // (undocumented)
     headerRowHeight?: Maybe<number>;
-    // (undocumented)
     onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
-    // (undocumented)
     onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
-    // (undocumented)
     onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
     // (undocumented)
     onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
-    // (undocumented)
     onColumnResize?: Maybe<(idx: number, width: number) => void>;
-    // (undocumented)
     onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
     // (undocumented)
     onCopy?: Maybe<(event: CopyEvent<R>) => void>;
@@ -4831,31 +4786,20 @@ interface DataGridPropsDefault<R, SR = unknown, K extends Key = Key> extends Sha
     onPaste?: Maybe<(event: PasteEvent<R>) => R>;
     // (undocumented)
     onRowsChange?: Maybe<(rows: R[], data: RowsChangeData_3<R, SR>) => void>;
-    // (undocumented)
     onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
-    // (undocumented)
     onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
-    // (undocumented)
     onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
     // (undocumented)
     onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
-    // (undocumented)
     renderers?: Maybe<Renderers<R, SR>>;
     // (undocumented)
     rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
-    // (undocumented)
     rowHeight?: Maybe<number | ((row: R) => number)>;
-    // (undocumented)
     rowKeyGetter?: Maybe<(row: R) => K>;
-    // (undocumented)
     rows: readonly R[];
-    // (undocumented)
     selectedRows?: Maybe<ReadonlySet<K>>;
-    // (undocumented)
     sortColumns?: Maybe<readonly SortColumn[]>;
-    // (undocumented)
     summaryRowHeight?: Maybe<number>;
-    // (undocumented)
     topSummaryRows?: Maybe<readonly SR[]>;
 }
 
@@ -5122,7 +5066,7 @@ type DayMonthYear = `${DayToken}${Delimiter}${MonthToken}${Delimiter}${YearToken
 // @public (undocumented)
 type DayToken = 'DD';
 
-// @public (undocumented)
+// @public
 export const debounce: <R, A extends unknown[]>(fn: (...args: A) => R, delay?: number) => (...args: A) => void;
 
 // @public (undocumented)
@@ -5152,7 +5096,7 @@ type DefPropsKeys = keyof typeof controlButtonDefaultProps;
 // @public (undocumented)
 type DefPropsKeys_2 = keyof typeof controlButtonDefaultProps_2;
 
-// @public (undocumented)
+// @public
 export const DELAY_BEFORE_SHOW_PANEL = 350;
 
 // @public (undocumented)
@@ -5184,7 +5128,7 @@ export { DividerProps }
 
 export { dividerTokens }
 
-// @public (undocumented)
+// @public
 export const DOM_METADATA_ACTIONS: {
     readonly TOGGLE_GROUP: "toggle-group";
     readonly RESET_GROUPS: "reset-groups";
@@ -5198,14 +5142,14 @@ export const DOM_METADATA_ACTIONS: {
     readonly SHOW_COLUMN: "show-column";
 };
 
-// @public (undocumented)
+// @public
 type DomMetadata = {
     className?: string;
     dataAttributes?: DataAttributes_2;
     onClick?: (e?: default_2.MouseEvent<HTMLElement>, detail?: Record<string, unknown>) => void;
 };
 
-// @public (undocumented)
+// @public
 type DomMetadata_2 = {
     className?: string;
     dataAttributes?: DataAttributes;
@@ -5353,7 +5297,7 @@ type DropdownItemOption_4 = {
 // @public (undocumented)
 export type DropdownProps<T extends DropdownItemOption = DropdownItemOption> = DropdownProps_2<T> & RefAttributes<HTMLButtonElement>;
 
-// @public (undocumented)
+// @public
 type DropdownRenderCtx = {
     rowSize: SIZE_2;
     isInDropdown: boolean;
@@ -5485,7 +5429,7 @@ export class EditingApi {
     static updateOne: (payload: ContractUpdateOneBody, fetcher: FetcherFunc) => Promise<ContractUpdateOneBody>;
 }
 
-// @public (undocumented)
+// @public
 type EditingButtonProps = Omit<Partial<ControlBlockButtonProps_2>, 'onClick' | 'size' | 'dropdown' | 'isTargetAction' | 'skipRightDivider' | 'tooltipText'>;
 
 // @public (undocumented)
@@ -5557,7 +5501,7 @@ type EditingConfig_2<RowType extends ObjectForExtending_2, RowIdType, SummaryRow
     };
 };
 
-// @public (undocumented)
+// @public
 export const ELEMENTS_GAP = 4;
 
 export { EmbeddedButtonBeta }
@@ -5593,10 +5537,10 @@ export const emptyStateClassNames: {
     subtitle: string;
 };
 
-// @public (undocumented)
+// @public
 export type EmptyStateImageVariant = EmptyStateVariant | ErrorPageVariant;
 
-// @public (undocumented)
+// @public
 export type EmptyStateProps = {
     size: 's' | 'm' | 'l';
     title?: ReactNode;
@@ -5612,13 +5556,15 @@ export type EmptyStateProps = {
     $css?: string | CSSObject | FlattenSimpleInterpolation;
 };
 
-// @public (undocumented)
+// @public
 export type EmptyStateSize = EmptyStateProps['size'];
 
-// @public (undocumented)
-export type EmptyStateVariant = 'loading' | 'life-circle' | 'need-access' | 'no-access' | 'no-content' | 'not-found' | 'not-result' | 'success';
+// @public
+export type EmptyStateVariant = 'loading' | 'life-circle' | 'need-access' | 'no-access' | 'no-content' | 'not-found'
+/** @deprecated Используйте `'not-found'` */
+| 'not-result' | 'success';
 
-// @public (undocumented)
+// @public
 export type Equals<A, B> = [A] extends [B] ? [B] extends [A] ? true : false : false;
 
 // @public (undocumented)
@@ -5665,7 +5611,7 @@ export type ErrorPageProps = {
     size?: 's' | 'm' | 'l';
 };
 
-// @public (undocumented)
+// @public
 export type ErrorPageVariant = '400' | '401' | '403' | '404' | '409' | '500' | '502' | '503' | 'unidentified';
 
 // @public (undocumented)
@@ -5710,7 +5656,7 @@ export const fallbackCols = 6;
 // @public (undocumented)
 export const fallbackRowHeight = 248;
 
-// @public (undocumented)
+// @public
 type FeatureDetails = ({
     type: 'button';
     label: string;
@@ -5740,7 +5686,7 @@ type FeatureDetails = ({
     render: (ctx: DropdownRenderCtx) => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureDetails_2 = ({
     type: 'button';
     label: string;
@@ -5769,42 +5715,42 @@ type FeatureDetails_2 = ({
     render: () => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureDetailsBase = {
     mandatory?: boolean;
     canBeCompressedInToolsMenu?: boolean;
     details?: FeatureDetails;
 };
 
-// @public (undocumented)
+// @public
 type FeatureDetailsBase_2 = {
     mandatory?: boolean;
     canBeCompressedInToolsMenu?: boolean;
     details?: FeatureDetails_2;
 };
 
-// @public (undocumented)
+// @public
 type FeatureIconRender = ReactNode | ((ctx: DropdownRenderCtx) => ReactNode);
 
-// @public (undocumented)
+// @public
 type FeatureItem = FeatureItemWithIcon | FeatureItemWithCustomIcon;
 
-// @public (undocumented)
+// @public
 type FeatureItem_2 = FeatureItemWithIcon_2 | FeatureItemWithCustomIcon_2;
 
-// @public (undocumented)
+// @public
 type FeatureItemWithCustomIcon = FeatureDetailsBase & {
     value: string;
     CustomIconRender: (ctx: DropdownRenderCtx) => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureItemWithCustomIcon_2 = FeatureDetailsBase_2 & {
     value: string;
     CustomIconRender: () => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureItemWithIcon = FeatureDetailsBase & {
     value: string;
     label: string;
@@ -5815,7 +5761,7 @@ type FeatureItemWithIcon = FeatureDetailsBase & {
     className?: string;
 } & DataAttributes_2;
 
-// @public (undocumented)
+// @public
 type FeatureItemWithIcon_2 = FeatureDetailsBase_2 & {
     value: string;
     label: string;
@@ -5849,12 +5795,12 @@ export const fetcherWrapper: <RespType = unknown, ErrorInfo extends ErrorApi = E
 // @public (undocumented)
 type FieldVerticalAlign = 'top' | 'center' | 'bottom';
 
-// @public (undocumented)
+// @public
 type FieldVerticalAlignProps = {
     verticalAlign?: FieldVerticalAlign;
 };
 
-// @public (undocumented)
+// @public
 type FillHandleConfig = {
     enabled?: boolean;
     shape?: 'square' | 'circle';
@@ -5865,7 +5811,7 @@ type FillHandleConfig = {
     allowSubRows?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type FillMeta = {
     sourceRange: Rectangle;
     destinationRange: Rectangle;
@@ -5876,13 +5822,10 @@ type FillMeta = {
 // @public (undocumented)
 export const FILTER_POPOVER_WIDTH: Record<keyof typeof SIZES, string>;
 
-// @public (undocumented)
+// @public
 export interface FilterAction {
-    // (undocumented)
     payload?: any;
-    // (undocumented)
     targetId: string;
-    // (undocumented)
     type: 'show' | 'hide' | 'moveToOverlay' | 'resize' | 'modify' | 'custom';
 }
 
@@ -5954,13 +5897,10 @@ type FilteringConfig_2<T> = {
     renderChipLabel?: (group: Group | null, item: Item) => string;
 };
 
-// @public (undocumented)
+// @public
 export interface FilterItem {
-    // (undocumented)
     element: React.ReactNode;
-    // (undocumented)
     id: string;
-    // (undocumented)
     metadata?: Record<string, any>;
 }
 
@@ -6242,7 +6182,7 @@ type FiltersActionsFiltersButtonProps = ButtonCompProps & {
     iconSize?: ComponentProps<typeof Icon>['size'];
 };
 
-// @public (undocumented)
+// @public
 const FiltersActionsFiltersButtonWithPopover: default_2.FC<FiltersActionsFiltersButtonWithPopoverProps>;
 
 // @public (undocumented)
@@ -6278,15 +6218,11 @@ export type FiltersActionsProps = {
     onResize?: (dimensions: FiltersActionsResizeDimensions) => void;
 };
 
-// @public (undocumented)
+// @public
 export interface FiltersActionsResizeDimensions {
-    // (undocumented)
     availableMainBlockWidth: number;
-    // (undocumented)
     buttonsBlockWidth: number;
-    // (undocumented)
     containerWidth: number;
-    // (undocumented)
     mainBlockWidth: number;
 }
 
@@ -6934,7 +6870,7 @@ type FiltersVariables_2 = {
     toggleFiltersAreVisible: () => void;
 };
 
-// @public (undocumented)
+// @public
 export type FilterTargetRenderApi = {
     onClick: (event?: default_2.MouseEvent) => void;
     isOpen: boolean;
@@ -7029,34 +6965,34 @@ const FONTS_CONFIG: {
     };
 };
 
-// @public (undocumented)
+// @public
 export const FormAutocomplete: <TFieldValues extends FieldValues>({ name, options, label, onChange: handleChange, onChangeInput: handleChangeInput, leftHelper, onBlur: handleBlur, view, required: propsRequired, ...rest }: FormAutocompleteProps<TFieldValues>) => ReturnType<typeof Autocomplete>;
 
 // @public (undocumented)
 export type FormAutocompleteProps<TFieldValues extends FieldValues> = TMutationRegister<TFieldValues> & TPropsFromAutocomplete & TProps;
 
-// @public (undocumented)
+// @public
 export const FormCheckbox: <TFieldValues extends FieldValues>({ label, name, options, onChange: handleChange, ...rest }: FormCheckboxProps<TFieldValues>) => JSX_2.Element;
 
 // @public (undocumented)
 export type FormCheckboxProps<TFieldValues extends FieldValues> = TMutationRegister<TFieldValues> & TPropsFromCheckbox & TProps_2;
 
-// @public (undocumented)
+// @public
 export const FormCombobox: <TFieldValues extends FieldValues>({ name, options, label, helperText, items, onChange: handleChange, onBlur: handleBlur, placeholder, disabled, view, required: propsRequired, multiple, ...rest }: FormComboboxProps<TFieldValues>) => ReturnType<typeof Combobox>;
 
 // @public (undocumented)
 export type FormComboboxProps<TFieldValues extends FieldValues> = TMutationRegister<TFieldValues> & TPropsFromCombobox & TProps_3;
 
-// @public (undocumented)
+// @public
 export const FormDatePicker: <TFieldValues extends FieldValues>({ name, options, portal, label, onChange: handleChange, textHint, format, invalidFormatMessage, size, requiredPlacement, maskWithFormat, offset, leftHelper, defaultDate, ref, min: propsMin, max: propsMax, opened: propsOpened, required: propsRequired, ...rest }: FormDatePickerProps<TFieldValues>) => JSX_2.Element;
 
 // @public (undocumented)
 export type FormDatePickerProps<TFieldValues extends FieldValues> = TMutationRegister<TFieldValues> & TPropsFromDatePicker & TProps_4;
 
-// @public (undocumented)
+// @public
 export const FormDatePickerRange: <TFieldValues extends FieldValues>({ name, options, portal, label, onChange: handleChange, textHint, format, invalidFormatMessage, ref, min: propsMin, max: propsMax, onChangeFirstValue, onChangeSecondValue, defaultFirstDate, defaultSecondDate, required: propsRequired, ...rest }: TMutationDatePickerRangeProps<TFieldValues>) => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const FormMask: <TFieldValues extends FieldValues>({ name, options, leftHelper, view, label, onChange: handleChange, onBlur: handleBlur, required: propsRequired, ...rest }: FormMaskProps<TFieldValues>) => JSX_2.Element;
 
 // @public (undocumented)
@@ -7107,7 +7043,7 @@ export type FormSegmentGroupProps<TFieldValues extends FieldValues> = TMutationR
     showError?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export const FormSelect: <TFieldValues extends FieldValues>({ name, options, items, onChange: handleChange, onBlur: handleBlur, label, helperText, view, required: propsRequired, multiselect, ...rest }: FormSelectProps<TFieldValues>) => ReturnType<typeof Select>;
 
 // @public (undocumented)
@@ -7115,7 +7051,7 @@ export type FormSelectProps<TFieldValues extends FieldValues> = TMutationRegiste
     required?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export const FormSwitch: <TFieldValues extends FieldValues>({ label, name, options, onChange: handleChange, ...rest }: FormSwitchProps<TFieldValues>) => JSX_2.Element;
 
 // @public (undocumented)
@@ -7127,7 +7063,7 @@ export const FormTextArea: <TFieldValues extends FieldValues>({ name, options, o
 // @public (undocumented)
 export type FormTextAreaProps<TFieldValues extends FieldValues> = TMutationRegister<TFieldValues> & TPropsFromTextArea & TProps_11;
 
-// @public (undocumented)
+// @public
 export const FormTextField: <TFieldValues extends FieldValues>({ name, options, onChange: handleChange, leftHelper, label, onFocus: handleFocus, onBlur: handleBlur, view, required: propsRequired, ...rest }: FormTextFieldProps<TFieldValues>) => ReturnType<typeof TextField>;
 
 // @public (undocumented)
@@ -7160,7 +7096,7 @@ type FullScreenObj_2 = {
 // @public (undocumented)
 export const fullScreenStyles: FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
-// @public (undocumented)
+// @public
 export const generateB3Headers: () => {
     traceId: string;
     requestQueryParam: string;
@@ -7170,13 +7106,13 @@ export const generateB3Headers: () => {
     };
 };
 
-// @public (undocumented)
+// @public
 export const getActiveTheme: () => ActiveThemeGlobal;
 
-// @public (undocumented)
+// @public
 export const getCssProp: (cssProp?: string | CSSObject | FlattenSimpleInterpolation) => FlattenSimpleInterpolation | undefined;
 
-// @public (undocumented)
+// @public
 const getCustomColors: (activeTheme: ActiveTheme_2) => {
     tokens: Tokens;
     fonts: Fonts;
@@ -7235,16 +7171,16 @@ const getCustomColors: (activeTheme: ActiveTheme_2) => {
     fadeGray: "#060A0C" | "#060A0D" | "#F2F5F8" | "#F3F7FA" | "#E5EBF1";
 };
 
-// @public (undocumented)
+// @public
 export const getCustomScrollbar: ({ width, height, borderRadius, isThin, thumbColor, thumbColorHover, trackColor, trackColorHover, theme, }?: ScrollbarStylesProps) => FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
-// @public (undocumented)
+// @public
 export const getDefaultScrollbar: () => FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
-// @public (undocumented)
+// @public
 export const getErrorHelper: <THelper>(error: Pick<FieldError, 'message'> | undefined, helper: THelper) => THelper | string | undefined;
 
-// @public (undocumented)
+// @public
 export const getErrorView: <TView extends string>(error: FieldError | undefined, view: TView | undefined) => TView | 'negative' | 'default';
 
 // @public (undocumented)
@@ -7253,7 +7189,7 @@ export const getIsRequired: <TFieldValues extends FieldValues>(optionsRequired: 
 // @public (undocumented)
 export const getMFReactDOMClient: (reactDomClient: typeof default_3, { identifierPrefix }: TGetMFReactDOMClientParams) => typeof default_3;
 
-// @public (undocumented)
+// @public
 export const getPriorityRequired: <TFieldValues extends FieldValues>({ options, ruleName, }: THasValidationRuleProps<TFieldValues>) => boolean;
 
 // @public (undocumented)
@@ -7274,7 +7210,7 @@ export function getTextWidth(text: string, font: string, letterSpacingPx?: numbe
 // @public (undocumented)
 export function getTextWidthByCache(text: string, font: string, letterSpacingPx?: number): number;
 
-// @public (undocumented)
+// @public
 export const getTokenValue: (token: string) => string;
 
 // @public (undocumented)
@@ -7434,9 +7370,10 @@ export type Group = {
 };
 
 // @public (undocumented)
-type GroupHeaderHandler<RowType extends ObjectForExtending_2, SummaryRowType = unknown> = (colIndex: number, info: GroupHeaderInfo<RowType, SummaryRowType>, event: GroupHeaderClickedEventArgs) => void;
+type GroupHeaderHandler<RowType extends ObjectForExtending_2, SummaryRowType = unknown> = (colIndex: number, info: GroupHeaderInfo<RowType, SummaryRowType>,
+event: GroupHeaderClickedEventArgs) => void;
 
-// @public (undocumented)
+// @public
 type GroupHeaderInfo<RowType extends ObjectForExtending_2, SummaryRowType = unknown> = {
     key: string;
     children: readonly ColumnOrColumnGroupConfig_2<RowType, SummaryRowType>[];
@@ -7515,10 +7452,10 @@ export { h6Medium }
 // @public (undocumented)
 type HandleExpandDetail<RowType extends ObjectForExtending_2> = (row: RowType) => void;
 
-// @public (undocumented)
+// @public
 export const hasValidationRule: <TFieldValues extends FieldValues>({ options, ruleName, }: THasValidationRuleProps<TFieldValues>) => boolean;
 
-// @public (undocumented)
+// @public
 type HeaderAlignment = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
@@ -7553,7 +7490,7 @@ type HeaderContextMenuDropDownProps = {
     }, event?: React.SyntheticEvent) => void;
 } & ContextMenuDropDownProps;
 
-// @public (undocumented)
+// @public
 type HeaderContextMenuDropdownProps<RowType extends ObjectForExtending_2, SummaryRowType = unknown, CustomCtxs extends ObjectForExtending_2 = ObjectForExtending_2> = ContextMenuDropdownProps & {
     type: 'dropdown';
     getDropdownItems: (params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>) => DropdownProps['items'];
@@ -7609,7 +7546,7 @@ export const HEIGHT_FILTERLIST_BLOCK = 33;
 // @public (undocumented)
 export const HEIGHT_TABLE_DEFAULT = 350;
 
-// @public (undocumented)
+// @public
 type HiddenColumnsIndicatorExpandInfo = {
     keys: string[];
     leftKey?: string;
@@ -7619,7 +7556,7 @@ type HiddenColumnsIndicatorExpandInfo = {
 // @public (undocumented)
 export type HighlightActiveType = 'cell' | 'row' | 'disabled';
 
-// @public (undocumented)
+// @public @deprecated
 type HighlightActiveType_2 = 'cell' | 'row' | 'range-cell' | 'disabled';
 
 // @public (undocumented)
@@ -7642,7 +7579,7 @@ export type HistoryItem = {
     actionDate: string;
 };
 
-// @public (undocumented)
+// @public
 export type HistoryItemStatus = 'DEFAULT' | 'WAIT' | 'SUCCESSFUL' | 'FAILURE';
 
 // @public (undocumented)
@@ -7658,7 +7595,7 @@ export type HookResizeProps = {
     onResize?: (width: number) => void;
 };
 
-// @public (undocumented)
+// @public
 type HotkeyConfig = {
     code: string;
     ctrl?: boolean;
@@ -7667,7 +7604,7 @@ type HotkeyConfig = {
     meta?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type HoverEffectsConfig = {
     row?: boolean;
 };
@@ -7745,15 +7682,13 @@ export { IconTabItem }
 
 export { IconTabItemProps }
 
-// @public (undocumented)
+// @public
 interface IContainerBaseProps {
     // (undocumented)
     className?: string;
     // (undocumented)
     css?: BoxProps['$css'];
-    // (undocumented)
     roundedInner?: boolean;
-    // (undocumented)
     stretch?: boolean;
 }
 
@@ -7802,13 +7737,13 @@ export { informationWrapperClasses }
 
 export { informationWrapperTokens }
 
-// @public (undocumented)
+// @public
 export const INITIAL_POSITION_CALCULATION_DELAY = 100;
 
 // @public (undocumented)
 export function injectDigitalTraceContextHeader(headers: Headers, context?: IDigitalTraceContext): Headers;
 
-// @public (undocumented)
+// @public
 export interface INotSplitContainerProps extends IContainerBaseProps {
     // (undocumented)
     children?: ReactNode;
@@ -8687,19 +8622,15 @@ export function isGroupRow<RowType>(row: RowType | GroupRow<RowType>): row is Gr
 // @public (undocumented)
 export function isNotGroupRow<RowType>(row: RowType | GroupRow<RowType>): row is RowType;
 
-// @public (undocumented)
+// @public
 export interface ISplitContainerProps extends IContainerBaseProps {
     // (undocumented)
     children?: [ReactElement, ReactElement] | [ReactElement, ReactElement, ReactElement];
-    // (undocumented)
     fixedWidth?: string;
-    // (undocumented)
     gap?: string;
-    // (undocumented)
     minColWidth?: string;
     // (undocumented)
     split: true;
-    // (undocumented)
     view?: TContainerView;
 }
 
@@ -8716,17 +8647,12 @@ export type Item = {
     onClick: () => void;
 };
 
-// @public (undocumented)
+// @public
 export interface ItemModifications {
-    // (undocumented)
     [key: string]: any;
-    // (undocumented)
     className?: string;
-    // (undocumented)
     style?: React.CSSProperties;
-    // (undocumented)
     width?: string | number;
-    // (undocumented)
     widthPercent?: number;
 }
 
@@ -8736,18 +8662,18 @@ export type ItemOrGroup = Item | Group;
 // @public (undocumented)
 export type Key = string | number | bigint;
 
-// @public (undocumented)
+// @public
 type KeyText = 'key' | 'text' | 'keyText' | 'textKey';
 
-// @public (undocumented)
+// @public
 type KeyText_2 = 'key' | 'text' | 'keyText' | 'textKey';
 
-// @public (undocumented)
+// @public
 export type KeyTextColumnConfig<Row extends ObjectForExtending, SummRow = unknown> = ((props: {
     keyText: KeyText_2;
 }) => ColumnConfig<Row, SummRow>) | ColumnConfig<Row, SummRow>;
 
-// @public (undocumented)
+// @public
 type KeyTextColumnConfig_2<Row extends ObjectForExtending_2, SummRow = unknown> = ((props: {
     keyText: KeyText;
 }) => ColumnConfig_2<Row, SummRow>) | ColumnConfig_2<Row, SummRow>;
@@ -8902,7 +8828,7 @@ export type LeftPanelSlotSizesProps = {
 // @public (undocumented)
 export const LeftPanelToggleButton: ({ onClick, collapsed, isAbsolute, isAdaptive1280, ...rest }: ToggleButtonProps) => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type LeftSidebarConfig = TableCanvasSidebarConfig;
 
 // @public (undocumented)
@@ -8927,7 +8853,7 @@ export type LifeCycleItem = {
     buttons?: LifeCycleButton[];
 };
 
-// @public (undocumented)
+// @public
 export type LifeCycleStatus = 'DEFAULT' | 'WAIT' | 'SUCCESSFUL' | 'FAILURE';
 
 export { lightBackgroundPrimary }
@@ -9077,7 +9003,7 @@ type MassActionButtonPropsLinkButton = DataAttributes_2 & Partial<LinkButtonProp
     disabledTooltipProps?: TooltipProps;
 };
 
-// @public (undocumented)
+// @public
 export const MassActions: {
     ({ containerRef, leftSection, middleSection, buttons, sidebarConfig, isHaveSomeFeatureInSidebar, collapsedDropdownProps, selectedCount, show, useTableDropdown, enableDebugLogs, bottom, minPadding, size, }: MassActionsProps): JSX_2.Element | null;
     Counter: FC<MassActionsCounterProps>;
@@ -9094,7 +9020,7 @@ export const MassActionsButton: ({ type, view, showLabel, text, buttonStyles, dr
 export type MassActionsButtonProps = MassActionsButtonPropsButton | MassActionsButtonPropsLinkButton;
 
 // @public (undocumented)
-export type MassActionsButtonPropsButton = DataAttributes_4 & Partial<ButtonCompProps> & {
+export type MassActionsButtonPropsButton = DataAttributes & Partial<ButtonCompProps> & {
     type: 'button';
     view?: ButtonCompProps['view'];
     dropdown?: DropdownProps & {
@@ -9104,7 +9030,7 @@ export type MassActionsButtonPropsButton = DataAttributes_4 & Partial<ButtonComp
 };
 
 // @public (undocumented)
-export type MassActionsButtonPropsLinkButton = DataAttributes_4 & Partial<LinkButtonProps> & {
+export type MassActionsButtonPropsLinkButton = DataAttributes & Partial<LinkButtonProps> & {
     type?: 'linkButton';
     view?: LinkView<LinkButtonView>;
     dropdown?: DropdownProps & {
@@ -9113,7 +9039,7 @@ export type MassActionsButtonPropsLinkButton = DataAttributes_4 & Partial<LinkBu
     disabledTooltipProps?: TooltipProps;
 };
 
-// @public (undocumented)
+// @public
 export const MassActionsCounter: default_2.FC<MassActionsCounterProps>;
 
 // @public (undocumented)
@@ -9128,12 +9054,7 @@ export type MassActionsCounterProps = {
     className?: string;
 };
 
-// @public (undocumented)
-type MassActionsDropdownConfigProps = Omit<DropdownProps & {
-    $css?: CSSObject;
-}, 'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'>;
-
-// @public (undocumented)
+// @public
 export type MassActionsProps = {
     containerRef: RefObject<HTMLElement> | MutableRefObject<HTMLElement | null> | (() => HTMLElement | null);
     leftSection: ReactNode;
@@ -9141,7 +9062,7 @@ export type MassActionsProps = {
     buttons?: MassActionsButtonProps[];
     sidebarConfig?: MassActionsSidebarConfig;
     isHaveSomeFeatureInSidebar?: boolean;
-    collapsedDropdownProps?: MassActionsDropdownConfigProps;
+    collapsedDropdownProps?: TableDropdownConfigProps_2;
     selectedCount: number;
     show?: boolean;
     useTableDropdown?: boolean;
@@ -9151,14 +9072,14 @@ export type MassActionsProps = {
     size?: MassActionsSize;
 };
 
-// @public (undocumented)
+// @public
 export type MassActionsSidebarConfig = {
     isOpen: boolean;
     width: number;
     togglePanelWidth?: number;
 };
 
-// @public (undocumented)
+// @public
 export type MassActionsSize = 'm' | 's' | 'xs';
 
 // @public (undocumented)
@@ -9180,7 +9101,7 @@ export type Maybe<T> = T | undefined | null;
 // @public (undocumented)
 type Maybe_2<T> = T | undefined | null;
 
-// @public (undocumented)
+// @public
 export const mCls: typeof mergeClasses;
 
 // @public (undocumented)
@@ -9211,26 +9132,26 @@ export { mediaQuery }
 // @public (undocumented)
 export function mergeClasses(...args: (string | boolean | undefined | null)[]): string;
 
-// @public (undocumented)
+// @public
 type MergedCellsAlign = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
 };
 
-// @public (undocumented)
+// @public
 type MergedCellsRegion = {
     rowKeys: Array<string | number>;
     colKeys: string[];
     mergedCellsAlign?: MergedCellsAlign;
 };
 
-// @public (undocumented)
+// @public
 export function mergeRefs<T>(...inputRefs: (React_2.Ref<T> | undefined)[]): React_2.Ref<T> | React_2.RefCallback<T>;
 
 // @public (undocumented)
 export const MIN_CONTENT_HEIGHT = 316;
 
-// @public (undocumented)
+// @public
 export const MIN_PANEL_PADDING = 24;
 
 export { Modal }
@@ -9386,7 +9307,7 @@ type MonthToken = NumericMonthToken | TextMonthToken;
 // @public (undocumented)
 type MonthYear = `${MonthToken}${Delimiter}${YearToken}`;
 
-// @public (undocumented)
+// @public
 export const MORE_BUTTON_WIDTH_ESTIMATE = 40;
 
 // @public (undocumented)
@@ -11312,7 +11233,7 @@ export { outlineWarningMinorActive }
 
 export { outlineWarningMinorHover }
 
-// @public (undocumented)
+// @public
 type OverflowBehavior = 'truncate' | 'abort';
 
 export { Overlay }
@@ -11337,7 +11258,7 @@ export type PageLayoutProps = {
     className?: string;
 };
 
-// @public (undocumented)
+// @public
 export const PageLoader: default_2.ForwardRefExoticComponent<Omit<default_2.HTMLAttributes<HTMLDivElement>, "children" | "title"> & {
     title?: string | undefined;
     subtitle?: string | undefined;
@@ -11349,7 +11270,7 @@ export type PageLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'ch
     subtitle?: string;
 };
 
-// @public (undocumented)
+// @public
 export const PageTitle: ForwardRefExoticComponent<Omit<PageTitleProps & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>, "ref"> & RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
@@ -11370,7 +11291,7 @@ export const pageTitleClassNames: {
     readonly backIconButton: "PageTitle__back-icon-block";
 };
 
-// @public (undocumented)
+// @public
 export type PageTitleProps = {
     title?: string;
     titleTypographyProps?: Omit<TypographyWithAutoTooltipProps<'H2'>, 'children' | 'variant'>;
@@ -11420,7 +11341,7 @@ type PaginationProps_3 = Omit<ComponentProps<typeof Pagination>, 'onChangePageVa
 // @public (undocumented)
 type PaginationSize = NonNullable<PaginationProps_3['size']>;
 
-// @public (undocumented)
+// @public
 export const PANEL_PADDING_COLLAPSED: {
     readonly top: 0;
     readonly right: 10;
@@ -11428,7 +11349,7 @@ export const PANEL_PADDING_COLLAPSED: {
     readonly left: 24;
 };
 
-// @public (undocumented)
+// @public
 export const PANEL_PADDING_EXPANDED: {
     readonly top: 12;
     readonly right: 8;
@@ -11454,7 +11375,7 @@ $active?: boolean | undefined;
 // @public (undocumented)
 export type ParamKey = keyof typeof Q_PARAMS;
 
-// @public (undocumented)
+// @public
 type PasteConfig = {
     readonlyBehavior?: ReadonlyBehavior;
     allowSubRows?: boolean;
@@ -11463,7 +11384,7 @@ type PasteConfig = {
     validation?: ValidationMode;
 };
 
-// @public (undocumented)
+// @public
 type PasteMeta = {
     target: {
         col: number;
@@ -11473,14 +11394,14 @@ type PasteMeta = {
     selection: GridSelection;
 };
 
-// @public (undocumented)
+// @public
 type PinningMenuConfig = {
     enable?: boolean;
     items?: PinningMenuItem[];
     iconDomMetadata?: DomMetadata;
 };
 
-// @public (undocumented)
+// @public
 type PinningMenuItem = {
     value: string;
     label: string;
@@ -11491,15 +11412,11 @@ type PinningMenuItem = {
     disabled?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export interface PlatformNavigation {
-    // (undocumented)
     readonly baseUrl: string;
-    // (undocumented)
     navigateToHome(): void;
-    // (undocumented)
     navigateToPlatformUrl(path: string): void;
-    // (undocumented)
     navigateToUrl(url: string): void;
 }
 
@@ -11538,7 +11455,7 @@ export type PopoverDFBodyProps = BoxProps;
 // @public (undocumented)
 export function PopoverDFFooter({ children, ...rest }: PopoverDFFooterProps): JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type PopoverDFFooterProps = BoxProps & {
     children?: ReactNode;
 };
@@ -11638,7 +11555,7 @@ export { Portal }
 
 export { PortalProps }
 
-// @public (undocumented)
+// @public
 export const preloadImage: (src?: string) => Promise<void>;
 
 // @public (undocumented)
@@ -11669,7 +11586,7 @@ export { Price }
 
 export { priceClasses }
 
-// @public (undocumented)
+// @public
 export const processDropdownItems: (items: DropdownItemOption[], parentHandler?: (item: DropdownItemOption, event: React.SyntheticEvent) => void, path?: string) => [
 DropdownItemOption[],
 Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>
@@ -11712,12 +11629,12 @@ export { ratingTokens }
 
 export { Ratio }
 
-// @public (undocumented)
+// @public
 type ReadonlyBehavior = 'skip' | 'abort';
 
 export { RectSkeleton }
 
-// @public (undocumented)
+// @public
 export const RedDot: ({ visible, offset }: RedDotProps) => JSX_2.Element;
 
 // @public (undocumented)
@@ -11726,7 +11643,7 @@ export type RedDotProps = {
     offset?: string | number;
 };
 
-// @public (undocumented)
+// @public
 type RenderCellPreview<Row extends ObjectForExtending_2, SummRow = unknown, CustomCtxs extends ObjectForExtending_2 = {}> = 'none' | 'cellEditorAsPreview' | ((cellInfo: PreviewCellInfo<Row, SummRow, CustomCtxs>) => ReactNode);
 
 export { RenderCellProps }
@@ -11768,7 +11685,7 @@ export type RequiredOnly<T, K extends keyof T> = T & {
     [P in K]-?: T[P];
 };
 
-// @public (undocumented)
+// @public
 export const RESET_BUTTON_WIDTH_ESTIMATE = 110;
 
 // @public (undocumented)
@@ -12699,7 +12616,7 @@ isVisible?: boolean | undefined;
 $css?: TemplateStringsArray | CSSObject | undefined;
 }, "size" | "view" | "style" | "text" | "contentLeft">;
 
-// @public (undocumented)
+// @public
 export type RightSidebarConfig = SidebarConfig;
 
 export { Row }
@@ -12722,7 +12639,7 @@ type RowCheckboxDisabled<RowType> = (row: RowType, lvl?: number, parent?: RowTyp
 // @public (undocumented)
 type RowCheckboxDisabled_2<RowType> = (row: RowType, lvl?: number, parent?: RowType | null) => boolean;
 
-// @public (undocumented)
+// @public
 type RowContextV = {
     rowSize: SIZE;
 };
@@ -12743,14 +12660,14 @@ type RowDetailConfig<RowType> = {
     icons?: Prettify<IconsPropType>;
 };
 
-// @public (undocumented)
+// @public
 type RowErrorsConfig<RowType extends ObjectForExtending_2> = {
     indicatorColumn?: boolean;
     isErrorRow?: (row: RowType, treeLevel: number) => boolean;
     tooltip?: (info: RowErrorsInfo<RowType>) => CanvasNodeTooltipConfig | null;
 };
 
-// @public (undocumented)
+// @public
 type RowErrorsInfo<RowType extends ObjectForExtending_2> = {
     row: RowType;
     treeLevel: number;
@@ -12759,10 +12676,10 @@ type RowErrorsInfo<RowType extends ObjectForExtending_2> = {
     isErrorRow: boolean;
 };
 
-// @public (undocumented)
+// @public
 type RowErrorsOption<RowType extends ObjectForExtending_2> = boolean | RowErrorsConfig<RowType>;
 
-// @public (undocumented)
+// @public
 type RowErrorsSummary = {
     errorCellsCount: number;
     errorColumnKeys: readonly string[];
@@ -12863,7 +12780,7 @@ type RowHeightFunc_2<RowType> = (row: RowType, currentRowSize: {
     rowSizeValue: number;
 }, rowIndex: number) => number;
 
-// @public (undocumented)
+// @public
 type RowHeightProp<R> = ((row: R, currentRowSize: {
     rowSizeName: SIZE_2;
     rowSizeValue: number;
@@ -12901,7 +12818,7 @@ type RowKeyGetter<RowType, RowIdType> = (row: RowType) => RowIdType;
 // @public (undocumented)
 type RowKeyGetter_2<RowType, RowIdType> = (row: RowType) => RowIdType;
 
-// @public (undocumented)
+// @public
 type RowMarkersTableConfig<RowType extends ObjectForExtending_2 = ObjectForExtending_2> = {
     startIndex?: number;
     width?: number;
@@ -12934,13 +12851,10 @@ export interface RowsChangeData<R, SR = unknown> {
 
 // @public (undocumented)
 interface RowsChangeData_2<R extends ObjectForExtending_2, SR = unknown, RowId = string | number> {
-    // (undocumented)
     changedCells?: readonly TableCanvasChangedCell<RowId>[];
     // (undocumented)
     column: ColumnConfig_2<R, SR>;
-    // (undocumented)
     fillMeta?: FillMeta;
-    // (undocumented)
     fillResult?: string[][];
     // (undocumented)
     indexes: number[];
@@ -12949,7 +12863,6 @@ interface RowsChangeData_2<R extends ObjectForExtending_2, SR = unknown, RowId =
         before: R;
         after: R;
     }[];
-    // (undocumented)
     type: RowsChangeType;
 }
 
@@ -12957,19 +12870,15 @@ interface RowsChangeData_2<R extends ObjectForExtending_2, SR = unknown, RowId =
 interface RowsChangeDataGlideInstance<R extends ObjectForExtending_2, SR = unknown, CustomCtxs extends ObjectForExtending_2 = {}> {
     // (undocumented)
     column: ColumnGlideInstance<R, SR, CustomCtxs>;
-    // (undocumented)
     fillMeta?: FillMeta;
-    // (undocumented)
     fillResult?: string[][];
     // (undocumented)
     indexes: number[];
-    // (undocumented)
     type: RowsChangeType;
-    // (undocumented)
     writtenCells?: WrittenCell[];
 }
 
-// @public (undocumented)
+// @public
 type RowsChangeType = 'edit' | 'paste' | 'fill';
 
 // @public (undocumented)
@@ -13094,7 +13003,7 @@ export type RowWithDetailPanel<TRow extends ObjectForExtending> = {
     [ROW_WITH_DETAIL_DETAIL_KEYS.EXPAND_ICON_BUTTON_PROPS]: unknown;
 } & TRow;
 
-// @public (undocumented)
+// @public
 export const s: {
     readonly x0: "var(--spacing-0x, 0rem)";
     readonly x1: "var(--spacing-1x, 0.125rem)";
@@ -13127,23 +13036,14 @@ export const scrollbarStyles: FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
 // @public (undocumented)
 export interface ScrollbarStylesProps {
-    // (undocumented)
     borderRadius?: string;
-    // (undocumented)
     height?: string;
-    // (undocumented)
     isThin?: boolean;
-    // (undocumented)
     theme?: 'light' | 'dark';
-    // (undocumented)
     thumbColor?: string;
-    // (undocumented)
     thumbColorHover?: string;
-    // (undocumented)
     trackColor?: string;
-    // (undocumented)
     trackColorHover?: string;
-    // (undocumented)
     width?: string;
 }
 
@@ -13169,13 +13069,13 @@ const sddsThemeMap: {
     readonly betaCoreDark: TemplateStringsArray;
 };
 
-// @public (undocumented)
+// @public
 type SearchAutocompleteConfig = Pick<AutocompleteProps, 'suggestions' | 'onSuggestionSelect' | 'threshold' | 'renderList' | 'renderListEnd' | 'beforeList' | 'listMaxHeight' | 'listWidth' | 'portal' | 'hasDivider' | 'beforeList' | 'afterList' | 'virtual' | 'hasDivider' | 'onScroll' | 'zIndex' | 'filter' | 'renderItem'>;
 
-// @public (undocumented)
+// @public
 type SearchAutocompleteConfig_2 = Pick<AutocompleteProps, 'suggestions' | 'onSuggestionSelect' | 'threshold' | 'renderList' | 'renderListEnd' | 'beforeList' | 'listMaxHeight' | 'listWidth' | 'portal' | 'hasDivider' | 'beforeList' | 'afterList' | 'virtual' | 'hasDivider' | 'onScroll' | 'zIndex' | 'filter' | 'renderItem'>;
 
-// @public (undocumented)
+// @public
 type SearchingProps = {
     enabled: boolean;
     manualSearching?: boolean;
@@ -13193,7 +13093,7 @@ type SearchingProps = {
     autocomplete?: SearchAutocompleteConfig;
 };
 
-// @public (undocumented)
+// @public
 type SearchingProps_2 = {
     enabled: boolean;
     manualSearching?: boolean;
@@ -13428,7 +13328,7 @@ export { SheetProps }
 
 export { ShowToastArgs }
 
-// @public (undocumented)
+// @public
 type SidebarConfig = TableCanvasSidebarConfig & {
     defaultTabs?: Array<{
         id: 'filtering' | 'columns';
@@ -13450,7 +13350,7 @@ type SidebarConfig = TableCanvasSidebarConfig & {
     }>;
 };
 
-// @public (undocumented)
+// @public
 type SidebarConfig_2 = {
     enabled?: boolean;
     defaultOpen?: boolean;
@@ -13686,7 +13586,7 @@ export { spacing6x }
 
 export { spacing8x }
 
-// @public (undocumented)
+// @public
 type SpanCellAlign = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
@@ -13789,7 +13689,7 @@ export type StageItem = {
     buttons?: LifeCycleButton[];
 };
 
-// @public (undocumented)
+// @public
 export type StageStatus = 'DEFAULT' | 'WAIT' | 'SUCCESSFUL' | 'FAILURE';
 
 export { standard_typo_theme }
@@ -13869,7 +13769,7 @@ export { StepItemProps }
 
 export { Steps }
 
-// @public (undocumented)
+// @public
 export type StepStatus = 'active' | 'inactive' | 'completed';
 
 export { stepsTokens }
@@ -13883,7 +13783,7 @@ type StickyRowsConfig<RowType> = readonly number[] | ((row: RowType, rowIndex: n
 // @public (undocumented)
 export const Stories: StoriesComponent;
 
-// @public (undocumented)
+// @public
 export type StoriesArrows = 'auto' | 'always' | 'never';
 
 // @public (undocumented)
@@ -13912,35 +13812,26 @@ type StoriesComponent = ForwardRefExoticComponent<StoriesProps & RefAttributes<S
     Preview: typeof StoriesPreview;
 };
 
-// @public (undocumented)
+// @public
 export interface StoriesController {
-    // (undocumented)
     close: () => void;
-    // (undocumented)
     goTo: (groupIndex: number, slideIndex?: number) => void;
-    // (undocumented)
     next: () => void;
-    // (undocumented)
     nextGroup: () => void;
-    // (undocumented)
     open: (groupIndex?: number, slideIndex?: number) => void;
-    // (undocumented)
     pause: () => void;
-    // (undocumented)
     prev: () => void;
-    // (undocumented)
     prevGroup: () => void;
-    // (undocumented)
     resume: () => void;
 }
 
-// @public (undocumented)
+// @public
 export type StoriesGroupTransition = 'slide' | 'fade' | 'none';
 
-// @public (undocumented)
+// @public
 export type StoriesMode = 'light' | 'dark';
 
-// @public (undocumented)
+// @public
 export type StoriesObjectFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
 
 // @public (undocumented)
@@ -13948,136 +13839,92 @@ export const StoriesPreview: (props: StoriesPreviewInternalProps) => JSX.Element
 
 // @public (undocumented)
 interface StoriesPreviewInternalProps extends StoriesPreviewProps {
-    // (undocumented)
+    // @internal
     __index?: number;
 }
 
-// @public (undocumented)
+// @public
 export interface StoriesPreviewProps {
     // (undocumented)
     className?: string;
-    // (undocumented)
     defaultDuration?: number;
-    // (undocumented)
     height?: number;
-    // (undocumented)
     image?: string;
-    // (undocumented)
     renderTrigger?: (state: StoriesTriggerState) => ReactNode;
-    // (undocumented)
     shape?: StoriesShape;
-    // (undocumented)
     size?: number;
-    // (undocumented)
     slides: StorySlide[];
-    // (undocumented)
     title?: string;
-    // (undocumented)
     titleProps?: StoriesTitleProps;
-    // (undocumented)
     viewed?: boolean;
-    // (undocumented)
     width?: number;
 }
 
-// @public (undocumented)
+// @public
 export interface StoriesProps {
-    // (undocumented)
     activeGroupIndex?: number;
-    // (undocumented)
     activeSlideIndex?: number;
-    // (undocumented)
     arrows?: StoriesArrows;
-    // (undocumented)
     children: ReactNode;
     // (undocumented)
     className?: string;
-    // (undocumented)
     defaultDuration?: number;
-    // (undocumented)
     defaultOpen?: boolean;
-    // (undocumented)
     groupTransition?: StoriesGroupTransition;
-    // (undocumented)
     hideDisabledArrows?: boolean;
-    // (undocumented)
     loadingDelay?: number;
-    // (undocumented)
     mode?: StoriesMode;
-    // (undocumented)
     onClose?: () => void;
-    // (undocumented)
     onComplete?: () => void;
-    // (undocumented)
     onError?: (ctx: StoryErrorContext) => void;
-    // (undocumented)
     onGroupChange?: (groupIndex: number) => void;
-    // (undocumented)
     onGroupComplete?: (groupIndex: number) => void;
-    // (undocumented)
     onOpenChange?: (open: boolean, meta: {
         groupIndex: number;
     }) => void;
-    // (undocumented)
     onSlideChange?: (groupIndex: number, slideIndex: number) => void;
-    // (undocumented)
     open?: boolean;
-    // (undocumented)
     overlay?: boolean;
-    // (undocumented)
     overlayColor?: string;
-    // (undocumented)
     pauseHoldDelay?: number;
-    // (undocumented)
     preloadOnHover?: boolean;
-    // (undocumented)
     renderError?: (ctx: StoryErrorContext) => ReactNode;
-    // (undocumented)
     zIndex?: number;
 }
 
-// @public (undocumented)
+// @public
 export interface StoriesRef extends StoriesController {
-    // (undocumented)
     getState: () => StoriesState;
 }
 
-// @public (undocumented)
+// @public
 export type StoriesShape = 'circle' | 'rect';
 
-// @public (undocumented)
+// @public
 export interface StoriesState {
-    // (undocumented)
     groupIndex: number;
-    // (undocumented)
     isOpen: boolean;
-    // (undocumented)
     isPlaying: boolean;
-    // (undocumented)
     slideIndex: number;
 }
 
-// @public (undocumented)
+// @public
 export type StoriesTitleProps = Partial<TypographyWithAutoTooltipProps<TypographyVariant>>;
 
-// @public (undocumented)
+// @public
 export interface StoriesTriggerState {
-    // (undocumented)
     index: number;
-    // (undocumented)
     isActive: boolean;
-    // (undocumented)
     viewed: boolean;
 }
 
-// @public (undocumented)
+// @public
 export type StoryAssetType = 'image' | 'gif' | 'video';
 
-// @public (undocumented)
+// @public
 export interface StoryErrorContext {
     // (undocumented)
     groupIndex: number;
-    // (undocumented)
     retry: () => void;
     // (undocumented)
     slide: StorySlide;
@@ -14085,19 +13932,13 @@ export interface StoryErrorContext {
     slideIndex: number;
 }
 
-// @public (undocumented)
+// @public
 export interface StorySlide {
-    // (undocumented)
     duration?: number;
-    // (undocumented)
     footer?: ReactNode;
-    // (undocumented)
     id?: string;
-    // (undocumented)
     objectFit?: StoriesObjectFit;
-    // (undocumented)
     src: string;
-    // (undocumented)
     type?: StoryAssetType;
 }
 
@@ -14136,7 +13977,7 @@ default: PolymorphicClassName;
 };
 }> & ChipGroupProps & RefAttributes<HTMLDivElement>>, DefaultTheme, {}, never>;
 
-// @public (undocumented)
+// @public
 const StyledServiceButtons: StyledComponent<"div", DefaultTheme, {
 color?: string | undefined;
 children?: default_2.ReactNode;
@@ -14745,7 +14586,7 @@ export function Table<FilterStateType extends ObjectForExtending, RowIdType exte
 // @public (undocumented)
 export const TABLE_BORDER_RADIUS = 8;
 
-// @public (undocumented)
+// @public
 const TABLE_COLOR_THEMES: readonly ["light", "dark", "betaCoreLight", "betaCoreDark", "highContrastLight", "highContrastDark"];
 
 // @public (undocumented)
@@ -14769,13 +14610,13 @@ type TableCanvasContentStateBase = {
 // @public (undocumented)
 export type TableCanvasEditedCells<RowId = string | number> = ReadonlyMap<RowId, ReadonlySet<string>>;
 
-// @public (undocumented)
+// @public
 type TableCanvasEmptyStateConfig = TableCanvasContentStateBase & Partial<EmptyStateProps>;
 
-// @public (undocumented)
+// @public
 type TableCanvasErrorStateConfig = TableCanvasContentStateBase & Partial<ErrorPageProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasSidebarConfig = {
     enabled?: boolean;
     defaultOpen?: boolean;
@@ -15063,23 +14904,24 @@ type TableConfig_2<RowType extends ObjectForExtending_2, SummaryRowType, RowIdTy
     onHeaderContextMenuDropdown?: TableGlideInstanceProps<RowType, SummaryRowType>['onHeaderContextMenuDropdown'];
     onCellContextMenuDropdown?: TableGlideInstanceProps<RowType, SummaryRowType>['onCellContextMenuDropdown'];
     onCellContextMenu?: TableGlideInstanceProps<RowType, SummaryRowType>['onCellContextMenu'];
-    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<RowType, SummaryRowType>, event: CellClickedEventArgs) => void;
+    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<RowType, SummaryRowType>,
+    event: CellClickedEventArgs) => void;
     onGroupHeaderClicked?: GroupHeaderHandler<RowType, SummaryRowType>;
     onGroupHeaderContextMenu?: GroupHeaderHandler<RowType, SummaryRowType>;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
 
-// @public (undocumented)
+// @public
 type TableConfigDropdown<RowType = ObjectForExtending_2> = Pick<CanvasNodeDropdownProps, 'placement' | 'offset' | 'listWidth' | 'listMaxHeight' | 'variant' | 'size' | 'zIndex' | 'closeOnSelect' | 'closeOnScroll' | 'closeOnOutsideClick' | 'closeOnEsc' | 'mouseEnterDelay' | 'mouseLeaveDelay' | 'loadingItems' | 'renderError'> & TableConfigOverlayRowKey<RowType>;
 
-// @public (undocumented)
+// @public
 type TableConfigOverlayRowKey<RowType> = {
     rowKeyGetter?: (row: RowType) => string | number;
 };
 
-// @public (undocumented)
+// @public
 type TableConfigPopover<RowType = ObjectForExtending_2> = Pick<CanvasNodePopoverProps, 'placement' | 'offset' | 'hasTail' | 'flip' | 'shift' | 'zIndex' | 'closeOnScroll' | 'closeOnOutsideClick' | 'closeOnEsc' | 'mouseEnterDelay' | 'mouseLeaveDelay'> & TableConfigOverlayRowKey<RowType>;
 
-// @public (undocumented)
+// @public
 type TableConfigTooltip = {
     enabled?: boolean;
     mouseEnterDelay?: number;
@@ -15119,10 +14961,10 @@ export const TableContract: ({ fetcher, stylesBeforeLoad, onRowMutationError, }:
     onRowMutationError?: (error: ErrorInstance) => void;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 type TableDropdownConfigProps = Omit<TableDropdownProps, 'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'>;
 
-// @public (undocumented)
+// @public
 type TableDropdownConfigProps_2 = Omit<TableDropdownProps_2, 'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'>;
 
 // @public (undocumented)
@@ -15529,7 +15371,8 @@ type TableGlideInstanceProps<R extends ObjectForExtending_2, SR = unknown, Custo
     }) => React.ReactNode;
     CellReadOnlyEditor: (props: CellReadOnlyEditorGlideInstanceProps<R, SR>) => ReactNode;
     onRowsChange?: (rows: R[], data: RowsChangeDataGlideInstance<R, SR, CustomCtxs>) => void;
-    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<R, SR, CustomCtxs>, event: CellClickedEventArgs) => void;
+    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<R, SR, CustomCtxs>,
+    event: CellClickedEventArgs) => void;
     stickyColumnsConfig?: StickyColumnsConfig<ColumnGlideInstance<R, SR, CustomCtxs>>;
     stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
@@ -15537,45 +15380,39 @@ type TableGlideInstanceProps<R extends ObjectForExtending_2, SR = unknown, Custo
 // @public (undocumented)
 type TableGlideProps<R extends ObjectForExtending_3, SR> = Omit<GlideProps, keyof TableGlideCustomProps<R, SR> | 'getCellContent' | 'drawGroupHeader' | 'ref' | 'groupHeaderHeight'> & TableGlideCustomProps<R, SR>;
 
-// @public (undocumented)
+// @public
 type TableInfoBase<R extends ObjectForExtending_2, SR = unknown, CustomCtxs extends ObjectForExtending_2 = {}> = {
     column: ColumnOrColumnGroupGlideInstance<R, SR, CustomCtxs>;
     ctxs: CustomCtxs;
     refTable?: React.Ref<DataEditorRef>;
 };
 
-// @public (undocumented)
+// @public
 type TableInfoWithRow<R extends ObjectForExtending_2, SR = unknown, CustomCtxs extends ObjectForExtending_2 = {}> = TableInfoBase<R, SR, CustomCtxs> & {
     row: R;
 };
 
-// @public (undocumented)
+// @public
 interface TableNotification {
-    // (undocumented)
     code: TableNotificationCode;
-    // (undocumented)
     level: TableNotificationLevel;
-    // (undocumented)
     message: string;
-    // (undocumented)
     meta?: Record<string, unknown>;
-    // (undocumented)
     type: TableNotificationType;
 }
 
-// @public (undocumented)
+// @public
 type TableNotificationCode = 'multi-range-scattered' | 'readonly-abort' | 'overflow-abort' | 'validation-skipped' | 'no-selection';
 
-// @public (undocumented)
+// @public
 type TableNotificationLevel = 'error' | 'warning' | 'info';
 
-// @public (undocumented)
+// @public
 interface TableNotificationsConfig {
-    // (undocumented)
     onNotification: (event: TableNotification) => void;
 }
 
-// @public (undocumented)
+// @public
 type TableNotificationType = 'copy' | 'paste' | 'fill' | 'pin';
 
 // @public (undocumented)
@@ -15646,7 +15483,7 @@ export const tableTabsClassNames: {
     readonly tabsAndPanelsContainer: "rdg__tabs-and-panels-container";
 };
 
-// @public (undocumented)
+// @public
 export type TableTabsCollapseConfig = Pick<TableCollapseConfig_2, 'defaultCollapsed' | 'collapseText' | 'expandText' | 'onToggleCollapse' | 'collapsedState' | 'domMetadata'> & {
     enabled?: boolean;
     rightSlot?: ReactNode;
@@ -15655,7 +15492,7 @@ export type TableTabsCollapseConfig = Pick<TableCollapseConfig_2, 'defaultCollap
 // @public (undocumented)
 export const TableTabsContext: Context<TabId | null | undefined>;
 
-// @public (undocumented)
+// @public
 export type TableTabsProps<T extends TabId = TabId> = PropsWithChildren & {
     tabs: TCustomOrNotTab<T>[];
     activeTabIdState?: [T, ((newV: T) => void) | ((oldV: T) => T)];
@@ -15667,10 +15504,10 @@ export type TableTabsProps<T extends TabId = TabId> = PropsWithChildren & {
     collapsing?: TableTabsCollapseConfig;
 };
 
-// @public (undocumented)
+// @public
 export type TableTabsSize = 'm' | 's' | 'xs';
 
-// @public (undocumented)
+// @public
 export type TabPanelProps<T extends TabId = TabId> = {
     tabId: T;
     unmountOnClose?: boolean;
@@ -15686,7 +15523,7 @@ export { TabsControllerProps }
 
 export { TabsProps }
 
-// @public (undocumented)
+// @public
 export type TabVariant = 'LIFE_CYCLE' | 'HISTORY';
 
 // @public (undocumented)
@@ -15707,7 +15544,7 @@ export type TComponentColor = CSSProperties['color'];
 // @public (undocumented)
 export type TComponentSize = 's' | 'm' | 'l' | 'xl';
 
-// @public (undocumented)
+// @public
 type TContainerView = '30/70' | '20/80' | '70/30' | '80/20' | '1/1' | '1/1/1' | '1/3/1' | 'fixed-fluid';
 
 // @public (undocumented)
@@ -15971,7 +15808,7 @@ export type ThemeModule = {
     dark: string;
 };
 
-// @public (undocumented)
+// @public
 export const throttle: <R, A extends unknown[]>(fn: (...args: A) => R, delay?: number) => (...args: A) => void;
 
 // @public (undocumented)
@@ -16017,7 +15854,7 @@ export { ToastProvider }
 
 export { ToastRole }
 
-// @public (undocumented)
+// @public
 export const TOGGLE_SIDEBAR_PANEL_WIDTH = 44;
 
 // @public (undocumented)
@@ -16037,14 +15874,14 @@ export type ToggleButtonProps = ToggleButtonBaseProps & {
     onClick?: () => void;
 };
 
-// @public (undocumented)
+// @public
 type Tokens = {
     [K in keyof typeof TOKENS_LIGHT]: string;
 } & {
     surfaceAccent20?: string;
 };
 
-// @public (undocumented)
+// @public
 const TOKENS_LIGHT: {
     readonly textPrimary: "#13181BF5";
     readonly textPrimaryHover: "#13181B93";
@@ -16163,7 +16000,7 @@ export { toolbarTokens }
 
 export { Tooltip }
 
-// @public (undocumented)
+// @public
 export const TOOLTIP_FULL_WIDTH_CLASS = "tooltip--fullWidth";
 
 export { TooltipBeta }
@@ -16337,7 +16174,7 @@ export type TourWidgetProps = ComponentPropsWithoutRef<'div'> & {
     $css?: TourWidgetCss;
 };
 
-// @public (undocumented)
+// @public
 export const tourWidgetTokens: {
     readonly background: "--tour-widget-background";
     readonly borderRadius: "--tour-widget-border-radius";
@@ -16546,10 +16383,10 @@ type TRules = {
     rules: Omit<RegisterOptions<FieldValues, Path<FieldValues>>, 'disabled' | 'setValueAs' | 'valueAsNumber' | 'valueAsDate'>;
 };
 
-// @public (undocumented)
+// @public
 export const truncateText: (options?: TruncateTextOptions) => CSSObject;
 
-// @public (undocumented)
+// @public
 export const truncateTextCss: (options?: TruncateTextOptions) => FlattenSimpleInterpolation;
 
 // @public (undocumented)
@@ -16590,7 +16427,7 @@ export type TTabItem<T extends TabId> = {
     label: ReactNode;
 } & ComponentProps<typeof TabItem>;
 
-// @public (undocumented)
+// @public
 export type TTabsContainerOptions = {
     maxWidth?: number | string;
 };
@@ -17229,42 +17066,28 @@ export type UrlAction = [param: 'sortKey', payload: readonly SortColumn[]] | [pa
 // @public (undocumented)
 export const useActiveTheme: () => ActiveThemeGlobal;
 
-// @public (undocumented)
+// @public
 export const useAdaptiveFilters: ({ items, width, breakpoints, }: UseAdaptiveFiltersParams) => UseAdaptiveFiltersResult;
 
-// @public (undocumented)
+// @public
 export interface UseAdaptiveFiltersParams {
-    // (undocumented)
     breakpoints: Record<number, AdaptiveFiltersBreakpointConfig>;
-    // (undocumented)
     items: FilterItem[];
-    // (undocumented)
     width: number;
 }
 
-// @public (undocumented)
+// @public
 export interface UseAdaptiveFiltersResult {
-    // (undocumented)
     actions: FilterAction[];
-    // (undocumented)
     activeBreakpoint: number;
-    // (undocumented)
     customActions: Record<string, any>;
-    // (undocumented)
     getItemStyle: (modifications: ItemModifications | undefined, availableWidth?: number) => React.CSSProperties;
-    // (undocumented)
     hasActiveFilters: (items: FilterItem[], filters: Record<string, any>) => boolean;
-    // (undocumented)
     hasModifications: boolean;
-    // (undocumented)
     hasOverlayItems: boolean;
-    // (undocumented)
     hiddenItems: FilterItem[];
-    // (undocumented)
     modifications: Record<string, ItemModifications>;
-    // (undocumented)
     overlayItems: FilterItem[];
-    // (undocumented)
     visibleItems: FilterItem[];
 }
 
@@ -17285,7 +17108,7 @@ export const useDebouncedFn: <F, A extends unknown[]>(fn: (this: F, ...args: A) 
 // @public (undocumented)
 export const useDebouncedValue: <T>(state: T, debounce?: number, defValue?: T) => T;
 
-// @public (undocumented)
+// @public
 export const useDropdownItemClickHandler: (handlerMap: Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>) => (item: DropdownItemOption, event: React.SyntheticEvent) => void;
 
 // @public (undocumented)
@@ -17312,7 +17135,7 @@ export const useFiltersList: <FilterKey extends string, OrderKey extends string 
 // @public (undocumented)
 export const useHeaderContext: <CustomType extends void | ObjectForExtending = undefined>() => CustomType extends ObjectForExtending ? CustomType & HeaderContextValueTypeInstance_2<ObjectForExtending> : HeaderContextValueTypeInstance_2<ObjectForExtending>;
 
-// @public (undocumented)
+// @public
 export const useImageLoader: (src?: string, delayMs?: number) => UseImageLoaderResult;
 
 // @public (undocumented)
@@ -17323,7 +17146,6 @@ export interface UseImageLoaderResult {
     isLoaded: boolean;
     // (undocumented)
     isLoading: boolean;
-    // (undocumented)
     reload: () => void;
     // (undocumented)
     status: ImageLoaderStatus;
@@ -17332,7 +17154,7 @@ export interface UseImageLoaderResult {
 // @public (undocumented)
 export const useLeftSidebar: () => LeftSidebarContextValue;
 
-// @public (undocumented)
+// @public
 export const usePlatformLink: (path?: string | null) => {
     href: string | undefined;
     onClick: (event: MouseEvent_2<HTMLElement>) => void;
@@ -17346,7 +17168,7 @@ export { usePopupContext }
 // @public (undocumented)
 export const useRefTableGlobalContainerContext: () => default_2.MutableRefObject<HTMLDivElement | null> | undefined;
 
-// @public (undocumented)
+// @public
 export const useRightSidebar: () => SidebarContextValue;
 
 // @public (undocumented)
@@ -17371,13 +17193,13 @@ type ValidationDetail = {
     error: string;
 };
 
-// @public (undocumented)
+// @public
 type ValidationMode = 'none' | 'type-check';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export type View = ViewMods['rows' | 'bothTypes' | 'cards'];
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 type View_2 = ViewMods_2['rows' | 'bothTypes' | 'cards'];
 
 // @public (undocumented)
@@ -17387,7 +17209,7 @@ export { ViewContainer }
 
 export { viewContainer }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export type ViewMods = {
     rows: {
         type: 'rows';
@@ -17406,7 +17228,7 @@ export type ViewMods = {
     };
 };
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 type ViewMods_2 = {
     rows: {
         type: 'rows';
@@ -17639,7 +17461,7 @@ const WidgetWithRef: ForwardRefExoticComponent<PropsWithoutRef<WidgetProps> & Re
 
 export { withSkeleton }
 
-// @public (undocumented)
+// @public
 type WrittenCell = {
     rowIndex: number;
     columnKey: string;

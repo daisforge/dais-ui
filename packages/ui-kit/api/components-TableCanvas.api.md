@@ -79,7 +79,7 @@ import { TransitionEventHandler } from 'react';
 import { UIEventHandler } from 'react';
 import { WheelEventHandler } from 'react';
 
-// @public (undocumented)
+// @public
 export type ActiveTheme = TableColorTheme;
 
 // @public (undocumented)
@@ -99,24 +99,22 @@ type Align = 'flex-start' | 'flex-end' | 'center' | 'stretch';
 // @public (undocumented)
 type AlignContent = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
 
-// @public (undocumented)
+// @public
 type AllowedFillDirections = 'horizontal' | 'vertical' | 'orthogonal' | 'any';
 
-// @public (undocumented)
+// @public
 interface AnimationContext {
-    // (undocumented)
     frameTime?: number;
-    // (undocumented)
     requestAnimationFrame?: () => void;
 }
 
-// @public (undocumented)
+// @public
 export type AppearanceConfig = {
     variant?: AppearanceVariant;
     zebra?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export type AppearanceVariant = 'default' | 'clean';
 
 // @public (undocumented)
@@ -135,56 +133,41 @@ export function autoFocusAndSelect<T extends HTMLInputElement | HTMLTextAreaElem
 
 // @public (undocumented)
 export interface AvatarContent {
-    // (undocumented)
     customText?: string;
-    // (undocumented)
     name?: string;
-    // (undocumented)
     url?: string;
 }
 
 // @public (undocumented)
 export interface AvatarGroupItemClick {
-    // (undocumented)
     event: CanvasEvent<CanvasAvatar>;
-    // (undocumented)
     index: number;
-    // (undocumented)
     item: CanvasAvatarItem;
 }
 
 // @public (undocumented)
 export interface AvatarGroupOverflowClick {
-    // (undocumented)
     event: CanvasEvent<CanvasAvatar>;
-    // (undocumented)
     hiddenCount: number;
-    // (undocumented)
     hiddenItems: readonly CanvasAvatarItem[];
-    // (undocumented)
     totalCount: number;
 }
 
-// @public (undocumented)
+// @public
 export type AvatarSize = 's' | 'm' | 'l' | 'xxl';
 
 // @public (undocumented)
 interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps, CanvasOverlayProps {
     // (undocumented)
     bottom?: PositionValue;
-    // (undocumented)
     children?: ReactNode;
-    // (undocumented)
     clear?: boolean;
-    // (undocumented)
     customBackgroundColor?: string;
-    // (undocumented)
     customColor?: string;
     // (undocumented)
     id?: string;
     // (undocumented)
     left?: PositionValue;
-    // (undocumented)
     leftIcon?: ButtonIcon;
     // (undocumented)
     pilled?: boolean;
@@ -194,19 +177,14 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps, CanvasOve
     position?: 'absolute';
     // (undocumented)
     right?: PositionValue;
-    // (undocumented)
     rightIcon?: ButtonIcon;
-    // (undocumented)
     size?: BadgeSize;
     // (undocumented)
     style?: Partial<CanvasFlexStyle>;
-    // (undocumented)
     text?: string;
     // (undocumented)
     top?: PositionValue;
-    // (undocumented)
     transparent?: boolean;
-    // (undocumented)
     view?: BadgeView;
 }
 
@@ -216,7 +194,7 @@ type BadgeSize = 'xs' | 's' | 'm' | 'l';
 // @public (undocumented)
 type BadgeView = 'default' | 'accent' | 'positive' | 'warning' | 'negative' | 'dark' | 'light';
 
-// @public (undocumented)
+// @public
 export type BordersConfig<RowType = ObjectForExtending> = {
     vertical?: boolean;
     horizontal?: boolean;
@@ -238,7 +216,7 @@ export type BordersConfig<RowType = ObjectForExtending> = {
     }) => CellBorderVisibility | undefined;
 };
 
-// @public (undocumented)
+// @public
 export type BottomSheetConfig = {
     enabled?: boolean;
     height?: string | number;
@@ -539,7 +517,7 @@ type BoxProps = ComponentProps<typeof Box> & BoxBaseProps;
 // @public (undocumented)
 type ButtonCompProps = ComponentProps<typeof Button>;
 
-// @public (undocumented)
+// @public
 type ButtonIcon = string | HTMLImageElement | ReactElement | null | undefined;
 
 // @public (undocumented)
@@ -560,7 +538,6 @@ interface ButtonProps_3 extends CanvasInteractionProps, CanvasLayerProps, Canvas
     id?: string;
     // (undocumented)
     left?: PositionValue;
-    // (undocumented)
     leftIcon?: ButtonIcon;
     // (undocumented)
     onClick?: (event: CanvasEvent<CanvasButton>) => void;
@@ -570,17 +547,14 @@ interface ButtonProps_3 extends CanvasInteractionProps, CanvasLayerProps, Canvas
     position?: 'absolute';
     // (undocumented)
     right?: PositionValue;
-    // (undocumented)
     rightIcon?: ButtonIcon;
-    // (undocumented)
     size?: ButtonSize;
     // (undocumented)
     style?: Partial<CanvasFlexStyle>;
     // (undocumented)
     top?: PositionValue;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -619,7 +593,7 @@ const Canvas_2: {
     icon: typeof normalizeIcon;
 };
 
-// @public (undocumented)
+// @public
 const CANVAS_PORTAL_PRIORITY: {
     readonly COLUMN: 0;
     readonly NODE: 1;
@@ -632,14 +606,12 @@ class CanvasAvatar extends CanvasLeaf {
     cutLeft: boolean;
     // (undocumented)
     cutRight: boolean;
-    // (undocumented)
     getAnchorRect(): {
         x: number;
         y: number;
         width: 48 | 24 | 36 | 88;
         height: 48 | 24 | 36 | 88;
     };
-    // (undocumented)
     groupClip?: Rect;
     // (undocumented)
     measure(): void;
@@ -682,47 +654,37 @@ class CanvasAvatarGroup extends CanvasContainer {
 
 // @public (undocumented)
 interface CanvasAvatarGroupOptions extends Pick<CanvasAvatarOptions, 'size' | 'theme'> {
-    // (undocumented)
     items: readonly CanvasAvatarItem[];
-    // (undocumented)
     onItemClick?: (args: AvatarGroupItemClick) => void;
-    // (undocumented)
     onOverflowClick?: (args: AvatarGroupOverflowClick) => void;
-    // (undocumented)
     overflowTooltip?: CanvasNodeTooltipConfig;
-    // (undocumented)
     totalCount?: number;
-    // (undocumented)
     visibleCount?: number;
 }
 
 // @public (undocumented)
 export type CanvasAvatarGroupProps = PublicCanvasProps<CanvasAvatarGroupProps_2>;
 
-// @public (undocumented)
+// @public
 interface CanvasAvatarGroupProps_2 extends ImageElementProps<CanvasAvatarGroup>, Omit<CanvasAvatarGroupOptions, 'theme'> {
 }
 
 // @public (undocumented)
 export interface CanvasAvatarItem extends AvatarContent {
-    // (undocumented)
     id: string;
-    // (undocumented)
     tooltip?: CanvasNodeTooltipConfig;
 }
 
 // @public (undocumented)
 interface CanvasAvatarOptions extends AvatarContent {
-    // (undocumented)
     size?: AvatarSize;
-    // (undocumented)
     theme?: GlideThemeForRender;
 }
 
 // @public (undocumented)
 export type CanvasAvatarProps = PublicCanvasProps<CanvasAvatarProps_2>;
 
-// @public (undocumented)
+// @public
 interface CanvasAvatarProps_2 extends ImageElementProps<CanvasAvatar>, Omit<CanvasAvatarOptions, 'theme'> {
 }
 
@@ -734,7 +696,6 @@ class CanvasButton extends CanvasLeaf {
     constructor(id: string, text: string, options?: CanvasButtonOptions);
     // (undocumented)
     disabled: boolean;
-    // (undocumented)
     getAnchorRect(): {
         x: number;
         y: number;
@@ -762,7 +723,7 @@ class CanvasButton extends CanvasLeaf {
     get style(): CanvasFlexStyle;
     // (undocumented)
     text: string;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant: 'primary' | 'secondary' | 'danger';
     // (undocumented)
     view: ButtonView;
@@ -772,19 +733,14 @@ class CanvasButton extends CanvasLeaf {
 interface CanvasButtonOptions {
     // (undocumented)
     disabled?: boolean;
-    // (undocumented)
     leftIcon?: ButtonIcon;
     // (undocumented)
     onClick?: (event: CanvasEvent) => void;
-    // (undocumented)
     rightIcon?: ButtonIcon;
-    // (undocumented)
     size?: ButtonSize;
-    // (undocumented)
     theme?: GlideThemeForRender;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -814,9 +770,7 @@ class CanvasContainer extends CanvasNode implements ICanvasContainer {
     // (undocumented)
     get flexOptions(): FlexBoxOptions;
     set flexOptions(value: FlexBoxOptions);
-    // (undocumented)
     hasFixedWidth(): boolean;
-    // (undocumented)
     isSizedByContent(): boolean;
     // (undocumented)
     measure(ctx: CanvasRenderingContext2D): void;
@@ -839,13 +793,13 @@ export type CanvasContainerProps = PublicClickableProps<ContainerProps>;
 // @public (undocumented)
 export type CanvasContent = ReactElement | string;
 
-// @public (undocumented)
+// @public
 export interface CanvasDropdownApi {
     // (undocumented)
     close: () => void;
 }
 
-// @public (undocumented)
+// @public
 export interface CanvasDropdownErrorApi extends CanvasDropdownApi {
     // (undocumented)
     error: unknown;
@@ -868,7 +822,6 @@ class CanvasEmbedIconButton extends CanvasLeaf {
     protected containsHitPoint(x: number, y: number): boolean;
     // (undocumented)
     disabled: boolean;
-    // (undocumented)
     getAnchorRect(): {
         x: number;
         y: number;
@@ -897,12 +850,12 @@ class CanvasEmbedIconButton extends CanvasLeaf {
     overrideSquareSize?: number;
     // (undocumented)
     overrideWidth?: number;
-    // (undocumented)
+    // @deprecated (undocumented)
     size: number | 'auto';
     set style(value: CanvasFlexStyle);
     // (undocumented)
     get style(): CanvasFlexStyle;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant: 'primary' | 'secondary' | 'danger';
     // (undocumented)
     view: ButtonView;
@@ -910,29 +863,21 @@ class CanvasEmbedIconButton extends CanvasLeaf {
 
 // @public (undocumented)
 interface CanvasEmbedIconButtonOptions {
-    // (undocumented)
     buttonSize?: EmbedIconButtonSize;
     // (undocumented)
     disabled?: boolean;
-    // (undocumented)
     iconColor?: string;
-    // (undocumented)
     iconColorHovered?: string;
     // (undocumented)
     onClick?: (event: CanvasEvent) => void;
-    // (undocumented)
     overrideIconSize?: number;
-    // (undocumented)
     overrideSquareSize?: number;
-    // (undocumented)
     overrideWidth?: number;
-    // (undocumented)
+    // @deprecated (undocumented)
     size?: number | 'auto';
-    // (undocumented)
     theme?: GlideThemeForRender;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -974,7 +919,6 @@ class CanvasIcon extends CanvasLeaf {
     constructor(id: string, icon: ButtonIcon, options?: CanvasIconOptions);
     // (undocumented)
     color?: string;
-    // (undocumented)
     getAnchorRect(): {
         x: number;
         y: number;
@@ -1000,7 +944,6 @@ class CanvasIconButton extends CanvasLeaf {
     protected containsHitPoint(x: number, y: number): boolean;
     // (undocumented)
     disabled: boolean;
-    // (undocumented)
     getAnchorRect(): {
         x: number;
         y: number;
@@ -1019,12 +962,12 @@ class CanvasIconButton extends CanvasLeaf {
     onMouseLeave(): void;
     // (undocumented)
     onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D): void;
-    // (undocumented)
+    // @deprecated (undocumented)
     size: number | 'auto';
     set style(value: CanvasFlexStyle);
     // (undocumented)
     get style(): CanvasFlexStyle;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant: 'primary' | 'secondary' | 'danger';
     // (undocumented)
     view: ButtonView;
@@ -1032,19 +975,16 @@ class CanvasIconButton extends CanvasLeaf {
 
 // @public (undocumented)
 interface CanvasIconButtonOptions {
-    // (undocumented)
     buttonSize?: ButtonSize;
     // (undocumented)
     disabled?: boolean;
     // (undocumented)
     onClick?: (event: CanvasEvent) => void;
-    // (undocumented)
+    // @deprecated (undocumented)
     size?: number | 'auto';
-    // (undocumented)
     theme?: GlideThemeForRender;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -1078,30 +1018,25 @@ class CanvasImage extends CanvasLeaf {
 
 // @public (undocumented)
 interface CanvasImageOptions {
-    // (undocumented)
     fit?: ImageFit;
-    // (undocumented)
     src: string;
 }
 
 // @public (undocumented)
 export type CanvasImageProps = PublicCanvasProps<CanvasImageProps_2>;
 
-// @public (undocumented)
+// @public
 interface CanvasImageProps_2 extends ImageElementProps<CanvasImage>, CanvasImageOptions {
 }
 
-// @public (undocumented)
+// @public
 interface CanvasImageResources {
-    // (undocumented)
     colIndex: number;
-    // (undocumented)
     loader: Pick<ImageWindowLoader, 'loadOrGetImage'>;
-    // (undocumented)
     rowIndex: number;
 }
 
-// @public (undocumented)
+// @public
 class CanvasImageTransitions {
     // (undocumented)
     beginFrame(resources?: CanvasImageResources): void;
@@ -1113,33 +1048,27 @@ class CanvasImageTransitions {
     isActive: boolean;
 }
 
-// @public (undocumented)
+// @public
 export type CanvasInteractionConfig = Pick<CanvasInteractionConfig_2, 'selection' | 'cellClick'>;
 
 // @public (undocumented)
 type CanvasInteractionConfig_2 = CanvasInteractionOptions;
 
-// @public (undocumented)
+// @public
 interface CanvasInteractionOptions {
-    // (undocumented)
     cellClick?: 'normal' | 'stop';
-    // (undocumented)
     contextMenu?: 'normal' | 'keep-selection' | 'none';
-    // (undocumented)
     editor?: 'normal' | 'never' | 'open-on-click';
-    // (undocumented)
     selection?: 'normal' | 'keep';
 }
 
 // @public (undocumented)
 interface CanvasInteractionProps {
-    // (undocumented)
     interaction?: CanvasInteractionConfig_2;
 }
 
 // @public (undocumented)
 interface CanvasLayerProps {
-    // (undocumented)
     zIndex?: number;
 }
 
@@ -1205,11 +1134,10 @@ interface CanvasLinkOptions extends CanvasTextOptions {
 export interface CanvasMarkProps {
     // (undocumented)
     children?: ReactNode;
-    // (undocumented)
     color: string;
 }
 
-// @public (undocumented)
+// @public
 type CanvasMemberWithInteraction = 'Button' | 'IconButton' | 'EmbedIconButton' | 'Link' | 'Container';
 
 // @public (undocumented)
@@ -1240,11 +1168,8 @@ abstract class CanvasNode implements ICanvasNode {
     static DEBUG: boolean;
     // (undocumented)
     debugColor: string;
-    // (undocumented)
     dropdown?: CanvasNodeDropdownConfig;
-    // (undocumented)
     getAnchorRect(): Rect;
-    // (undocumented)
     getTooltip(): CanvasNodeTooltipConfig | undefined;
     // (undocumented)
     hitTest(x: number, y: number): CanvasNode[];
@@ -1299,7 +1224,6 @@ abstract class CanvasNode implements ICanvasNode {
     paint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D): void;
     // (undocumented)
     parent: CanvasNode | null;
-    // (undocumented)
     popover?: CanvasNodePopoverConfig;
     // (undocumented)
     portalHoverEnabled: boolean;
@@ -1320,7 +1244,6 @@ abstract class CanvasNode implements ICanvasNode {
     // (undocumented)
     get style(): CanvasFlexStyle;
     set style(value: CanvasFlexStyle);
-    // (undocumented)
     tooltip?: CanvasNodeTooltipConfig;
     // (undocumented)
     get top(): PositionValue | undefined;
@@ -1329,10 +1252,10 @@ abstract class CanvasNode implements ICanvasNode {
     zIndex: number;
 }
 
-// @public (undocumented)
+// @public
 export type CanvasNodeDropdownConfig = CanvasNodeDropdownProps & CanvasNodeDropdownItems;
 
-// @public (undocumented)
+// @public
 export type CanvasNodeDropdownItems = {
     items: CanvasDropdownItem[];
     getItems?: never;
@@ -1343,7 +1266,7 @@ export type CanvasNodeDropdownItems = {
     items?: never;
 };
 
-// @public (undocumented)
+// @public
 export type CanvasNodeDropdownProps = Pick<DropdownProps, 'placement' | 'offset' | 'listWidth' | 'listMaxHeight' | 'variant' | 'zIndex' | 'closeOnSelect' | 'renderItem' | 'beforeList' | 'afterList'> & {
     trigger?: 'click' | 'hover';
     mouseEnterDelay?: number;
@@ -1360,10 +1283,10 @@ export type CanvasNodeDropdownProps = Pick<DropdownProps, 'placement' | 'offset'
     onClose?: () => void;
 };
 
-// @public (undocumented)
+// @public
 export type CanvasNodePopoverConfig = CanvasNodePopoverProps & CanvasNodePopoverContent;
 
-// @public (undocumented)
+// @public
 export type CanvasNodePopoverContent = {
     content: ReactNode;
     renderContent?: never;
@@ -1372,7 +1295,7 @@ export type CanvasNodePopoverContent = {
     content?: never;
 };
 
-// @public (undocumented)
+// @public
 export type CanvasNodePopoverProps = Pick<PopoverBetaCompProps, 'placement' | 'offset' | 'hasTail' | 'flip' | 'shift' | 'zIndex' | 'resizable'> & {
     trigger?: 'click' | 'hover';
     mouseEnterDelay?: number;
@@ -1385,30 +1308,27 @@ export type CanvasNodePopoverProps = Pick<PopoverBetaCompProps, 'placement' | 'o
     onClose?: () => void;
 };
 
-// @public (undocumented)
+// @public
 export type CanvasNodeTooltipConfig = string | (CanvasNodeTooltipProps & {
     text: string;
     mouseEnterDelay?: number;
     mouseLeaveDelay?: number;
 });
 
-// @public (undocumented)
+// @public
 export type CanvasNodeTooltipProps = Pick<TooltipProps, 'placement' | 'view' | 'minWidth' | 'maxWidth'> & {
     preserveLineBreaks?: boolean;
     offsetX?: number;
 };
 
-// @public (undocumented)
+// @public
 interface CanvasOverlayProps {
-    // (undocumented)
     dropdown?: CanvasNodeDropdownConfig;
-    // (undocumented)
     popover?: CanvasNodePopoverConfig;
-    // (undocumented)
     tooltip?: CanvasNodeTooltipConfig;
 }
 
-// @public (undocumented)
+// @public
 export interface CanvasPopoverRenderApi {
     // (undocumented)
     close: () => void;
@@ -1416,7 +1336,6 @@ export interface CanvasPopoverRenderApi {
 
 // @public (undocumented)
 export interface CanvasPortalHoverDetail<TContext extends TooltipContextShape = TooltipContextShape> {
-    // (undocumented)
     dropdownFromNode?: CanvasNodeDropdownConfig;
     // (undocumented)
     height: number;
@@ -1426,15 +1345,11 @@ export interface CanvasPortalHoverDetail<TContext extends TooltipContextShape = 
     nodeId?: string;
     // (undocumented)
     originId?: string;
-    // (undocumented)
     popoverFromNode?: CanvasNodePopoverConfig;
-    // (undocumented)
     priority?: CanvasPortalPriority;
     // (undocumented)
     source?: CanvasPortalSource;
-    // (undocumented)
     tooltipContext?: TContext;
-    // (undocumented)
     tooltipFromNode?: CanvasNodeTooltipConfig;
     // (undocumented)
     visible: boolean;
@@ -1470,7 +1385,6 @@ class CanvasText_2 extends CanvasNode {
     fontSize: number | undefined;
     // (undocumented)
     protected getLastPaintedTextWidth(): number;
-    // (undocumented)
     getTooltip(): CanvasNodeTooltipConfig | undefined;
     // (undocumented)
     lineHeight: number;
@@ -1488,7 +1402,6 @@ class CanvasText_2 extends CanvasNode {
     minWidthByContent: boolean;
     // (undocumented)
     onPaint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D): void;
-    // (undocumented)
     protected onPaintLine(_batcher: DrawBatcher, _ctx: CanvasRenderingContext2D, _text: string, _x: number, _y: number, _fontSize: number, _lineHeightPx: number): void;
     // (undocumented)
     overflow: CanvasTextOverflowMode;
@@ -1500,7 +1413,7 @@ class CanvasText_2 extends CanvasNode {
     wordWrap: boolean;
 }
 
-// @public (undocumented)
+// @public
 type CanvasTextAutoTooltip = boolean | (CanvasNodeTooltipProps & {
     enabled?: boolean;
     text?: string | ((fullText: string) => string | null);
@@ -1508,7 +1421,7 @@ type CanvasTextAutoTooltip = boolean | (CanvasNodeTooltipProps & {
     mouseLeaveDelay?: number;
 });
 
-// @public (undocumented)
+// @public
 interface CanvasTextMark {
     // (undocumented)
     color: string;
@@ -1538,7 +1451,6 @@ interface CanvasTextOptions {
     marks?: readonly CanvasTextMark[];
     // (undocumented)
     maxLines?: number;
-    // (undocumented)
     minWidthByContent?: boolean;
     // (undocumented)
     overflow?: CanvasTextOverflowMode;
@@ -1563,7 +1475,7 @@ export type CellActiveState = {
     rowActive: boolean;
 };
 
-// @public (undocumented)
+// @public
 export type CellBorderVisibility = {
     top?: boolean;
     right?: boolean;
@@ -1574,7 +1486,7 @@ export type CellBorderVisibility = {
 // @public (undocumented)
 export type CellContent = CanvasContent | GridCell;
 
-// @public (undocumented)
+// @public
 export type CellContextMenuDropdownProps<RowType extends ObjectForExtending, SummaryRowType, CustomCtxs extends ObjectForExtending = ObjectForExtending> = ContextMenuDropdownProps & {
     type: 'dropdown';
     getDropdownItems: (params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>) => DropdownProps['items'];
@@ -1657,7 +1569,7 @@ export type CellReadOnlyEditorGlideInstanceStaticProps = {
 // @public (undocumented)
 export type CellReadOnlyEditorProps<RowType extends ObjectForExtending, SummaryRowType> = CellReadOnlyEditorGlideInstanceStaticProps & EditingCellInfo<RowType, SummaryRowType>;
 
-// @public (undocumented)
+// @public
 export type CellsSelectionConfig = {
     mode?: CellsSelectionMode;
     enableColumnSelection?: boolean;
@@ -1669,7 +1581,7 @@ export type CellsSelectionConfig = {
     focusOnStateChange?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export type CellsSelectionMode = 'cell' | 'range-cell' | 'multi-range-cell' | 'disabled';
 
 // @public (undocumented)
@@ -1679,7 +1591,7 @@ export type CellThemeOverrideResult = Partial<{
     cellVerticalPadding: number;
 }>;
 
-// @public (undocumented)
+// @public
 type CellTransferCellInfo = {
     row: ObjectForExtending;
     column: TransferColumnConfig;
@@ -1690,7 +1602,7 @@ type CellTransferCellInfo = {
     formattedValue: string;
 };
 
-// @public (undocumented)
+// @public
 export type CellTransferConfig = {
     enabled?: boolean;
     hotkeys?: {
@@ -1756,7 +1668,7 @@ export const COLLAPSE_DECOR_DELAY = 0.5;
 // @public (undocumented)
 export const COLLAPSE_DECOR_FADE = 0.15;
 
-// @public (undocumented)
+// @public
 export const COLLAPSE_DURATION = 0.5;
 
 // @public (undocumented)
@@ -1843,7 +1755,7 @@ export type ColumnConfig<Row extends ObjectForExtending, SummRow = unknown, Cust
     mergedCellsAlign?: MergedCellsAlign | ((row: Row) => MergedCellsAlign | undefined);
 };
 
-// @public (undocumented)
+// @public
 type ColumnConfigInternal<R extends ObjectForExtending, SR = unknown> = ColumnConfig<R, SR> & Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys> & {
     spanAlign?: SpanCellAlign | ((cellInfo: CellInfo_2<R, SR>) => SpanCellAlign | undefined);
     hasOwnRenderCell?: boolean;
@@ -1945,13 +1857,9 @@ type ColumnGlideLast<R extends ObjectForExtending_2, SR> = СolumnGlide & Column
 
 // @public (undocumented)
 export interface ColumnGroupConfig<R extends ObjectForExtending, SR = unknown> {
-    // (undocumented)
     readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
-    // (undocumented)
     readonly key: string;
-    // (undocumented)
     readonly name: string | ReactElement;
-    // (undocumented)
     readonly squashedHeaderAlign?: HeaderAlignment;
 }
 
@@ -2022,7 +1930,7 @@ type ColumnsControlConfig = {
     switchDomMetadata?: DomMetadata;
 };
 
-// @public (undocumented)
+// @public
 export type ColumnsGroupingConfig = {
     squashEmptyCells?: boolean;
     squashedHeaderAlign?: HeaderAlignment;
@@ -2101,10 +2009,10 @@ $isCoverOverlayActive?: boolean | undefined;
 // @public (undocumented)
 export type ContentFormat = 'number' | CustomFormat | NumberFormatOptions;
 
-// @public (undocumented)
+// @public
 export type ContextMenuDropdownItem = NonNullable<DropdownProps['items']>[number];
 
-// @public (undocumented)
+// @public
 export type ContextMenuDropdownProps = Omit<DropdownProps, 'children' | 'items' | 'placement' | 'closeOnOverlayClick' | 'portal' | 'openByRightClick' | 'onItemClick' | 'hoverIndex' | 'alwaysOpened' | 'trigger' | 'hasArrow' | 'onItemSelect'>;
 
 // @public (undocumented)
@@ -2138,16 +2046,16 @@ export type ControlBlockConfig = {
     };
 };
 
-// @public (undocumented)
+// @public
 export type ControlBlockSize = 'm' | 's' | 'xs';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 const controlButtonDefaultProps: {
     readonly size: "s";
     readonly view: "linkDefault";
 };
 
-// @public (undocumented)
+// @public
 type CopyMeta = {
     range: Rectangle;
     cells: CellTransferCellInfo[][];
@@ -2233,7 +2141,7 @@ export const customColorTokensKeys: {
     editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
-// @public (undocumented)
+// @public
 export type CustomFormat = {
     alignContent?: 'right' | 'left' | 'center';
     customFormat?: (value: string) => React.ReactNode;
@@ -2292,7 +2200,7 @@ type DimensionValue = number | '100%';
 // @public (undocumented)
 type Direction = 'row' | 'row-reverse' | 'column' | 'column-reverse';
 
-// @public (undocumented)
+// @public
 export const DOM_METADATA_ACTIONS: {
     readonly TOGGLE_GROUP: "toggle-group";
     readonly RESET_GROUPS: "reset-groups";
@@ -2306,7 +2214,7 @@ export const DOM_METADATA_ACTIONS: {
     readonly SHOW_COLUMN: "show-column";
 };
 
-// @public (undocumented)
+// @public
 type DomMetadata = {
     className?: string;
     dataAttributes?: DataAttributes;
@@ -2339,7 +2247,6 @@ class DrawBatcher {
     }, textBaseline?: TextBaseline, textAlign?: TextAlign): this;
     // (undocumented)
     flush(ctx: CanvasRenderingContext2D): void;
-    // (undocumented)
     getAnimationContext(): AnimationContext | undefined;
     // (undocumented)
     getZIndex(): number;
@@ -2359,7 +2266,6 @@ class DrawBatcher {
         strokeStyle?: string;
         lineWidth?: number;
     }): this;
-    // (undocumented)
     setAnimationContext(context?: AnimationContext): this;
     // (undocumented)
     setZIndex(zIndex: number): this;
@@ -2396,13 +2302,13 @@ type DropdownItemOption_2 = {
 // @public (undocumented)
 type DropdownProps<T extends DropdownItemOption = DropdownItemOption> = DropdownProps_2<T> & RefAttributes<HTMLButtonElement>;
 
-// @public (undocumented)
+// @public
 type DropdownRenderCtx = {
     rowSize: SIZE;
     isInDropdown: boolean;
 };
 
-// @public (undocumented)
+// @public
 export const DURATION = 0.5;
 
 // @public (undocumented)
@@ -2439,7 +2345,7 @@ export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
     showSelectIcon?: boolean;
 });
 
-// @public (undocumented)
+// @public
 export type EditingButtonProps = Omit<Partial<ControlBlockButtonProps>, 'onClick' | 'size' | 'dropdown' | 'isTargetAction' | 'skipRightDivider' | 'tooltipText'>;
 
 // @public (undocumented)
@@ -2508,15 +2414,12 @@ const EDITOR_CELL_PADDING: {
 interface EmbedIconButtonProps extends CanvasInteractionProps, CanvasLayerProps, CanvasOverlayProps {
     // (undocumented)
     bottom?: PositionValue;
-    // (undocumented)
     buttonSize?: EmbedIconButtonSize;
     // (undocumented)
     disabled?: boolean;
     // (undocumented)
     icon: ButtonIcon;
-    // (undocumented)
     iconColor?: string;
-    // (undocumented)
     iconColorHovered?: string;
     // (undocumented)
     id?: string;
@@ -2524,11 +2427,8 @@ interface EmbedIconButtonProps extends CanvasInteractionProps, CanvasLayerProps,
     left?: PositionValue;
     // (undocumented)
     onClick?: (event: CanvasEvent<CanvasEmbedIconButton>) => void;
-    // (undocumented)
     overrideIconSize?: number;
-    // (undocumented)
     overrideSquareSize?: number;
-    // (undocumented)
     overrideWidth?: number;
     // (undocumented)
     portalHoverEnabled?: boolean;
@@ -2536,15 +2436,14 @@ interface EmbedIconButtonProps extends CanvasInteractionProps, CanvasLayerProps,
     position?: 'absolute';
     // (undocumented)
     right?: PositionValue;
-    // (undocumented)
+    // @deprecated (undocumented)
     size?: number | 'auto';
     // (undocumented)
     style?: Partial<CanvasFlexStyle>;
     // (undocumented)
     top?: PositionValue;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -2564,10 +2463,10 @@ type EmptyStateClasses = {
     extraButton?: string;
 };
 
-// @public (undocumented)
+// @public
 type EmptyStateImageVariant = EmptyStateVariant | ErrorPageVariant;
 
-// @public (undocumented)
+// @public
 type EmptyStateProps = {
     size: 's' | 'm' | 'l';
     title?: ReactNode;
@@ -2583,8 +2482,10 @@ type EmptyStateProps = {
     $css?: string | CSSObject | FlattenSimpleInterpolation;
 };
 
-// @public (undocumented)
-type EmptyStateVariant = 'loading' | 'life-circle' | 'need-access' | 'no-access' | 'no-content' | 'not-found' | 'not-result' | 'success';
+// @public
+type EmptyStateVariant = 'loading' | 'life-circle' | 'need-access' | 'no-access' | 'no-content' | 'not-found'
+/** @deprecated Используйте `'not-found'` */
+| 'not-result' | 'success';
 
 // @public (undocumented)
 type ErrorPageProps = {
@@ -2598,7 +2499,7 @@ type ErrorPageProps = {
     size?: 's' | 'm' | 'l';
 };
 
-// @public (undocumented)
+// @public
 type ErrorPageVariant = '400' | '401' | '403' | '404' | '409' | '500' | '502' | '503' | 'unidentified';
 
 // @public (undocumented)
@@ -2607,7 +2508,7 @@ type ExpandedRowsChangeContextV = default_2.Dispatch<default_2.SetStateAction<Ex
 // @public (undocumented)
 type ExpandedRowsContextV = Set<string | number>;
 
-// @public (undocumented)
+// @public
 type FeatureDetails = ({
     type: 'button';
     label: string;
@@ -2637,26 +2538,26 @@ type FeatureDetails = ({
     render: (ctx: DropdownRenderCtx) => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureDetailsBase = {
     mandatory?: boolean;
     canBeCompressedInToolsMenu?: boolean;
     details?: FeatureDetails;
 };
 
-// @public (undocumented)
+// @public
 type FeatureIconRender = ReactNode | ((ctx: DropdownRenderCtx) => ReactNode);
 
-// @public (undocumented)
+// @public
 type FeatureItem = FeatureItemWithIcon | FeatureItemWithCustomIcon;
 
-// @public (undocumented)
+// @public
 type FeatureItemWithCustomIcon = FeatureDetailsBase & {
     value: string;
     CustomIconRender: (ctx: DropdownRenderCtx) => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 type FeatureItemWithIcon = FeatureDetailsBase & {
     value: string;
     label: string;
@@ -2670,12 +2571,12 @@ type FeatureItemWithIcon = FeatureDetailsBase & {
 // @public (undocumented)
 type FieldVerticalAlign = 'top' | 'center' | 'bottom';
 
-// @public (undocumented)
+// @public
 type FieldVerticalAlignProps = {
     verticalAlign?: FieldVerticalAlign;
 };
 
-// @public (undocumented)
+// @public
 type FillHandleConfig = {
     enabled?: boolean;
     shape?: 'square' | 'circle';
@@ -2686,7 +2587,7 @@ type FillHandleConfig = {
     allowSubRows?: boolean;
 };
 
-// @public (undocumented)
+// @public
 type FillMeta = {
     sourceRange: Rectangle;
     destinationRange: Rectangle;
@@ -2794,7 +2695,6 @@ interface FlexStyle {
     id?: string;
     // (undocumented)
     metadata?: unknown;
-    // (undocumented)
     minWidth?: number;
     // (undocumented)
     width?: number;
@@ -2873,7 +2773,7 @@ type FullScreenObj = {
 // @public (undocumented)
 export const fullScreenStyles: FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
-// @public (undocumented)
+// @public
 const getCustomColors: (activeTheme: ActiveTheme) => {
     tokens: Tokens;
     fonts: Fonts;
@@ -3003,9 +2903,10 @@ type Group = {
 };
 
 // @public (undocumented)
-export type GroupHeaderHandler<RowType extends ObjectForExtending, SummaryRowType = unknown> = (colIndex: number, info: GroupHeaderInfo<RowType, SummaryRowType>, event: GroupHeaderClickedEventArgs) => void;
+export type GroupHeaderHandler<RowType extends ObjectForExtending, SummaryRowType = unknown> = (colIndex: number, info: GroupHeaderInfo<RowType, SummaryRowType>,
+event: GroupHeaderClickedEventArgs) => void;
 
-// @public (undocumented)
+// @public
 export type GroupHeaderInfo<RowType extends ObjectForExtending, SummaryRowType = unknown> = {
     key: string;
     children: readonly ColumnOrColumnGroupConfig<RowType, SummaryRowType>[];
@@ -3026,7 +2927,7 @@ type GroupRowsOrRows<RowType> = readonly (GroupRow<RowType> | RowType)[];
 // @public (undocumented)
 type HandleExpandDetail<RowType extends ObjectForExtending> = (row: RowType) => void;
 
-// @public (undocumented)
+// @public
 export type HeaderAlignment = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
@@ -3053,7 +2954,7 @@ export type HeaderCellInfoGlideInstance<R extends ObjectForExtending, SR, Custom
     ctxs: CtxsType<CustomCtxs>;
 };
 
-// @public (undocumented)
+// @public
 export type HeaderContextMenuDropdownProps<RowType extends ObjectForExtending, SummaryRowType = unknown, CustomCtxs extends ObjectForExtending = ObjectForExtending> = ContextMenuDropdownProps & {
     type: 'dropdown';
     getDropdownItems: (params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>) => DropdownProps['items'];
@@ -3088,17 +2989,17 @@ export const HEIGHT_FILTERLIST_BLOCK = 33;
 // @public (undocumented)
 export const HEIGHT_TABLE_DEFAULT = 350;
 
-// @public (undocumented)
+// @public
 type HiddenColumnsIndicatorExpandInfo = {
     keys: string[];
     leftKey?: string;
     rightKey?: string;
 };
 
-// @public (undocumented)
+// @public @deprecated
 export type HighlightActiveType = 'cell' | 'row' | 'range-cell' | 'disabled';
 
-// @public (undocumented)
+// @public
 type HotkeyConfig = {
     code: string;
     ctrl?: boolean;
@@ -3107,7 +3008,7 @@ type HotkeyConfig = {
     meta?: boolean;
 };
 
-// @public (undocumented)
+// @public
 export type HoverEffectsConfig = {
     row?: boolean;
 };
@@ -3118,26 +3019,18 @@ interface ICanvasContainer extends ICanvasNode {
     cachedGap: number;
     // (undocumented)
     cachedIsRow: boolean;
-    // (undocumented)
     cachedPadding: PaddingBox;
-    // (undocumented)
     flexOptions: FlexBoxOptions;
-    // (undocumented)
     hasFixedWidth(): boolean;
-    // (undocumented)
     isSizedByContent(): boolean;
-    // (undocumented)
     measure(ctx: CanvasRenderingContext2D): void;
-    // (undocumented)
     onPaint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D): void;
     // (undocumented)
     performLayout(ctx: CanvasRenderingContext2D, preserveCurrentRect?: boolean): void;
-    // (undocumented)
     separateChildrenByLayoutMode(): {
         layoutChildren: ICanvasNode[];
         absoluteChildren: ICanvasNode[];
     };
-    // (undocumented)
     setFlexOptions(options: Partial<FlexBoxOptions>): void;
 }
 
@@ -3181,7 +3074,6 @@ interface ICanvasNode {
     markMeasureDirty(): void;
     // (undocumented)
     measure(ctx: CanvasRenderingContext2D): void;
-    // (undocumented)
     minContentWidth?: number;
     // (undocumented)
     onClick(event: CanvasEvent<ICanvasNode>): void;
@@ -3239,7 +3131,6 @@ type IconButtonProps = ComponentProps<typeof IconButton>;
 interface IconButtonProps_2 extends CanvasInteractionProps, CanvasLayerProps, CanvasOverlayProps {
     // (undocumented)
     bottom?: PositionValue;
-    // (undocumented)
     buttonSize?: ButtonSize;
     // (undocumented)
     disabled?: boolean;
@@ -3257,15 +3148,14 @@ interface IconButtonProps_2 extends CanvasInteractionProps, CanvasLayerProps, Ca
     position?: 'absolute';
     // (undocumented)
     right?: PositionValue;
-    // (undocumented)
+    // @deprecated (undocumented)
     size?: number | 'auto';
     // (undocumented)
     style?: Partial<CanvasFlexStyle>;
     // (undocumented)
     top?: PositionValue;
-    // (undocumented)
+    // @deprecated (undocumented)
     variant?: 'primary' | 'secondary' | 'danger';
-    // (undocumented)
     view?: ButtonView;
 }
 
@@ -3314,33 +3204,21 @@ type IconsPropType = {
 
 // @public (undocumented)
 interface ImageElementProps<T extends CanvasNode> extends CanvasInteractionProps, CanvasLayerProps, CanvasOverlayProps {
-    // (undocumented)
     bottom?: PositionValue;
-    // (undocumented)
     children?: never;
-    // (undocumented)
     id?: string;
-    // (undocumented)
     left?: PositionValue;
-    // (undocumented)
     onClick?: (event: CanvasEvent<T>) => void;
-    // (undocumented)
     onMouseEnter?: (event: CanvasEvent<T>) => void;
-    // (undocumented)
     onMouseLeave?: (event: CanvasEvent<T>) => void;
-    // (undocumented)
     portalHoverEnabled?: boolean;
-    // (undocumented)
     position?: 'relative' | 'absolute';
-    // (undocumented)
     right?: PositionValue;
-    // (undocumented)
     style?: Partial<CanvasFlexStyle>;
-    // (undocumented)
     top?: PositionValue;
 }
 
-// @public (undocumented)
+// @public
 export type ImageFit = 'fill' | 'cover' | 'contain';
 
 // @public (undocumented)
@@ -3404,10 +3282,10 @@ export type Justify = 'flex-start' | 'flex-end' | 'center' | 'space-between' | '
 // @public (undocumented)
 export type Key = string | number | bigint;
 
-// @public (undocumented)
+// @public
 type KeyText = 'key' | 'text' | 'keyText' | 'textKey';
 
-// @public (undocumented)
+// @public
 export type KeyTextColumnConfig<Row extends ObjectForExtending, SummRow = unknown> = ((props: {
     keyText: KeyText;
 }) => ColumnConfig<Row, SummRow>) | ColumnConfig<Row, SummRow>;
@@ -3424,7 +3302,7 @@ type KeyTextConfig = {
     };
 };
 
-// @public (undocumented)
+// @public
 export type LeftSidebarConfig = TableCanvasSidebarConfig;
 
 // @public (undocumented)
@@ -3520,7 +3398,7 @@ type LoadingOverlayMode = 'replace' | 'cover';
 // @public (undocumented)
 type LocalColumnInstance = Record<'key' | 'name' | 'width' | string, unknown>;
 
-// @public (undocumented)
+// @public
 type LockTarget = EventTarget | null | undefined;
 
 // @public (undocumented)
@@ -3545,19 +3423,19 @@ type MassActionButtonPropsLinkButton = DataAttributes & Partial<LinkButtonProps_
     disabledTooltipProps?: TooltipProps;
 };
 
-// @public (undocumented)
+// @public
 type MassActionsSize = 'm' | 's' | 'xs';
 
 // @public (undocumented)
 export type Maybe<T> = T | undefined | null;
 
-// @public (undocumented)
+// @public
 export type MergedCellsAlign = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
 };
 
-// @public (undocumented)
+// @public
 export type MergedCellsRegion = {
     rowKeys: Array<string | number>;
     colKeys: string[];
@@ -3574,7 +3452,7 @@ type Multiple = {
     onChange: (v: string[]) => void;
 };
 
-// @public (undocumented)
+// @public
 function normalizeIcon(icon: string | ReactElement): string;
 
 // @public (undocumented)
@@ -3603,13 +3481,13 @@ export type ObjectForExtending = Record<string | number, any>;
 // @public (undocumented)
 type ObjectForExtending_2 = Record<string, any>;
 
-// @public (undocumented)
+// @public
 export const OUTER_BORDER_COLOR_VAR = "--table-outer-border-color";
 
 // @public (undocumented)
 export const outerBorderColor: string;
 
-// @public (undocumented)
+// @public
 type OverflowBehavior = 'truncate' | 'abort';
 
 // @public (undocumented)
@@ -3635,7 +3513,7 @@ type PaginationProps = Omit<ComponentProps<typeof Pagination>, 'onChangePageValu
 // @public (undocumented)
 type PaginationSize = NonNullable<PaginationProps['size']>;
 
-// @public (undocumented)
+// @public
 type PasteConfig = {
     readonlyBehavior?: ReadonlyBehavior;
     allowSubRows?: boolean;
@@ -3644,7 +3522,7 @@ type PasteConfig = {
     validation?: ValidationMode;
 };
 
-// @public (undocumented)
+// @public
 type PasteMeta = {
     target: {
         col: number;
@@ -3654,14 +3532,14 @@ type PasteMeta = {
     selection: GridSelection;
 };
 
-// @public (undocumented)
+// @public
 type PinningMenuConfig = {
     enable?: boolean;
     items?: PinningMenuItem[];
     iconDomMetadata?: DomMetadata;
 };
 
-// @public (undocumented)
+// @public
 type PinningMenuItem = {
     value: string;
     label: string;
@@ -3723,7 +3601,7 @@ type PublicInteractionProps = {
     interaction?: CanvasInteractionConfig;
 };
 
-// @public (undocumented)
+// @public
 type ReadonlyBehavior = 'skip' | 'abort';
 
 // @public (undocumented)
@@ -3766,7 +3644,7 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps, CanvasOver
     top?: PositionValue;
 }
 
-// @public (undocumented)
+// @public
 export type RenderCellPreview<Row extends ObjectForExtending, SummRow = unknown, CustomCtxs extends ObjectForExtending = {}> = 'none' | 'cellEditorAsPreview' | ((cellInfo: PreviewCellInfo<Row, SummRow, CustomCtxs>) => ReactNode);
 
 // @public (undocumented)
@@ -3793,7 +3671,7 @@ export type RequiredOnly<T, K extends keyof T> = T & {
 // @public (undocumented)
 type ResolvedCanvasInteractionConfig = Required<CanvasInteractionOptions>;
 
-// @public (undocumented)
+// @public
 export type RightSidebarConfig = SidebarConfig;
 
 // @public (undocumented)
@@ -3833,7 +3711,7 @@ const ROW_WITH_DETAIL_DETAIL_KEYS: {
 // @public (undocumented)
 type RowCheckboxDisabled<RowType> = (row: RowType, lvl?: number, parent?: RowType | null) => boolean;
 
-// @public (undocumented)
+// @public
 type RowContextV = {
     rowSize: SIZE;
 };
@@ -3854,14 +3732,14 @@ type RowDetailConfig<RowType> = {
     icons?: Prettify<IconsPropType>;
 };
 
-// @public (undocumented)
+// @public
 export type RowErrorsConfig<RowType extends ObjectForExtending> = {
     indicatorColumn?: boolean;
     isErrorRow?: (row: RowType, treeLevel: number) => boolean;
     tooltip?: (info: RowErrorsInfo<RowType>) => CanvasNodeTooltipConfig | null;
 };
 
-// @public (undocumented)
+// @public
 export type RowErrorsInfo<RowType extends ObjectForExtending> = {
     row: RowType;
     treeLevel: number;
@@ -3870,10 +3748,10 @@ export type RowErrorsInfo<RowType extends ObjectForExtending> = {
     isErrorRow: boolean;
 };
 
-// @public (undocumented)
+// @public
 type RowErrorsOption<RowType extends ObjectForExtending> = boolean | RowErrorsConfig<RowType>;
 
-// @public (undocumented)
+// @public
 type RowErrorsSummary = {
     errorCellsCount: number;
     errorColumnKeys: readonly string[];
@@ -3927,7 +3805,7 @@ export type RowHeightFunc<RowType> = (row: RowType, currentRowSize: {
     rowSizeValue: number;
 }, rowIndex: number) => number;
 
-// @public (undocumented)
+// @public
 type RowHeightProp<R> = ((row: R, currentRowSize: {
     rowSizeName: SIZE;
     rowSizeValue: number;
@@ -3962,7 +3840,7 @@ export type RowInstrumentsType<RowType extends ObjectForExtending> = (rowProps: 
 // @public (undocumented)
 type RowKeyGetter<RowType, RowIdType> = (row: RowType) => RowIdType;
 
-// @public (undocumented)
+// @public
 export type RowMarkersTableConfig<RowType extends ObjectForExtending = ObjectForExtending> = {
     startIndex?: number;
     width?: number;
@@ -3982,13 +3860,10 @@ export type RowMarkersTableConfig<RowType extends ObjectForExtending = ObjectFor
 
 // @public (undocumented)
 export interface RowsChangeData<R extends ObjectForExtending, SR = unknown, RowId = string | number> {
-    // (undocumented)
     changedCells?: readonly TableCanvasChangedCell<RowId>[];
     // (undocumented)
     column: ColumnConfig<R, SR>;
-    // (undocumented)
     fillMeta?: FillMeta;
-    // (undocumented)
     fillResult?: string[][];
     // (undocumented)
     indexes: number[];
@@ -3997,7 +3872,6 @@ export interface RowsChangeData<R extends ObjectForExtending, SR = unknown, RowI
         before: R;
         after: R;
     }[];
-    // (undocumented)
     type: RowsChangeType;
 }
 
@@ -4005,19 +3879,15 @@ export interface RowsChangeData<R extends ObjectForExtending, SR = unknown, RowI
 export interface RowsChangeDataGlideInstance<R extends ObjectForExtending, SR = unknown, CustomCtxs extends ObjectForExtending = {}> {
     // (undocumented)
     column: ColumnGlideInstance<R, SR, CustomCtxs>;
-    // (undocumented)
     fillMeta?: FillMeta;
-    // (undocumented)
     fillResult?: string[][];
     // (undocumented)
     indexes: number[];
-    // (undocumented)
     type: RowsChangeType;
-    // (undocumented)
     writtenCells?: WrittenCell[];
 }
 
-// @public (undocumented)
+// @public
 type RowsChangeType = 'edit' | 'paste' | 'fill';
 
 // @public (undocumented)
@@ -4100,10 +3970,10 @@ export type RowWithDetailPanel<TRow extends ObjectForExtending> = {
 // @public (undocumented)
 export const scrollbarStyles: FlattenInterpolation<ThemeProps<DefaultTheme>>;
 
-// @public (undocumented)
+// @public
 type SearchAutocompleteConfig = Pick<AutocompleteProps, 'suggestions' | 'onSuggestionSelect' | 'threshold' | 'renderList' | 'renderListEnd' | 'beforeList' | 'listMaxHeight' | 'listWidth' | 'portal' | 'hasDivider' | 'beforeList' | 'afterList' | 'virtual' | 'hasDivider' | 'onScroll' | 'zIndex' | 'filter' | 'renderItem'>;
 
-// @public (undocumented)
+// @public
 type SearchingProps = {
     enabled: boolean;
     manualSearching?: boolean;
@@ -4216,7 +4086,7 @@ export type SelectOptions = {
     text: string | number;
 };
 
-// @public (undocumented)
+// @public
 export type SidebarConfig = TableCanvasSidebarConfig & {
     defaultTabs?: Array<{
         id: 'filtering' | 'columns';
@@ -4285,23 +4155,14 @@ type SIZES_2 = GlideSizes;
 
 // @public (undocumented)
 interface SkeletonProps extends CanvasInteractionProps, CanvasLayerProps {
-    // (undocumented)
     animated?: boolean;
-    // (undocumented)
     customGradientColor?: string;
-    // (undocumented)
     height?: number | string;
-    // (undocumented)
     id?: string;
-    // (undocumented)
     lighter?: boolean;
-    // (undocumented)
     roundness?: number | string;
-    // (undocumented)
     shimmerDuration?: number;
-    // (undocumented)
     style?: Partial<CanvasFlexStyle>;
-    // (undocumented)
     width?: number | string;
 }
 
@@ -4316,13 +4177,13 @@ export interface SortColumn {
 // @public (undocumented)
 export type SortDirection = 'ASC' | 'DESC';
 
-// @public (undocumented)
+// @public
 type SpanCellAlign = {
     horizontal?: 'left' | 'center' | 'right';
     vertical?: 'top' | 'center' | 'bottom';
 };
 
-// @public (undocumented)
+// @public
 export const SplitIconButton: ({ icon, onIconClick, iconTooltip, chevronIcon, chevronSize, size, items, onItemSelect, onChevronClick, onToggle, dropdownProps, domMetadata, iconDomMetadata, chevronDomMetadata, }: SplitIconButtonProps) => JSX_2.Element;
 
 // @public (undocumented)
@@ -4370,10 +4231,10 @@ type SubRows<RowType, RowIdType> = {
     mergedColumns?: string[];
 };
 
-// @public (undocumented)
+// @public
 export function subscribeToCanvasPortalHover(listener: CanvasPortalHoverListener, target?: EventTarget | null): () => void;
 
-// @public (undocumented)
+// @public
 export function subscribeToPortalHoverLock(listener: InteractionLockListener, target?: LockTarget): () => void;
 
 // @public (undocumented)
@@ -4422,7 +4283,7 @@ export type SummaryRowsConfig = {
 // @public (undocumented)
 export const TABLE_BORDER_RADIUS = 8;
 
-// @public (undocumented)
+// @public
 const TABLE_COLOR_THEMES: readonly ["light", "dark", "betaCoreLight", "betaCoreDark", "highContrastLight", "highContrastDark"];
 
 // @public (undocumented)
@@ -4522,10 +4383,10 @@ type TableCanvasContentStateBase = {
 // @public (undocumented)
 export type TableCanvasEditedCells<RowId = string | number> = ReadonlyMap<RowId, ReadonlySet<string>>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasEmptyStateConfig = TableCanvasContentStateBase & Partial<EmptyStateProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasErrorStateConfig = TableCanvasContentStateBase & Partial<ErrorPageProps>;
 
 // @public (undocumented)
@@ -4534,7 +4395,7 @@ export const tableCanvasFonts: Fonts;
 // @public (undocumented)
 export const TableCanvasLogger: FC<TableCanvasLoggerProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerAction = {
     id: string;
     text?: string;
@@ -4545,7 +4406,7 @@ export type TableCanvasLoggerAction = {
     onClick?: (item: TableCanvasLoggerMessageItem) => void;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerClasses = {
     root?: string;
     header?: string;
@@ -4583,10 +4444,10 @@ export const tableCanvasLoggerClassNames: {
     readonly messageDescription: "rdg-table-logger__messageDescription";
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerCopyKind = 'traceId' | 'description';
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerCounts = Partial<Record<TableCanvasLoggerStatus, number>>;
 
 // @public (undocumented)
@@ -4605,13 +4466,13 @@ export type TableCanvasLoggerFiltersProps = {
     extra?: ReactNode;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerFilterValue = 'all' | TableCanvasLoggerStatus;
 
 // @public (undocumented)
 export const TableCanvasLoggerGroup: default_2.NamedExoticComponent<TableCanvasLoggerGroupProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerGroupItem = TableCanvasLoggerItemBase & {
     items: TableCanvasLoggerItem[];
     defaultOpen?: boolean;
@@ -4625,7 +4486,7 @@ export type TableCanvasLoggerGroupProps = {
     children?: ReactNode;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerGroupRenderContext = {
     item: TableCanvasLoggerGroupItem;
     open: boolean;
@@ -4637,7 +4498,7 @@ export type TableCanvasLoggerGroupRenderContext = {
 // @public (undocumented)
 export type TableCanvasLoggerItem = TableCanvasLoggerMessageItem | TableCanvasLoggerGroupItem;
 
-// @public (undocumented)
+// @public
 type TableCanvasLoggerItemBase = {
     id: string;
     status: TableCanvasLoggerStatus;
@@ -4646,12 +4507,12 @@ type TableCanvasLoggerItemBase = {
     meta?: Record<string, unknown>;
 };
 
-// @public (undocumented)
+// @public
 export const TableCanvasLoggerItems: FC<{
     items: TableCanvasLoggerItem[];
 }>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerLabels = {
     title: string;
     all: string;
@@ -4669,7 +4530,7 @@ export type TableCanvasLoggerLabels = {
 // @public (undocumented)
 export const TableCanvasLoggerList: FC<TableCanvasLoggerListProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerListProps = TableCanvasLoggerRenderProps & {
     items?: TableCanvasLoggerItem[] | null;
     expandedIds?: string[];
@@ -4685,7 +4546,7 @@ export type TableCanvasLoggerListProps = TableCanvasLoggerRenderProps & {
 // @public (undocumented)
 export const TableCanvasLoggerMessage: default_2.NamedExoticComponent<TableCanvasLoggerMessageProps>;
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerMessageItem = TableCanvasLoggerItemBase & {
     description?: ReactNode;
     date?: string | number | Date;
@@ -4703,7 +4564,7 @@ export type TableCanvasLoggerMessageProps = {
     onOpenChange?: (open: boolean, item: TableCanvasLoggerMessageItem) => void;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerMessageRenderContext = {
     item: TableCanvasLoggerMessageItem;
     open: boolean;
@@ -4712,7 +4573,7 @@ export type TableCanvasLoggerMessageRenderContext = {
     defaultRender: () => ReactNode;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerProps = Omit<TableCanvasLoggerListProps, 'filter'> & {
     open?: boolean;
     defaultOpen?: boolean;
@@ -4739,7 +4600,7 @@ export type TableCanvasLoggerProviderProps = TableCanvasLoggerRenderProps & {
     children: ReactNode;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerRenderProps = {
     statusIcons?: Partial<Record<TableCanvasLoggerStatus, ReactNode>>;
     renderMessage?: (ctx: TableCanvasLoggerMessageRenderContext) => ReactNode;
@@ -4755,10 +4616,10 @@ export type TableCanvasLoggerRenderProps = {
     onCodeClick?: (code: string, item: TableCanvasLoggerMessageItem) => void;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasLoggerStatus = 'error' | 'warning' | 'info' | 'success';
 
-// @public (undocumented)
+// @public
 export const TableCanvasLoggerStatusIcon: FC<TableCanvasLoggerStatusIconProps>;
 
 // @public (undocumented)
@@ -4767,7 +4628,7 @@ export type TableCanvasLoggerStatusIconProps = {
     className?: string;
 };
 
-// @public (undocumented)
+// @public
 export type TableCanvasSidebarConfig = {
     enabled?: boolean;
     defaultOpen?: boolean;
@@ -4797,7 +4658,7 @@ export type TableCanvasSidebarTab = {
     domMetadata?: DomMetadata;
 };
 
-// @public (undocumented)
+// @public
 export const tableCanvasTheme: Theme;
 
 // @public (undocumented)
@@ -4971,23 +4832,24 @@ export type TableConfig<RowType extends ObjectForExtending, SummaryRowType, RowI
     onHeaderContextMenuDropdown?: TableGlideInstanceProps<RowType, SummaryRowType>['onHeaderContextMenuDropdown'];
     onCellContextMenuDropdown?: TableGlideInstanceProps<RowType, SummaryRowType>['onCellContextMenuDropdown'];
     onCellContextMenu?: TableGlideInstanceProps<RowType, SummaryRowType>['onCellContextMenu'];
-    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<RowType, SummaryRowType>, event: CellClickedEventArgs) => void;
+    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<RowType, SummaryRowType>,
+    event: CellClickedEventArgs) => void;
     onGroupHeaderClicked?: GroupHeaderHandler<RowType, SummaryRowType>;
     onGroupHeaderContextMenu?: GroupHeaderHandler<RowType, SummaryRowType>;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
 
-// @public (undocumented)
+// @public
 export type TableConfigDropdown<RowType = ObjectForExtending> = Pick<CanvasNodeDropdownProps, 'placement' | 'offset' | 'listWidth' | 'listMaxHeight' | 'variant' | 'size' | 'zIndex' | 'closeOnSelect' | 'closeOnScroll' | 'closeOnOutsideClick' | 'closeOnEsc' | 'mouseEnterDelay' | 'mouseLeaveDelay' | 'loadingItems' | 'renderError'> & TableConfigOverlayRowKey<RowType>;
 
-// @public (undocumented)
+// @public
 type TableConfigOverlayRowKey<RowType> = {
     rowKeyGetter?: (row: RowType) => string | number;
 };
 
-// @public (undocumented)
+// @public
 export type TableConfigPopover<RowType = ObjectForExtending> = Pick<CanvasNodePopoverProps, 'placement' | 'offset' | 'hasTail' | 'flip' | 'shift' | 'zIndex' | 'closeOnScroll' | 'closeOnOutsideClick' | 'closeOnEsc' | 'mouseEnterDelay' | 'mouseLeaveDelay'> & TableConfigOverlayRowKey<RowType>;
 
-// @public (undocumented)
+// @public
 export type TableConfigTooltip = {
     enabled?: boolean;
     mouseEnterDelay?: number;
@@ -5020,7 +4882,7 @@ type TableContentStateFrame = {
 // @public (undocumented)
 type TableContentStateOverlay = TableContentStateEmptyOverlay | TableContentStateErrorOverlay;
 
-// @public (undocumented)
+// @public
 type TableDropdownConfigProps = Omit<TableDropdownProps, 'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'>;
 
 // @public (undocumented)
@@ -5425,7 +5287,8 @@ export type TableGlideInstanceProps<R extends ObjectForExtending, SR = unknown, 
     }) => React.ReactNode;
     CellReadOnlyEditor: (props: CellReadOnlyEditorGlideInstanceProps<R, SR>) => ReactNode;
     onRowsChange?: (rows: R[], data: RowsChangeDataGlideInstance<R, SR, CustomCtxs>) => void;
-    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<R, SR, CustomCtxs>, event: CellClickedEventArgs) => void;
+    onCellClicked?: (cell: readonly [number, number], info: TableInfoWithRow<R, SR, CustomCtxs>,
+    event: CellClickedEventArgs) => void;
     stickyColumnsConfig?: StickyColumnsConfig<ColumnGlideInstance<R, SR, CustomCtxs>>;
     stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
@@ -5451,45 +5314,39 @@ type TableGlideSizeConfig = {
 export { TableGlideSizeConfig as TableCanvasSizeConfig }
 export { TableGlideSizeConfig }
 
-// @public (undocumented)
+// @public
 export type TableInfoBase<R extends ObjectForExtending, SR = unknown, CustomCtxs extends ObjectForExtending = {}> = {
     column: ColumnOrColumnGroupGlideInstance<R, SR, CustomCtxs>;
     ctxs: CustomCtxs;
     refTable?: React.Ref<DataEditorRef>;
 };
 
-// @public (undocumented)
+// @public
 export type TableInfoWithRow<R extends ObjectForExtending, SR = unknown, CustomCtxs extends ObjectForExtending = {}> = TableInfoBase<R, SR, CustomCtxs> & {
     row: R;
 };
 
-// @public (undocumented)
+// @public
 export interface TableNotification {
-    // (undocumented)
     code: TableNotificationCode;
-    // (undocumented)
     level: TableNotificationLevel;
-    // (undocumented)
     message: string;
-    // (undocumented)
     meta?: Record<string, unknown>;
-    // (undocumented)
     type: TableNotificationType;
 }
 
-// @public (undocumented)
+// @public
 export type TableNotificationCode = 'multi-range-scattered' | 'readonly-abort' | 'overflow-abort' | 'validation-skipped' | 'no-selection';
 
-// @public (undocumented)
+// @public
 export type TableNotificationLevel = 'error' | 'warning' | 'info';
 
-// @public (undocumented)
+// @public
 export interface TableNotificationsConfig {
-    // (undocumented)
     onNotification: (event: TableNotification) => void;
 }
 
-// @public (undocumented)
+// @public
 export type TableNotificationType = 'copy' | 'paste' | 'fill' | 'pin';
 
 // @public (undocumented)
@@ -5581,14 +5438,14 @@ type ThemeDynamicCustoms = {
     activeSizes: GlideSizeConfig;
 };
 
-// @public (undocumented)
+// @public
 type Tokens = {
     [K in keyof typeof TOKENS_LIGHT]: string;
 } & {
     surfaceAccent20?: string;
 };
 
-// @public (undocumented)
+// @public
 const TOKENS_LIGHT: {
     readonly textPrimary: "#13181BF5";
     readonly textPrimaryHover: "#13181B93";
@@ -5697,10 +5554,10 @@ const TOKENS_LIGHT: {
     readonly dataTeal: "#14CC98";
 };
 
-// @public (undocumented)
+// @public
 export type TooltipConfigResult = CanvasNodeTooltipConfig | null;
 
-// @public (undocumented)
+// @public
 interface TooltipContextShape<T = unknown> {
     // (undocumented)
     colInd?: T;
@@ -5730,7 +5587,7 @@ export const useLeftSidebar: () => LeftSidebarContextValue;
 // @public (undocumented)
 export const useRefTableGlobalContainerContext: () => default_2.MutableRefObject<HTMLDivElement | null> | undefined;
 
-// @public (undocumented)
+// @public
 export const useRightSidebar: () => SidebarContextValue;
 
 // @public (undocumented)
@@ -5780,13 +5637,13 @@ export type UseTableCanvasLoggerOptions = {
 // @public (undocumented)
 export type UseTableCanvasLoggerResult = ReturnType<typeof useTableCanvasLogger>;
 
-// @public (undocumented)
+// @public
 type ValidationMode = 'none' | 'type-check';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export type View = ViewMods['rows' | 'bothTypes' | 'cards'];
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export type ViewMods = {
     rows: {
         type: 'rows';
@@ -5805,7 +5662,7 @@ export type ViewMods = {
     };
 };
 
-// @public (undocumented)
+// @public
 type WrittenCell = {
     rowIndex: number;
     columnKey: string;

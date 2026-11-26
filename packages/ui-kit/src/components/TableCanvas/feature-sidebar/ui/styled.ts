@@ -168,15 +168,17 @@ export const SidebarContent = styled(Box)<{
   & .${cls.tableSidebarContent} {
     overflow: hidden;
     height: 100%;
-    opacity: 0;
     ${({ isOpen }) =>
       isOpen
         ? css`
             visibility: visible;
-            animation: ${tabAnimation};
-            animation-delay: 0.1s;
-            animation-duration: 0.3s;
-            animation-fill-mode: forwards;
+            /* Итоговая непрозрачность задана стилем, а не удерживается анимацией:
+               завершённая анимация с fill-mode: forwards оставляла контент
+               в отдельном композитном слое, и текст в нём растеризовался
+               по-разному от перерисовки к перерисовке. backwards держит
+               прозрачность только на время задержки. */
+            opacity: 1;
+            animation: ${tabAnimation} 0.3s ease 0.1s backwards;
           `
         : css`
             /* контент прячем только ПОСЛЕ анимации закрытия,

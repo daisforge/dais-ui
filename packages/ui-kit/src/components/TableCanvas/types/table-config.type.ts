@@ -793,7 +793,7 @@ export type EditingConfig<
    * по умолчанию, объект позволяет их задать. Столбец появляется только
    * в режиме правки и исчезает при выходе из него.
    *
-   * @see {@link RowErrorsConfig} — полное описание и пример.
+   * @see `RowErrorsConfig` — полное описание и пример.
    */
   rowErrors?: RowErrorsOption<RowType>;
   /**
@@ -1153,7 +1153,7 @@ export type TableConfig<
   /**
    * Единый конфиг выделения ячеек: режим (`mode`), оси
    * (`enableColumnSelection`/`enableRowSelection`/`enableSelectAll`) и controlled
-   * (`state`). См. {@link CellsSelectionConfig}.
+   * (`state`). См. `CellsSelectionConfig`.
    */
   cellsSelection?: CellsSelectionConfig;
   /**
@@ -1437,7 +1437,7 @@ export type TableConfig<
    * Столбец с нумерацией строк.
    * Активируется наличием этого свойства. Поддерживает `subRows` любой глубины.
    *
-   * @see {@link RowMarkersTableConfig} — полное описание конфигурации и примеры.
+   * @see `RowMarkersTableConfig` — полное описание конфигурации и примеры.
    */
   rowMarkers?: RowMarkersTableConfig<RowType>;
   rowsGrouping?: RowsGrouping<RowType, SummaryRowType>;
