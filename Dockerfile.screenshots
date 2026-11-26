@@ -6,6 +6,9 @@ COPY package.json package-lock.json .npmrc ./
 COPY packages/ui-kit/package.json packages/ui-kit/package.json
 RUN npm ci --ignore-scripts --no-audit --no-fund
 COPY . .
+# По умолчанию Node берёт под кучу четверть памяти: при 8 ГБ у Docker Desktop
+# это ~2 ГБ, и проверка типов падает. Лимит как у раннера CI и storybook:build.
+ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN npm run generate-storybook-docs-utils \
     && npm run screenshot:typecheck \
     && npm run redraw:typecheck \
