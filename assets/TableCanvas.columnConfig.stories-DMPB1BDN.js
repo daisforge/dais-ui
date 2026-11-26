@@ -1,0 +1,5 @@
+import{j as r}from"./react-DYHuXpTF.js";import n from"./DocArgsTemplate-DIiyQeFq.js";import{b as s}from"./StoriesUtils-B6bCuApl.js";import"./_commonjsHelpers-BosuxZz1.js";import"./vendor-4go4qBMz.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-DDsYmQNq.js";import"./@tanstack/react-virtual-BBX7Noea.js";import"./WithTooltip-KJL26V4Q-vPnt8NfR.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-CAE-Y7vG.js";const I={title:"Локальные компоненты/TableCanvas/API/columnConfig",parameters:{docs:{page:n,description:{component:"### API columnConfig:"}}},excludeStories:["CANVAS"],component:s},o={name:"API",render:()=>r.jsx(r.Fragment,{})};var e,t,m;o.parameters={...o.parameters,docs:{...(e=o.parameters)==null?void 0:e.docs,source:{originalSource:`{
+  name: 'API',
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  render: () => <></>
+}`,...(m=(t=o.parameters)==null?void 0:t.docs)==null?void 0:m.source}}};const P=["Docs"];export{o as Docs,P as __namedExportsOrder,I as default};

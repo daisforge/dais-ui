@@ -1,0 +1,1 @@
+import{cv as i,cw as c,cx as e}from"./vendor-4go4qBMz.js";const k={};function d(s){const t=this,n=s||k,o=t.data(),r=o.micromarkExtensions||(o.micromarkExtensions=[]),a=o.fromMarkdownExtensions||(o.fromMarkdownExtensions=[]),m=o.toMarkdownExtensions||(o.toMarkdownExtensions=[]);r.push(i(n)),a.push(c()),m.push(e(n))}export{d as r};
