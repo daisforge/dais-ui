@@ -130,6 +130,31 @@ export const button = () => 'button';`,
     expect(errors).toEqual([]);
   });
 
+  // Проверка намеренно строгая: Rollup не сообщает, ради какого модуля чанк
+  // загружается, поэтому неиспользуемый импорт чужого модуля считается
+  // связью, если чанк загружается по другой, живой причине. Исправление в
+  // таком случае полезно само по себе — удалить неиспользуемый импорт
+  it('строго сообщает о неиспользуемом импорте, даже если чанк загружается по живой связи', async () => {
+    const CARRIER = `${SRC}components/Popup/carrier.js`;
+    const { errors, imports } = await build({
+      [POPUP]: `export { run } from './carrier.js';`,
+      [CARRIER]: `import { privateValue } from '../Helper/helper.js';
+export const run = () => privateValue;`,
+      [HELPER]: `export const privateValue = 'private';`,
+      [BUTTON]: `import { run } from '../Popup/carrier.js';
+import { privateValue } from '../Helper/helper.js';
+export const button = () => (false ? privateValue : run());`,
+    });
+
+    // Button загружает Popup ради run; privateValue в его коде нет
+    expect(imports['components/Button/index']).toEqual([
+      expect.stringContaining('Popup'),
+    ]);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('components/Button/index');
+    expect(errors[0]).toContain('Если импорт не используется — удалите его');
+  });
+
   it('пропускает приватный хелпер, которого используют только внутри чанка', async () => {
     const { errors } = await build({
       ...POPUP_USES_HELPER,
