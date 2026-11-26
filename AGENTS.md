@@ -49,6 +49,16 @@
 - Ломающее изменение — только по процессу ниже.
 - Любое изменение публичного API перечисли в отчёте и в описании PR отдельным
   пунктом.
+- **Отчёты об API** — `packages/ui-kit/api/*.api.md`, по файлу на точку входа.
+  Их строит api-extractor по `.d.ts` сборки, руками их не правят. Изменил API —
+  выполни `npm run api:update` и закоммить отчёты вместе с кодом: CI (шаг
+  `Check public API report`) падает, если API и отчёты расходятся. Удалённые и
+  изменённые строки в diff отчёта — возможная поломка, проверь их по правилам
+  ниже. Добавление и снятие `@deprecated` и изменения внутри типов sdds-finai в
+  отчёте не видны — их сверяй по исходникам. Если PR API не менял, а проверка
+  падает после обновления от `develop`, значит, отчёт в `develop` устарел после
+  параллельных PR: выполни `npm run api:update`, напиши об этом в описании PR и
+  не трогай код.
 
 ### Ломающие изменения: сначала deprecated, удаление в major
 
@@ -177,6 +187,7 @@ Codex — `.codex/hooks.json`, работает после доверия про
 | stories, MDX          | `npx nx run storybook:typecheck`                    |
 | вид компонента        | `npm run screenshot:test -- <Name>` (Docker)        |
 | экспорты, зависимости | `npm run build`, `npm run ui-kit:circular-check`    |
+| публичное API ui-kit  | `npm run api:update`, diff `packages/ui-kit/api`    |
 | meta-config, MDX, MCP | `npm run mcp:check`                                 |
 | Markdown              | `npm run format:md`                                 |
 

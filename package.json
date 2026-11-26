@@ -17,6 +17,8 @@
     "typecheck": "nx run-many --target=typecheck --verbose",
     "test": "nx run-many --target=test --verbose",
     "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production NX_DAEMON=false nx run-many --target=build --parallel=1 --verbose",
+    "api:update": "NODE_OPTIONS=\"--max_old_space_size=4096\" npx nx build ui-kit && node scripts/api-report.mjs --local",
+    "api:check": "node scripts/api-report.mjs",
     "postbuild": "npm run meta && node ./packages/mcp-server/dist/indexer/buildIndex.js && npm run storybook:build",
     "mcp:i": "npm install --prefix packages/mcp-server",
     "mcp:ci": "npm ci --prefix packages/mcp-server",
@@ -93,6 +95,7 @@
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
+    "@microsoft/api-extractor": "7.43.0",
     "@nx/eslint": "19.0.2",
     "@nx/eslint-plugin": "19.0.2",
     "@nx/js": "19.0.2",
