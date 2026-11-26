@@ -108,6 +108,25 @@ async function stableCapture(
 export async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
   const completed = await page.evaluate(async (budgetMs) => {
     const started = performance.now();
+    // Каждое ожидание кадра ограничено общим бюджетом: если браузер не отдаёт
+    // кадр, RAF отменяется и подготовка завершается TimeoutError, а не зависает.
+    const nextFrame = () =>
+      new Promise<boolean>((resolve) => {
+        const remaining = budgetMs - (performance.now() - started);
+        if (remaining <= 0) {
+          resolve(false);
+          return;
+        }
+        let raf = 0;
+        const timer = setTimeout(() => {
+          cancelAnimationFrame(raf);
+          resolve(false);
+        }, remaining);
+        raf = requestAnimationFrame(() => {
+          clearTimeout(timer);
+          resolve(performance.now() - started < budgetMs);
+        });
+      });
     const filled: Animation[] = [];
     document.getAnimations().forEach((animation) => {
       const timing = animation.effect?.getComputedTiming();
@@ -122,9 +141,7 @@ export async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
       // перед колбэками RAF. Отмена в той же задаче заменила бы animationend на
       // animationcancel, и компоненты, которые размонтируются по animationend
       // (например, StoriesViewer при закрытии), остались бы в DOM.
-      await new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      });
+      if (!(await nextFrame())) return false;
       // Завершённая анимация с fill: forwards/both остаётся активной и держит
       // элемент в отдельном композитном слое. Текст в таком слое растеризуется
       // по-разному от перерисовки к перерисовке. Переносим итоговые значения
@@ -155,21 +172,7 @@ export async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
     const grids = repaint?.() ?? 0;
     if (!grids && document.querySelector('.gdg-table'))
       throw new Error('Canvas snapshot repaint instrumentation is missing');
-    const remaining = budgetMs - (performance.now() - started);
-    if (remaining <= 0) return false;
-    return new Promise<boolean>((resolve) => {
-      let raf = 0;
-      const timer = setTimeout(() => {
-        cancelAnimationFrame(raf);
-        resolve(false);
-      }, remaining);
-      raf = requestAnimationFrame(() => {
-        raf = requestAnimationFrame(() => {
-          clearTimeout(timer);
-          resolve(performance.now() - started < budgetMs);
-        });
-      });
-    });
+    return (await nextFrame()) && nextFrame();
   }, timeoutMs);
   if (!completed)
     throw Object.assign(

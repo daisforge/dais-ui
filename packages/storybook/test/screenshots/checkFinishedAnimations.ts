@@ -56,6 +56,34 @@ export async function checkFinishedAnimations(browser: Browser) {
       0,
       'Подготовка кадра не сняла завершённые анимации с fill: forwards',
     );
+
+    // Если браузер не отдаёт кадры, ожидание после finish() не должно выходить
+    // за бюджет захвата: подготовка завершается TimeoutError, а не зависает.
+    await page.evaluate(() => {
+      document.body.insertAdjacentHTML(
+        'beforeend',
+        '<div style="animation: enter 10s ease forwards">Ещё</div>',
+      );
+      window.requestAnimationFrame = () => 0;
+    });
+    const budgetMs = 150;
+    const outcome = await Promise.race([
+      prepareScreenshotFrame(page, budgetMs).then(
+        () => 'completed',
+        (error: unknown) =>
+          error && typeof error === 'object' && 'name' in error
+            ? String(error.name)
+            : 'error',
+      ),
+      new Promise<string>((resolve) => {
+        setTimeout(() => resolve('hung'), budgetMs * 10);
+      }),
+    ]);
+    assert.equal(
+      outcome,
+      'TimeoutError',
+      'Подготовка кадра без RAF должна укладываться в бюджет и завершаться TimeoutError',
+    );
   } finally {
     await context.close();
   }
