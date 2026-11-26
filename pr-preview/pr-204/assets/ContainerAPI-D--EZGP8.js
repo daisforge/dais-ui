@@ -1,0 +1,6 @@
+import{j as t}from"./react-UEdzNlUe.js";import{df as r}from"./vendor-BS4HA21f.js";import{M as a}from"./WithTooltip-KJL26V4Q-DGSPfzzr.js";import{T as o}from"./TypeSourceViewer-w2YufU4t.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-i6nmInMm.js";import"./@tanstack/react-virtual-Do9j7-rI.js";import"./preload-helper-Cro6n4mv.js";import"./index-Cu4lwwaE.js";import"./index-Dp_h01wN.js";import"./types.string-CieBX609.js";function i(n){const e={h1:"h1",h2:"h2",...r(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(a,{title:"Композиции/Container/API"}),`
+`,t.jsx(e.h1,{id:"container-api",children:"Container API"}),`
+`,t.jsx(e.h2,{id:"containerprops",children:"ContainerProps"}),`
+`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/layouts/Container/Container.types.ts",typeName:"ContainerProps"}),`
+`,t.jsx(e.h2,{id:"tcontainerview",children:"TContainerView"}),`
+`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/layouts/Container/Container.types.ts",typeName:"TContainerView"})]})}function M(n={}){const{wrapper:e}={...r(),...n.components};return e?t.jsx(e,{...n,children:t.jsx(i,{...n})}):i(n)}export{M as default};
