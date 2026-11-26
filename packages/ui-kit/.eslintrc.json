@@ -58,7 +58,6 @@
         "src/index.ts",
         "src/components/Table/**",
         "src/components/TableContract/**",
-        "src/components/MassActions/**",
         "**/*.{test,spec}.{ts,tsx}"
       ],
       "rules": {

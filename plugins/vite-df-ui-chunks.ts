@@ -374,14 +374,7 @@ export const ALL_MANUAL_UIKIT_CHUNKS = [
   ...VENDOR_CHUNK,
 ] as const;
 
-const LEGACY_TABLE_ENTRIES = [
-  'components/Table/',
-  'components/TableContract/',
-  // TODO: MassActions импортирует TableDropdown и AnimatedCounter из Table,
-  // а Table импортирует MassActions (циклические чанки). Убрать после выноса
-  // общих частей в отдельный модуль
-  'components/MassActions/',
-];
+const LEGACY_TABLE_ENTRIES = ['components/Table/', 'components/TableContract/'];
 const GLIDE_TABLE_ENTRIES = [
   'components/TableGlide/',
   'components/TableCanvas/',
