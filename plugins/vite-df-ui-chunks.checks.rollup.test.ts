@@ -42,9 +42,10 @@ const virtualFiles = (files: Record<string, string>): Plugin => ({
   },
 });
 
-/** Собирает модули в памяти и возвращает ошибки чистоты и сами чанки */
+/** Собирает модули в памяти и возвращает результат проверки и сами чанки */
 const build = async (files: Record<string, string>) => {
   let errors: string[] = [];
+  let warnings: string[] = [];
   const imports: Record<string, string[]> = {};
   const bundle = await rollup({
     input: {
@@ -56,11 +57,11 @@ const build = async (files: Record<string, string>) => {
       {
         name: 'check',
         generateBundle(_, output) {
-          errors = checkChunkPurity({
+          ({ errors, warnings } = checkChunkPurity({
             bundle: output,
             manualChunks: MANUAL_CHUNKS,
             getModuleInfo: (id) => this.getModuleInfo(id),
-          });
+          }));
           Object.values(output).forEach((item) => {
             if (item.type === 'chunk') imports[item.name] = item.imports;
           });
@@ -75,7 +76,7 @@ const build = async (files: Record<string, string>) => {
         ?.chunkName,
   });
   await bundle.close();
-  return { errors, imports };
+  return { errors, warnings, imports };
 };
 
 // Popup использует Helper, поэтому Rollup кладёт Helper в ручной чанк Popup
@@ -87,7 +88,7 @@ export const popup = () => helper('popup');`,
 
 describe('checkChunkPurity на сборке Rollup', () => {
   it('находит чужой модуль, который импортируют из другого чанка', async () => {
-    const { errors } = await build({
+    const { errors, warnings } = await build({
       ...POPUP_USES_HELPER,
       [BUTTON]: `import { helper } from '../Helper/helper.js';
 export const button = () => helper('button');`,
@@ -97,6 +98,7 @@ export const button = () => helper('button');`,
     expect(errors[0]).toContain('components/Helper');
     expect(errors[0]).toContain('"Popup"');
     expect(errors[0]).toContain('components/Button/index');
+    expect(warnings).toEqual([]);
   });
 
   it('находит импорт через реэкспорт, выпавший из chunk.modules', async () => {
@@ -130,17 +132,18 @@ export const button = () => 'button';`,
     expect(errors).toEqual([]);
   });
 
-  // Проверка намеренно строгая: Rollup не сообщает, ради какого модуля чанк
-  // загружается, поэтому неиспользуемый импорт чужого модуля считается
-  // связью, если чанк загружается по другой, живой причине. Исправление в
-  // таком случае полезно само по себе — удалить неиспользуемый импорт
-  it('строго сообщает о неиспользуемом импорте, даже если чанк загружается по живой связи', async () => {
-    const CARRIER = `${SRC}components/Popup/carrier.js`;
-    const { errors, imports } = await build({
-      [POPUP]: `export { run } from './carrier.js';`,
-      [CARRIER]: `import { privateValue } from '../Helper/helper.js';
+  const CARRIER = `${SRC}components/Popup/carrier.js`;
+  // Popup реэкспортирует свой модуль carrier.js, а тот использует Helper
+  const POPUP_WITH_CARRIER = {
+    [POPUP]: `export { run } from './carrier.js';`,
+    [CARRIER]: `import { privateValue } from '../Helper/helper.js';
 export const run = () => privateValue;`,
-      [HELPER]: `export const privateValue = 'private';`,
+    [HELPER]: `export const privateValue = 'private';`,
+  };
+
+  it('предупреждает, а не падает, если чанк загружается и ради собственного кода', async () => {
+    const { errors, warnings, imports } = await build({
+      ...POPUP_WITH_CARRIER,
       [BUTTON]: `import { run } from '../Popup/carrier.js';
 import { privateValue } from '../Helper/helper.js';
 export const button = () => (false ? privateValue : run());`,
@@ -150,9 +153,24 @@ export const button = () => (false ? privateValue : run());`,
     expect(imports['components/Button/index']).toEqual([
       expect.stringContaining('Popup'),
     ]);
-    expect(errors).toHaveLength(1);
-    expect(errors[0]).toContain('components/Button/index');
-    expect(errors[0]).toContain('Если импорт не используется — удалите его');
+    expect(errors).toEqual([]);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toContain('components/Button/index');
+    expect(warnings[0]).toContain('лишняя загрузка не подтверждена');
+  });
+
+  it('предупреждает и в обратном случае: импорт собственного кода мёртвый', async () => {
+    // Popup грузится на деле ради Helper, но по статическим импортам это не
+    // отличить от предыдущего случая — поэтому предупреждение, а не тишина
+    const { errors, warnings } = await build({
+      ...POPUP_WITH_CARRIER,
+      [BUTTON]: `import { run } from '../Popup/carrier.js';
+import { privateValue } from '../Helper/helper.js';
+export const button = () => (false ? run() : privateValue);`,
+    });
+
+    expect(errors).toEqual([]);
+    expect(warnings).toHaveLength(1);
   });
 
   it('пропускает приватный хелпер, которого используют только внутри чанка', async () => {

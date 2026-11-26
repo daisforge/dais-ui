@@ -465,12 +465,16 @@ export function viteDFUIChunks(): Plugin {
   return {
     name: 'vite-df-ui-chunks',
     generateBundle({ format }, bundle) {
+      const purity = checkChunkPurity({
+        bundle,
+        manualChunks: MANUAL_UIKIT_COMP_CHUNKS,
+        getModuleInfo: (id) => this.getModuleInfo(id),
+      });
+      purity.warnings.forEach((warning) =>
+        this.warn(`Граф чанков (${format}): ${warning}`),
+      );
       const errors = [
-        ...checkChunkPurity({
-          bundle,
-          manualChunks: MANUAL_UIKIT_COMP_CHUNKS,
-          getModuleInfo: (id) => this.getModuleInfo(id),
-        }),
+        ...purity.errors,
         ...checkRestrictedImports(
           { bundle, manualChunks: MANUAL_UIKIT_COMP_CHUNKS },
           RESTRICTED_IMPORTS,
