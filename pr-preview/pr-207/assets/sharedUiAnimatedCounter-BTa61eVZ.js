@@ -1,1 +1,0 @@
-import{q as a}from"./styled-components-DEOLQzLG.js";import{a5 as o}from"./@salutejs/sdds-finai-CQjaGWRq.js";const e=a(o)({"@keyframes scalex":{from:{scale:"1.15"},to:{scale:"1"}},animation:"scalex 0.5s ease both"});try{e.displayName="AnimatedCounter",e.__docgenInfo={description:"",displayName:"AnimatedCounter",props:{}}}catch{}export{e as A};
