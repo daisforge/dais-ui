@@ -134,9 +134,18 @@ export const checkChunkPurity = ({
   const isEmptyIn = (id: string, chunk: Rollup.OutputChunk) =>
     chunk.modules[id]?.renderedLength === 0;
 
+  // getModuleInfo().importers хранит исходные связи, в том числе импорты,
+  // которые Rollup вырезал при tree shaking. Засчитываем связь, только если
+  // выходной чанк действительно загружает проверяемый
+  const loads = (from: Rollup.OutputChunk, target: Rollup.OutputChunk) =>
+    from.imports.includes(target.fileName) ||
+    from.dynamicImports.includes(target.fileName);
+
   /**
-   * Чанки, из которых модуль загружают снаружи. Реэкспорты без кода внутри
-   * того же чанка (например index.ts) прозрачны: их импортёры тоже считаются.
+   * Чанки, из которых модуль загружают снаружи. Прозрачны для обхода:
+   * - реэкспорты без кода внутри того же чанка (например index.ts);
+   * - модули, которых нет ни в одном чанке: Rollup убирает из chunk.modules
+   *   промежуточные реэкспорты, хотя импорт через них остаётся.
    */
   const collectOutsideChunks = (
     id: string,
@@ -148,15 +157,19 @@ export const checkChunkPurity = ({
     seen.add(id);
 
     const facade = facadeOf.get(id);
-    if (facade && facade !== chunk) result.add(facade.name);
+    if (facade && facade !== chunk && loads(facade, chunk)) {
+      result.add(facade.name);
+    }
 
     const info = getModuleInfo(id);
     [...(info?.importers ?? []), ...(info?.dynamicImporters ?? [])].forEach(
       (importer) => {
         const importerChunk = chunkOfModule.get(importer);
-        if (!importerChunk) return;
-        if (importerChunk !== chunk) result.add(importerChunk.name);
-        else if (isEmptyIn(importer, chunk)) {
+        if (!importerChunk) {
+          collectOutsideChunks(importer, chunk, result, seen);
+        } else if (importerChunk !== chunk) {
+          if (loads(importerChunk, chunk)) result.add(importerChunk.name);
+        } else if (isEmptyIn(importer, chunk)) {
           collectOutsideChunks(importer, chunk, result, seen);
         }
       },
