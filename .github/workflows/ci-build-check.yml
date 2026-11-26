@@ -37,16 +37,22 @@ jobs:
         run: npm run generate-storybook-docs-utils
 
       # tsc по nx-проектам: ui-kit (код и тесты), storybook, mcp-server.
-      # Цели идут параллельно, ~40 с. До этого шага типы проверял только
-      # необязательный job Screenshots, и ошибка типов не блокировала merge
+      # Цели идут параллельно, ~1,5 мин. До этого шага типы проверял только
+      # необязательный job Screenshots, и ошибка типов не блокировала merge.
+      # tsc storybook занимает ~3,1 ГБ и не помещается в кучу node по
+      # умолчанию, поэтому лимит поднят, как у сборки ui-kit
       - name: Typecheck
         run: npx nx run-many --targets=typecheck,typecheck-tests
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       # Остальное в test/ уже проверяет storybook:typecheck. Этот шаг нужен
       # для файлов, которые он не видит: redraw/specs/*.spec.ts (исключены
       # как *.spec.ts) и .storybook/test-runner.ts (скрытая папка)
       - name: Typecheck screenshot and redraw tests
         run: npm run screenshot:typecheck && npm run redraw:typecheck
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       # ESLint (с prettier/prettier) проверяет только код; Markdown форматирует
       # pre-commit через lint-staged. Эта проверка ловит то, что прошло мимо хука:
