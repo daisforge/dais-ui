@@ -337,13 +337,18 @@ BREAKING CHANGE: проп colorScheme больше не поддерживает
 
 ```bash
 dist/packages/ui-kit/
-├── index.cjs        # Main
-├── index.mjs        # Module
-├── index.d.ts       # Types
-└── components/      # Chunks
-    ├── Button.cjs
-    ├── Table.cjs
-    ├── TableCanvas.cjs
+├── index.cjs                 # Корневая точка входа, CommonJS
+├── index.mjs                 # Корневая точка входа, ES-модуль
+├── index.d.ts                # Типы
+├── components/               # Точки входа: по одной на каждый index.ts в src/
+│   └── Button/
+│       ├── index.cjs
+│       ├── index.mjs
+│       └── index.d.ts
+├── layouts/, formComponents/, constants/, ...
+└── chunks/                   # Общий код, разложенный по MANUAL_UIKIT_COMP_CHUNKS
+    ├── Table-[hash].mjs
+    ├── TableCanvas-[hash].cjs
     └── ...
 ```
 
@@ -379,6 +384,54 @@ MANUAL_UIKIT_COMP_CHUNKS = [
 
 - `.mjs` для ES модулей
 - `.cjs` для CommonJS
+
+### Проверка изоляции чанков
+
+Потребитель, который импортирует один компонент, должен загружать только его код
+и то, что этот компонент действительно использует. Иначе на странице, где
+несколько микрофронтендов подключают разные компоненты, дублируется чужой код и
+CSS (так было с `TableCanvas` и CSS старой `Table`, #199).
+
+Сборка ui-kit проверяет это сама: в `generateBundle` плагина `viteDFUIChunks`
+для ESM и CJS (`plugins/vite-df-ui-chunks.checks.ts`). При нарушении
+`npx nx build ui-kit` падает, а с ним и обязательный CI.
+
+**Чистота чанков.** Код из чужой папки может лежать в чанке, только если его
+импортируют лишь изнутри этого чанка. Модули без своего ручного чанка Rollup
+кладёт в чанк первого импортёра: так `Typography` оказался в `AiAgentPopup`, и
+любой импорт `Typography` загружал `AiAgentPopup`.
+
+```text
+Код components/Typography (…) лежит в чужом чанке "AiAgentPopup"
+и импортируется снаружи: BlockTitle, PageLoader, … Добавьте для
+components/Typography/ свой чанк в MANUAL_UIKIT_COMP_CHUNKS.
+```
+
+Исправление — добавить папке свой чанк в `MANUAL_UIKIT_COMP_CHUNKS`. Порядок
+важен: чанк выбирается по первому совпадению пути.
+
+**`RESTRICTED_IMPORTS`.** Тяжёлые чанки (`Table`, `TableGlide`, `GridDND`) и их
+CSS могут загружать только перечисленные точки входа. Корневой `index`
+разрешён всегда. Статический импорт и `import()` считаются одинаково: лениво
+загруженный CSS тоже попадёт на страницу.
+
+```text
+components/ListOfFilters загружает "react-data-grid/lib/styles.css" (…).
+Путь: components/ListOfFilters/index → ListOfFilters → Table →
+react-data-grid/lib/styles.css.
+```
+
+Исправление — найти по пути лишний импорт и вынести общее в отдельный модуль
+(как `src/constants/tableVisuals.ts`). Если зависимость действительно нужна,
+точку входа добавляют в `allowedEntries`, и это обсуждается на ревью. Новый CSS
+из `node_modules` нужно добавить в `RESTRICTED_IMPORTS` вручную.
+
+**Что ещё страхует:**
+
+- ESLint в `packages/ui-kit/.eslintrc.json` подсвечивает импорт из
+  `components/Table` в IDE. Это ранний сигнал, он ловит не все пути;
+- тесты на поддельном бандле: `npm run plugins:test`;
+- проверка типов плагинов: `npm run plugins:typecheck`.
 
 ---
 
