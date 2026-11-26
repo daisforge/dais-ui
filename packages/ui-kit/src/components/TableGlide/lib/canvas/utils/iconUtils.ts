@@ -1,11 +1,54 @@
+/// <reference lib="es2021.weakref" />
+
 import { isValidElement, ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-// TODO: оценить размер кэша и подобрать лимит для таблиц, создающих типы иконок при отрисовке.
-const iconCache = new Map<string, string>();
-const componentIds = new WeakMap<object, number>();
+const MAX_FALLBACK_VARIANTS = 1024;
 const cacheableProps = ['size', 'color', 'className'];
-let nextComponentId = 0;
+type IconVariants = Map<string, string>;
+
+function createIconCache() {
+  let size = 0;
+  // Финализатор нужен только для диагностического счётчика. Он не хранит SVG.
+  const released =
+    typeof FinalizationRegistry === 'function'
+      ? new FinalizationRegistry<undefined>(() => {
+          size -= 1;
+        })
+      : undefined;
+  // В старых браузерах без финализаторов используем ограниченный кэш,
+  // чтобы сохранить точный счётчик и ограничить расход памяти.
+  const byType = released
+    ? new WeakMap<object, IconVariants>()
+    : new Map<object, IconVariants>();
+
+  return {
+    get size() {
+      return size;
+    },
+    get(type: object, variant: string) {
+      return byType.get(type)?.get(variant);
+    },
+    set(type: object, variant: string, svg: string) {
+      if (byType instanceof Map && size >= MAX_FALLBACK_VARIANTS) {
+        byType.clear();
+        size = 0;
+      }
+      let variants = byType.get(type);
+      if (!variants) {
+        variants = new Map();
+        byType.set(type, variants);
+      }
+      if (!variants.has(variant)) {
+        released?.register(type, undefined);
+        size += 1;
+      }
+      variants.set(variant, svg);
+    },
+  };
+}
+
+let iconCache = createIconCache();
 
 function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
   // Встроенные SVG и иконки с дополнительными пропсами рисуем напрямую:
@@ -21,26 +64,17 @@ function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
     return undefined;
   }
 
-  // Имена компонентов могут совпадать после минификации или вызова React.memo.
-  // Ссылка на тип компонента позволяет различать такие иконки.
-  let id = componentIds.get(type);
-  if (id === undefined) {
-    id = nextComponentId;
-    nextComponentId += 1;
-    componentIds.set(type, id);
-  }
-
   // В массиве JSON явный undefined станет null. Пропущенный пропс помечаем
   // отдельно: компонент может проверять его наличие через оператор in.
   const variant = cacheableProps.map((key) =>
     key in props ? props[key] : false,
   );
-  return JSON.stringify([id, ...variant]);
+  return { type, variant: JSON.stringify(variant) };
 }
 
 export function reactIconToSvg(iconElement: ReactElement): string {
   const cacheKey = getCacheKey(iconElement);
-  const cached = cacheKey === undefined ? undefined : iconCache.get(cacheKey);
+  const cached = cacheKey && iconCache.get(cacheKey.type, cacheKey.variant);
   if (cached !== undefined) {
     return cached;
   }
@@ -58,7 +92,7 @@ export function reactIconToSvg(iconElement: ReactElement): string {
 
   const svgString = svgMatch[0];
   if (cacheKey !== undefined) {
-    iconCache.set(cacheKey, svgString);
+    iconCache.set(cacheKey.type, cacheKey.variant, svgString);
   }
   return svgString;
 }
@@ -89,11 +123,12 @@ export function normalizeIcon(icon: string | ReactElement): string {
  * Удаляет все сохранённые SVG из кэша.
  */
 export function clearIconCache(): void {
-  iconCache.clear();
+  iconCache = createIconCache();
 }
 
 /**
- * Возвращает количество SVG в кэше.
+ * Возвращает количество SVG в кэше. Освобождённые варианты вычитаются
+ * после выполнения финализаторов сборщиком мусора.
  */
 export function getIconCacheSize(): number {
   return iconCache.size;

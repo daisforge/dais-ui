@@ -83,6 +83,57 @@ describe('normalizeIcon', () => {
     },
   );
 
+  it('учитывает освобождение вариантов только в том кэше, где они созданы', () => {
+    const cleanup: (() => void)[] = [];
+    vi.stubGlobal(
+      'FinalizationRegistry',
+      class {
+        constructor(private readonly callback: () => void) {}
+
+        register() {
+          cleanup.push(this.callback);
+        }
+      },
+    );
+    try {
+      clearIconCache();
+      const Icon = ({ color }: { color?: string }) => <svg fill={color} />;
+      normalizeIcon(<Icon />);
+      clearIconCache();
+      normalizeIcon(<Icon color="red" />);
+      normalizeIcon(<Icon color="red" />);
+      normalizeIcon(<Icon color="blue" />);
+
+      expect(cleanup).toHaveLength(3);
+      cleanup[0]?.();
+      expect(getIconCacheSize()).toBe(2);
+      cleanup.slice(1).forEach((release) => release());
+      expect(getIconCacheSize()).toBe(0);
+    } finally {
+      vi.unstubAllGlobals();
+      clearIconCache();
+    }
+  });
+
+  it('ограничивает размер кэша в окружении без FinalizationRegistry', () => {
+    vi.stubGlobal('FinalizationRegistry', undefined);
+    try {
+      clearIconCache();
+      const Icon = vi.fn(({ color }: { color: string }) => (
+        <svg fill={color} />
+      ));
+      for (let i = 0; i < 1025; i += 1) {
+        normalizeIcon(<Icon color={String(i)} />);
+      }
+      expect(getIconCacheSize()).toBe(1);
+      expect(normalizeIcon(<Icon color="1024" />)).toContain('fill="1024"');
+      expect(Icon).toHaveBeenCalledTimes(1025);
+    } finally {
+      vi.unstubAllGlobals();
+      clearIconCache();
+    }
+  });
+
   it('renders custom props and inline SVG children as supplied', () => {
     const Icon = ({ rotate }: { rotate: number }) => (
       <svg transform={`rotate(${rotate})`} />
