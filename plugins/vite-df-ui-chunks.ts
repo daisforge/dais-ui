@@ -319,6 +319,11 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/shared/ui/Search/'],
   },
   {
+    // Используют Table и standalone MassActions
+    chunkName: 'sharedUiAnimatedCounter',
+    modulePaths: ['packages/ui-kit/src/shared/ui/AnimatedCounter/'],
+  },
+  {
     chunkName: 'sharedUtilsInputs',
     modulePaths: ['packages/ui-kit/src/shared/utils/inputs/'],
   },

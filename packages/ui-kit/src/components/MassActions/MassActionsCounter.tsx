@@ -2,10 +2,10 @@ import { Box } from '@ui-kit/components/Box';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { Collapse } from '@ui-kit/components/Collapse';
 import { Typography } from '@ui-kit/components/Typography';
+import { AnimatedCounter } from '@ui-kit/shared/ui/AnimatedCounter';
 import { useBreakpoint } from '@ui-kit/utils';
 import React from 'react';
 
-import { AnimatedCounter } from '../Table/components/AnimatedCounter';
 import type { MassActionsCounterProps } from './types';
 
 /**

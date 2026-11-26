@@ -4,6 +4,7 @@ import { mergeRefs } from '@ui-kit/utils';
 import React, { Suspense, useMemo, useRef, useState } from 'react';
 import { DataGridHandle } from 'react-data-grid';
 
+import { TableDropdown } from './components/TableDropdown';
 import {
   ContextProviders,
   type HeaderContextValueTypeInstance,
@@ -549,6 +550,7 @@ export function Table<
             contextMenuCtxV={contextMenuCtxVal}
             sideBarCtxV={sideBarContextVal}
             tableCollapseCtxV={tableCollapseContextVal}
+            massActionsDropdown={TableDropdown}
           >
             <RowInstrumentsCtxProvider value={getRowDropdownConfig}>
               <SelectingContextProvider

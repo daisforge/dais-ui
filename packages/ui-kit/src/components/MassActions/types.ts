@@ -5,8 +5,23 @@ import { TooltipProps } from '@ui-kit/components/Tooltip';
 import { ComponentProps, MutableRefObject, ReactNode, RefObject } from 'react';
 import { CSSObject, FlattenSimpleInterpolation } from 'styled-components';
 
-import { TableDropdownConfigProps } from '../Table/components/TableDropdown/types';
-import { DataAttributes } from '../Table/types/utils.type';
+// Типы ниже совпадают с DataAttributes и TableDropdownConfigProps из Table, но
+// объявлены здесь: MassActions не зависит от Table. Не экспортируются, чтобы
+// не добавлять в публичное API новые имена
+
+/** data-* атрибуты кнопки */
+type DataAttributes = {
+  [K in `data-${string}`]?: string;
+};
+
+/**
+ * Пропсы dropdown для скрытых кнопок. Исключены поля, которыми управляет
+ * панель: `onItemSelect`, `items`, `onToggle`, `size`, `portal`.
+ */
+type MassActionsDropdownConfigProps = Omit<
+  DropdownProps & { $css?: CSSObject },
+  'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'
+>;
 
 export type LinkButtonProps = ComponentProps<typeof LinkButton>;
 export type LinkButtonView = LinkButtonProps['view'];
@@ -161,7 +176,7 @@ export type MassActionsProps = {
   /**
    * Конфигурация dropdown для скрытых кнопок
    */
-  collapsedDropdownProps?: TableDropdownConfigProps;
+  collapsedDropdownProps?: MassActionsDropdownConfigProps;
 
   /**
    * Количество выбранных элементов
@@ -179,7 +194,9 @@ export type MassActionsProps = {
   show?: boolean;
 
   /**
-   * Использовать TableDropdown (для таблиц) вместо обычного Dropdown
+   * Использовать TableDropdown (для таблиц) вместо обычного Dropdown.
+   * Действует внутри Table: портал и размеры берутся из таблицы. Вне Table
+   * используется обычный Dropdown.
    * По умолчанию false (используется обычный Dropdown)
    */
   useTableDropdown?: boolean;

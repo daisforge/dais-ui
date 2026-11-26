@@ -3,7 +3,7 @@ import { Dropdown } from '@ui-kit/components/Dropdown';
 import React from 'react';
 import { CSSObject, FlattenSimpleInterpolation } from 'styled-components';
 
-import { TableDropdown } from '../Table/components/TableDropdown/TableDropdown';
+import { useMassActionsDropdown } from './dropdownContext';
 import {
   StyledButtonWithDropdown,
   StyledLinkButtonWithDropdown,
@@ -47,9 +47,10 @@ export const MassActionsButton = ({
 }: MassActionsButtonProps & {
   showLabel?: boolean;
   buttonStyles?: string | CSSObject | FlattenSimpleInterpolation;
-  /** Использовать TableDropdown (для таблиц) вместо обычного Dropdown */
+  /** Использовать TableDropdown внутри Table; вне Table — обычный Dropdown */
   useTableDropdown?: boolean;
 }) => {
+  const TableDropdown = useMassActionsDropdown();
   // Определяем тип кнопки: если type не указан, используем linkButton для обратной совместимости
   const buttonType = type ?? 'linkButton';
   const { view: defaultView, ...restDefaultProps } =
@@ -99,8 +100,8 @@ export const MassActionsButton = ({
   if (dropdown) {
     // Проверяем наличие items (для безопасности, хотя они обязательны в DropdownProps)
     if (dropdown.items && dropdown.items.length > 0) {
-      // Для таблицы используем TableDropdown
-      if (useTableDropdown) {
+      // Для таблицы используем TableDropdown, который подставляет Table
+      if (useTableDropdown && TableDropdown) {
         btn = <TableDropdown {...dropdown}>{btn}</TableDropdown>;
       } else {
         // Для standalone используем обычный Dropdown

@@ -18,6 +18,10 @@ import {
 } from 'react-data-grid';
 
 import { DropdownProps } from '../Dropdown';
+import {
+  type MassActionsDropdownComponent,
+  MassActionsDropdownContext,
+} from '../MassActions/dropdownContext';
 import type {
   ContextMenuDropdownItem,
   ContextMenuDropDownProps,
@@ -233,6 +237,7 @@ export const ContextProviders = <
   contextMenuCtxV,
   sideBarCtxV,
   tableCollapseCtxV,
+  massActionsDropdown,
 }: PropsWithChildren & {
   headerCtxV: HeaderContextValueTypeInstance<ObjectForExtending>;
   rowCtxV: RowContextV;
@@ -241,6 +246,11 @@ export const ContextProviders = <
   contextMenuCtxV: ContextMenuContextV<RowType, SummaryRowType>;
   sideBarCtxV: SidebarContextValue;
   tableCollapseCtxV: TableCollapseContextValue;
+  /**
+   * TableDropdown для MassActions с useTableDropdown. Передаётся пропом, а не
+   * импортом: TableDropdown сам импортирует этот модуль
+   */
+  massActionsDropdown: MassActionsDropdownComponent;
 }) => (
   <HeaderContext.Provider value={headerCtxV}>
     <RowContext.Provider value={rowCtxV}>
@@ -250,7 +260,11 @@ export const ContextProviders = <
             <ContextMenuContext.Provider value={contextMenuCtxV}>
               <SidebarContext.Provider value={sideBarCtxV}>
                 <TableCollapseContext.Provider value={tableCollapseCtxV}>
-                  {children}
+                  <MassActionsDropdownContext.Provider
+                    value={massActionsDropdown}
+                  >
+                    {children}
+                  </MassActionsDropdownContext.Provider>
                 </TableCollapseContext.Provider>
               </SidebarContext.Provider>
             </ContextMenuContext.Provider>
