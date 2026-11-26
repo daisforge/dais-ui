@@ -1,7 +1,7 @@
 /* eslint-disable no-continue */
 import type { GridSelection } from '@daisforge/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import {
   notifications,
@@ -84,25 +84,29 @@ export function useFillHandle<R extends ObjectForExtending>({
   onNotification,
 }: UseFillHandleParams<R>) {
   const [sourceCellEditable, setSourceCellEditable] = useState(true);
-
+  const source = useRef<readonly [number, number] | null>();
+  const refreshSource = useCallback(() => {
+    const cell = source.current;
+    if (cell === undefined) return;
+    const column = cell && columns[cell[0]];
+    const row = cell && flattenedRows[cell[1]];
+    setSourceCellEditable(
+      !!column &&
+        !!row &&
+        !column.isServiceColumn &&
+        isCellEditable(column, row),
+    );
+  }, [columns, flattenedRows]);
   const onSelectionChangeForFill = useCallback(
     (selection: GridSelection) => {
-      const { current } = selection;
-      if (!current) {
-        setSourceCellEditable(false);
-        return;
-      }
-      const [colIdx, rowIdx] = current.cell;
-      const column = columns[colIdx];
-      const row = flattenedRows[rowIdx];
-      if (!column || !row || column.isServiceColumn) {
-        setSourceCellEditable(false);
-        return;
-      }
-      setSourceCellEditable(isCellEditable(column, row));
+      source.current = selection.current?.cell ?? null;
+      refreshSource();
     },
-    [columns, flattenedRows],
+    [refreshSource],
   );
+
+  // После загрузки у той же ячейки могут измениться права на редактирование.
+  useLayoutEffect(refreshSource, [refreshSource]);
 
   const { enabled, fillHandleStyle, resolvedConfig } = useMemo(() => {
     const raw = cellTransferConfig?.fillHandle;

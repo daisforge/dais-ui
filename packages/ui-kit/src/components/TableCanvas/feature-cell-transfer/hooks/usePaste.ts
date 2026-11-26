@@ -3,7 +3,7 @@ import type { GridSelection } from '@daisforge/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
 import { useCallback, useLayoutEffect, useRef } from 'react';
 
-import { sameSelection } from '../../../TableGlide/hooks/selection/useNativeGridSelection';
+import { sameSelection } from '../../../TableGlide/hooks/selection/gridSelection';
 import {
   notifications,
   type TableNotification,

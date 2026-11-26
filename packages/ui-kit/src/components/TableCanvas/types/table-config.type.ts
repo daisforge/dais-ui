@@ -909,8 +909,9 @@ type TableConfigOverlayRowKey<RowType> = {
   /**
    * Ключ строки. Если после обновления `rows` на месте строки, где открыто
    * окно, стоит строка с тем же ключом, окно остаётся открытым, с другим
-   * ключом закрывается. Не задан: берётся `rowKeyGetter` из `editing`,
-   * `selecting`, `subRows` или `mergeCells`, а без него строки сравниваются
+   * ключом закрывается. По умолчанию берётся `rowKeyGetter` из `cellsSelection`,
+   * `editing`, `selecting`, `subRows`, `mergeCells` или `rowsGrouping`.
+   * Если ключа нет, строки сравниваются
    * по ссылке, и новый массив с теми же данными тоже закроет окно.
    */
   rowKeyGetter?: (row: RowType) => string | number;
@@ -983,7 +984,19 @@ export type { TableCanvasEmptyStateConfig, TableCanvasErrorStateConfig };
  * Настройка выделения ячеек/колонок/строк в TableCanvas — единый объект.
  * Это отдельная ось взаимодействия — не зависит от `highlightActiveType`.
  */
-export type CellsSelectionConfig = {
+export type CellsSelectionConfig<RowType = ObjectForExtending> = {
+  /**
+   * Постоянный ID для проверки записей на выбранных позициях при обновлении rows.
+   * По умолчанию берётся из editing, selecting, subRows, mergeCells или rowsGrouping
+   * в этом порядке. Без ключа обычное обновление rows сохраняет координаты.
+   */
+  rowKeyGetter?: (row: RowType) => string | number;
+  /**
+   * Изменение версии внешнего набора данных полностью снимает выделение.
+   * Пока версия прежняя, таблица проверяет ключ активной записи и доверяет
+   * порядку остальных строк. Сохраняйте версию при правке и дозагрузке в конец.
+   */
+  dataRevision?: string | number;
   /**
    * Режим фактического выделения ячеек (нативный glide selection). По нему
    * работают copy/paste, рамка, fill-handle и затемнение шапки/нумерации.
@@ -1033,7 +1046,8 @@ export type CellsSelectionConfig = {
    * несмежный Ctrl-выбор колонок (`columns`) и строк (`rows`), которого нет в
    * `state`. Срабатывает с `state` и без него.
    *
-   * Срабатывает и без действия пользователя, когда слева появляется или исчезает
+   * Получает пустое выделение при автоматическом сбросе после смены представления.
+   * Также срабатывает, когда слева появляется или исчезает
    * служебная колонка (например, столбец ошибок): выделение остаётся на тех же
    * ячейках, а их индексы сдвигаются. Программная смена `state` снаружи
    * `onChange` не вызывает, но копирование, вставка и протяжка заполнения
@@ -1155,7 +1169,7 @@ export type TableConfig<
    * (`enableColumnSelection`/`enableRowSelection`/`enableSelectAll`) и controlled
    * (`state`). См. {@link CellsSelectionConfig}.
    */
-  cellsSelection?: CellsSelectionConfig;
+  cellsSelection?: CellsSelectionConfig<RowType>;
   /**
    * Подсвеченная строка (`highlightActiveType='row'`).
    * `state` (опционально) — controlled-кортеж `[value, setter]`: задан — значением

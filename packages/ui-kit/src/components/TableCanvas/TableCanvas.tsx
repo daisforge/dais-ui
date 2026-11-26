@@ -1,6 +1,7 @@
 import { mergeRefs } from '@ui-kit/utils';
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 
+import type { SelectionSnapshot } from '../TableGlide/types';
 import {
   ColumnGroupContext,
   ContextProviders,
@@ -43,7 +44,7 @@ import {
 import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
-import { useGroupedRows } from './feature-rows-grouping';
+import { getSelectionRowKey, useGroupedRows } from './feature-rows-grouping';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
@@ -292,6 +293,7 @@ export function TableCanvas<
   const {
     columns,
     reorderedColumns,
+    displayedColumns,
     renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
@@ -520,6 +522,25 @@ export function TableCanvas<
   flattenedRowsRef.current = flattenedRows;
   allRowsMapRef.current = allRowsMap;
 
+  const selectionHistory = useRef<SelectionSnapshot<RowType>>();
+  const recordKey =
+    tableConfig.cellsSelection?.rowKeyGetter ??
+    tableConfig.editing?.rowKeyGetter ??
+    tableConfig.selecting?.rowKeyGetter ??
+    tableConfig.subRows?.rowKeyGetter ??
+    tableConfig.mergeCells?.rowKeyGetter ??
+    tableConfig.rowsGrouping?.rowKeyGetter;
+  const treeGrouping =
+    !!tableConfig.rowsGrouping && tableConfig.rowsGrouping.view !== 'merged';
+  const selectionRowKey = useMemo(
+    () => getSelectionRowKey(recordKey, treeGrouping),
+    [recordKey, treeGrouping],
+  );
+  const selectionCriteria = useMemo(
+    () => ({ sortColumns, filters, searchQuery, groupedCols }),
+    [sortColumns, filters, searchQuery, groupedCols],
+  );
+
   // ------------------------------------------------ changing rows ------------------------------------------------
   const { isCellEdited, markEditedCells, clearSession } = useEditedCells(
     !!tableConfig.editing && !!editModeEnabled,
@@ -534,13 +555,17 @@ export function TableCanvas<
   });
 
   // ------------------------------------------------ cell transfer (copy/paste/fill) ------------------------------------------------
+  // Скелетоны скрывают выделение. До ответа сервера перенос данных недоступен.
+  const cellTransferConfig = isLoadingTable
+    ? { enabled: false }
+    : tableConfig.cellTransfer;
   const { onGridSelectionChange: cellTransferOnSelectionChange } = useClipboard(
     {
       editModeEnabled: !!editModeEnabled,
-      cellTransferConfig: tableConfig.cellTransfer,
+      cellTransferConfig,
       rowContextValue: rowContextValue as ObjectForExtending | undefined,
       headerContextValue: headerContextValue as ObjectForExtending | undefined,
-      columns: reorderedColumns as unknown as Parameters<
+      columns: displayedColumns as unknown as Parameters<
         typeof useClipboard
       >[0]['columns'],
       flattenedRows,
@@ -555,8 +580,8 @@ export function TableCanvas<
   // ------------------------------------------------ fill handle ------------------------------------------------
   const { fillHandleProps, onSelectionChangeForFill } = useFillHandle({
     editModeEnabled: !!editModeEnabled,
-    cellTransferConfig: tableConfig.cellTransfer,
-    columns: reorderedColumns as unknown as Parameters<
+    cellTransferConfig,
+    columns: displayedColumns as unknown as Parameters<
       typeof useFillHandle
     >[0]['columns'],
     flattenedRows,
@@ -1126,6 +1151,24 @@ export function TableCanvas<
                             // controlled gridSelection.
                             onSelectionEmit: combinedOnGridSelectionChange,
                             onSelectionSync: syncInternalSelection,
+                            selectionView: {
+                              history: selectionHistory,
+                              criteria: selectionCriteria,
+                              expandedRows: expandedRowsIdsStateAndSetter[0],
+                              summaryCount: summaryRowsIsActive
+                                ? bottomSummaryRows?.length ?? 0
+                                : 0,
+                              page: pagination?.value,
+                              perPage: pagination?.perPage,
+                              revision:
+                                tableConfig.cellsSelection?.dataRevision,
+                              rows: rowsWithExpDetails,
+                              placeholderCount:
+                                rowsWithSkeletonsOrNot.length -
+                                rowsWithExpDetails.length,
+                              loading: isLoadingTable,
+                              rowKey: selectionRowKey,
+                            },
 
                             // Ключи выделенных колонок наверх → контрл-блок
                             // (нативный экшен «Закрепить столбцы»).
@@ -1267,12 +1310,7 @@ export function TableCanvas<
                           tooltip={tableConfig.tooltip}
                           popover={tableConfig.popover}
                           dropdown={tableConfig.dropdown}
-                          rowKeyGetter={
-                            tableConfig.editing?.rowKeyGetter ??
-                            tableConfig.selecting?.rowKeyGetter ??
-                            tableConfig.subRows?.rowKeyGetter ??
-                            tableConfig.mergeCells?.rowKeyGetter
-                          }
+                          rowKeyGetter={selectionRowKey}
                           massActionPanel={
                             tableConfig?.controlBlock?.massActionPanel
                           }

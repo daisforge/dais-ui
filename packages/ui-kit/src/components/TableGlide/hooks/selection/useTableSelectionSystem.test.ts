@@ -6,7 +6,7 @@ import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { ColumnGlideLast, ObjectForExtending } from '../../types';
-import { useNativeGridSelection } from './useNativeGridSelection';
+import { useGridSelectionState } from './useGridSelectionState';
 import { useTableSelectionSystem } from './useTableSelectionSystem';
 
 // Колонки: [нумерация(service), a, b, c] → firstDataCol = 1, numberingColumnIndex = 0.
@@ -64,11 +64,11 @@ function setup(overrides: Record<string, unknown> = {}) {
   return { view, handleGridSelectionChange };
 }
 
-/** Система выделения поверх настоящего useNativeGridSelection: `onSelectionEmit` — то, что получит потребитель */
+/** Система выделения поверх настоящего useGridSelectionState: `onSelectionEmit` — то, что получит потребитель */
 function setupWithNative() {
   const onSelectionEmit = vi.fn();
   const view = renderHook(() => {
-    const native = useNativeGridSelection({
+    const native = useGridSelectionState({
       cellsSelectionMode: 'range-cell',
       columns: COLUMNS,
       onSelectionEmit,
@@ -84,6 +84,14 @@ function setupWithNative() {
 }
 
 describe('useTableSelectionSystem — выделение колонок', () => {
+  it('после сброса Shift начинает выбор с новой колонки', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => view.result.current.selectColumnFromHeader(3, headerEvent({})));
+    act(() => view.result.current.resetAxes());
+    act(() => view.result.current.selectColumnFromHeader(1, headerEvent({ shiftKey: true })));
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({x: 1, y: 0, width: 1, height: 5});
+  });
+
   it('numberingColumnIndex вычисляется по служебной колонке row-markers', () => {
     const { view } = setup();
     expect(view.result.current.numberingColumnIndex).toBe(0);

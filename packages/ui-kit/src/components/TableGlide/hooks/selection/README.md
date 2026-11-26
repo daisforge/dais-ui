@@ -10,7 +10,7 @@
 ## Конвейер
 
 ```
-useNativeGridSelection ──selection──┬─► useSelectionGeometry ──geometry──┐
+useGridSelectionState ──selection──┬─► useSelectionGeometry ──geometry──┐
        handlers                     │                                     │
        └──► useTableSelectionSystem ┘  (композит 3 осей: колонки/строки/    │
                     │                    активная строка)                   │
@@ -28,9 +28,20 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
 Роли делятся на четыре группы: **состояние**, **оркестратор**, **геометрия**,
 **отрисовка**.
 
+## Изменение представления таблицы
+
+`resolveSelectionForView` сравнивает условия запроса, видимые колонки и записи
+на выбранных позициях. Смена критерия или версии возвращает пустое выделение.
+При обновлении значений и дозагрузке допустимый диапазон сохраняется.
+
+`useSelectionOnViewChange` передаёт результат в Glide во время рендера, а в
+layout-эффекте запоминает снимок и вызывает `applyViewSelection`. Функция из
+`useGridSelectionState` обновляет внутреннее значение или внешний сеттер.
+Продукт может явно установить новые координаты через `cellsSelection.state`.
+
 ## Состояние (владеют своим стейтом)
 
-### `useNativeGridSelection`
+### `useGridSelectionState`
 
 Стор нативного glide-выделения ячеек. Держит `GridSelection` (internal в
 uncontrolled или отдаёт наружу в controlled) и на каждое изменение ровно один раз
@@ -69,7 +80,7 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 ### `useTableSelectionSystem`
 
 Единственное место, где сходятся все оси. Композит трёх осей выше + хендлеров
-`useNativeGridSelection`. Содержит всю логику клика/драга:
+`useGridSelectionState`. Содержит всю логику клика/драга:
 
 - `handleGridSelectionWithColumnReset` — разбирает каждое изменение выделения (клик
   по нумерации → строки в свою ось; иначе обычные ячейки + сброс осей);
@@ -134,7 +145,7 @@ Ctrl (`rangeStack`), получают затемнение нумерации, �
 
 ### `index.ts`
 
-Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useNativeGridSelection`,
+Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useGridSelectionState`,
 `useSelectionGeometry`, `useColoringLayers`, `useTableSelectionSystem`,
 `rectContainsCell`. Оси, `rectGeometry` и оба региона-хука — внутренние.
 
