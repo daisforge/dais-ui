@@ -103,13 +103,6 @@ const isAtHome = (
   return getOwner(id, manualChunks)?.chunkName === chunk.name;
 };
 
-export type ChunkPurityResult = {
-  /** Лишняя загрузка подтверждена: сборка падает */
-  errors: string[];
-  /** Чужой код в чанке, но лишняя загрузка не подтверждена: только лог */
-  warnings: string[];
-};
-
 /**
  * Чистота чанков.
  *
@@ -118,21 +111,12 @@ export type ChunkPurityResult = {
  * из других чанков, каждый такой импорт загружает весь чужой чанк целиком.
  * Rollup делает так с модулями, у которых нет своего ручного чанка: кладёт их
  * в чанк первого импортёра (так Typography оказался в AiAgentPopup).
- *
- * Rollup не сообщает, ради какого модуля один чанк загружает другой (имена
- * экспортов чанка минифицированы). Поэтому связь с чужим модулем:
- * - ошибка, если чанк импортёра не ссылается ни на один собственный модуль
- *   проверяемого чанка — тогда тот загружается только ради чужого кода;
- * - предупреждение, если ссылается — тогда проверяемый чанк, скорее всего,
- *   загружается ради собственного кода, а импорт чужого модуля может быть
- *   вырезан при tree shaking. Подтвердить лишнюю загрузку нельзя, но и
- *   промолчать нельзя: импорт собственного кода тоже может быть мёртвым.
  */
 export const checkChunkPurity = ({
   bundle,
   manualChunks,
   getModuleInfo,
-}: CheckContext): ChunkPurityResult => {
+}: CheckContext): string[] => {
   const chunks = getChunks(bundle);
   const chunkOfModule = new Map<string, Rollup.OutputChunk>();
   chunks.forEach((chunk) =>
@@ -149,17 +133,22 @@ export const checkChunkPurity = ({
   });
   const isEmptyIn = (id: string, chunk: Rollup.OutputChunk) =>
     chunk.modules[id]?.renderedLength === 0;
-  const importsOf = (id: string) => {
-    const info = getModuleInfo(id);
-    return [
-      ...(info?.importedIds ?? []),
-      ...(info?.dynamicallyImportedIds ?? []),
-    ];
-  };
 
   // getModuleInfo().importers хранит исходные связи, в том числе импорты,
   // которые Rollup вырезал при tree shaking. Засчитываем связь, только если
-  // выходной чанк действительно загружает проверяемый
+  // выходной чанк действительно загружает проверяемый.
+  //
+  // Сверка идёт на уровне чанка: Rollup не сообщает, ради какого модуля чанк
+  // загружается (имена экспортов чанка минифицированы). Поэтому вырезанный
+  // импорт чужого модуля всё равно считается связью, если чанк импортёра
+  // загружает проверяемый чанк по другой, живой причине. Это намеренно
+  // строго, и в обоих возможных случаях ошибка ведёт к правильному действию:
+  // - код мёртвый (функцию никто не вызывает, ветка не выполняется) — его
+  //   удаляют вместе с импортом; большую часть такого кода ESLint ловит
+  //   раньше (no-constant-condition, no-unused-vars, no-unused-imports);
+  // - код вырезается только в production-сборке (отладка под NODE_ENV,
+  //   флаги) — в dev-сборке и тестах зависимость настоящая, и модулю нужен
+  //   свой чанк или import() внутри этой ветки
   const loads = (from: Rollup.OutputChunk, target: Rollup.OutputChunk) =>
     from.imports.includes(target.fileName) ||
     from.dynamicImports.includes(target.fileName);
@@ -173,7 +162,7 @@ export const checkChunkPurity = ({
   const collectOutsideChunks = (
     id: string,
     chunk: Rollup.OutputChunk,
-    result: Set<Rollup.OutputChunk>,
+    result: Set<string>,
     seen = new Set<string>(),
   ) => {
     if (seen.has(id)) return;
@@ -181,7 +170,7 @@ export const checkChunkPurity = ({
 
     const facade = facadeOf.get(id);
     if (facade && facade !== chunk && loads(facade, chunk)) {
-      result.add(facade);
+      result.add(facade.name);
     }
 
     const info = getModuleInfo(id);
@@ -191,7 +180,7 @@ export const checkChunkPurity = ({
         if (!importerChunk) {
           collectOutsideChunks(importer, chunk, result, seen);
         } else if (importerChunk !== chunk) {
-          if (loads(importerChunk, chunk)) result.add(importerChunk);
+          if (loads(importerChunk, chunk)) result.add(importerChunk.name);
         } else if (isEmptyIn(importer, chunk)) {
           collectOutsideChunks(importer, chunk, result, seen);
         }
@@ -199,50 +188,17 @@ export const checkChunkPurity = ({
     );
   };
 
-  /**
-   * Ссылается ли чанк from на собственный код чанка target (модуль, который
-   * в target «дома»). Реэкспорты без кода в target и модули, выпавшие из
-   * чанков, прозрачны: index.ts, реэкспортирующий только чужой модуль,
-   * собственным кодом не считается.
-   */
-  const referencesOwnCode = (
-    from: Rollup.OutputChunk,
-    target: Rollup.OutputChunk,
-  ) => {
-    const seen = new Set<string>();
-    const reachesOwnCode = (id: string): boolean => {
-      if (seen.has(id)) return false;
-      seen.add(id);
-      const idChunk = chunkOfModule.get(id);
-      if (idChunk && idChunk !== target) return false;
-      if (idChunk && !isEmptyIn(id, target)) {
-        return isAtHome(id, target, manualChunks);
-      }
-      return importsOf(id).some(reachesOwnCode);
-    };
-
-    const starts = Object.keys(from.modules).flatMap(importsOf);
-    if (from.facadeModuleId) starts.push(from.facadeModuleId);
-    return starts.some(reachesOwnCode);
-  };
-
   // Группируем по паре «чанк + папка модуля», чтобы не плодить строки
   const violations = new Map<
     string,
-    {
-      chunk: string;
-      dir: string;
-      modules: Set<string>;
-      confirmed: Set<string>;
-      unconfirmed: Set<string>;
-    }
+    { chunk: string; dir: string; modules: Set<string>; from: Set<string> }
   >();
   chunks.forEach((chunk) => {
     getCodeModuleIds(chunk).forEach((id) => {
       if (!id.includes(UI_KIT_SRC)) return;
       if (isAtHome(id, chunk, manualChunks)) return;
 
-      const outsideChunks = new Set<Rollup.OutputChunk>();
+      const outsideChunks = new Set<string>();
       collectOutsideChunks(id, chunk, outsideChunks);
       if (outsideChunks.size === 0) return;
 
@@ -252,43 +208,25 @@ export const checkChunkPurity = ({
         chunk: chunk.name,
         dir,
         modules: new Set<string>(),
-        confirmed: new Set<string>(),
-        unconfirmed: new Set<string>(),
+        from: new Set<string>(),
       };
       violations.set(key, violation);
       violation.modules.add(toSrcPath(id));
-      outsideChunks.forEach((outside) => {
-        const group = referencesOwnCode(outside, chunk)
-          ? violation.unconfirmed
-          : violation.confirmed;
-        group.add(outside.name);
-      });
+      outsideChunks.forEach((name) => violation.from.add(name));
     });
   });
 
-  const result: ChunkPurityResult = { errors: [], warnings: [] };
-  violations.forEach(({ chunk, dir, modules, confirmed, unconfirmed }) => {
-    const where = `Код ${dir} (${[...modules].join(
-      ', ',
-    )}) лежит в чужом чанке "${chunk}"`;
-    const fix =
+  return [...violations.values()].map(
+    ({ chunk, dir, modules, from }) =>
+      `Код ${dir} (${[...modules].join(', ')}) ` +
+      `лежит в чужом чанке "${chunk}" ` +
+      `и импортируется снаружи: ${limitList([...from])}. ` +
+      `Каждый такой импорт загружает весь "${chunk}". ` +
       `Добавьте для ${dir}/ свой чанк в MANUAL_UIKIT_COMP_CHUNKS ` +
-      `(plugins/vite-df-ui-chunks.ts). Если импорт не используется — ` +
-      `удалите его.`;
-    if (confirmed.size > 0) {
-      result.errors.push(
-        `${where} и импортируется снаружи: ${limitList([...confirmed])}. ` +
-          `Эти чанки загружают весь "${chunk}" только ради него. ${fix}`,
-      );
-    } else {
-      result.warnings.push(
-        `${where} и импортируется снаружи: ${limitList([...unconfirmed])}. ` +
-          `Они загружают "${chunk}" и ради его собственного кода, поэтому ` +
-          `лишняя загрузка не подтверждена. ${fix}`,
-      );
-    }
-  });
-  return result;
+      `(plugins/vite-df-ui-chunks.ts). Если модуль используется только в ` +
+      `мёртвом коде — удалите этот код вместе с импортом; если только в ` +
+      `отладочной ветке — подключайте его через import() внутри неё.`,
+  );
 };
 
 /**
