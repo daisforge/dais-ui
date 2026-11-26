@@ -1,7 +1,27 @@
 ---
 name: write-tests
-description: Пишет и правит юнит-тесты и Storybook-сценарии, разбирает падения скриншотных тестов и обновляет PNG-эталоны по правилам проекта.
+description: >-
+  Пишет и правит юнит-тесты и Storybook-сценарии, разбирает падения
+  скриншотных тестов и обновляет PNG-эталоны по правилам проекта. Используй,
+  когда нужно покрыть изменение тестом, воспроизвести баг тестом, починить
+  упавший тест или обновить скриншоты.
 ---
+
+## Принципы
+
+- Тест проверяет **поведение, видимое потребителю** (что отрендерилось, какой
+  колбэк вызван с какими аргументами), а не внутреннюю реализацию (state,
+  приватные функции, количество рендеров).
+- Исправленный баг — тест, который **падал до исправления**. Убедись в этом:
+  временно откати исправление или запусти тест до правки.
+- Новый проп — тест на новое поведение и тест, что **без пропа поведение
+  прежнее**.
+- Не ослабляй существующие тесты, чтобы они прошли: не удаляй проверки, не
+  меняй ожидания без понимания, почему они изменились. Если старое ожидание
+  было неверным — объясни это в отчёте.
+- Описания тестов — по-русски: `it('вызывает onClose при нажатии Esc')`.
+- Запросы Testing Library — по роли и тексту (`getByRole`, `getByText`);
+  `data-testid` — только если иначе нельзя.
 
 ## Особенности проекта
 
@@ -12,12 +32,12 @@ description: Пишет и правит юнит-тесты и Storybook-сце�
 
 ## Где писать тесты
 
-| Тип       | Расположение                                      | Расширение      | Когда использовать                  |
-| --------- | ------------------------------------------------- | --------------- | ----------------------------------- |
-| Юнит      | `packages/ui-kit/src/components/<ComponentName>/` | `.test.tsx`     | Основной вариант (React-компоненты) |
-| Юнит      | `packages/ui-kit/src/components/<ComponentName>/` | `.test.ts`      | Простые утилиты без JSX             |
-| Storybook | `packages/storybook/src/stories/`                 | `*.stories.tsx` | —                                   |
-| Скриншоты | `packages/storybook/__snapshots__/`               | автоматически   | —                                   |
+| Тип       | Расположение                                                                     | Расширение      | Когда использовать                  |
+| --------- | -------------------------------------------------------------------------------- | --------------- | ----------------------------------- |
+| Юнит      | `packages/ui-kit/src/components/<ComponentName>/` или `__tests__/` рядом с кодом | `.test.tsx`     | Основной вариант (React-компоненты) |
+| Юнит      | `packages/ui-kit/src/components/<ComponentName>/`                                | `.test.ts`      | Простые утилиты без JSX             |
+| Storybook | `packages/storybook/src/stories/`                                                | `*.stories.tsx` | —                                   |
+| Скриншоты | `packages/storybook/__snapshots__/`                                              | автоматически   | —                                   |
 
 ## Юнит-тесты (Vitest)
 
@@ -47,7 +67,7 @@ describe('ComponentName', () => {
 
 ```bash
 npx nx test ui-kit                      # все тесты
-npx nx test ui-kit --testNamePattern="DrawerDF"
+npx nx test ui-kit -- DrawerDF          # файлы, в пути которых есть DrawerDF
 npx nx test ui-kit --coverage
 ```
 
@@ -56,17 +76,22 @@ npx nx test ui-kit --coverage
 ### Структура сторис
 
 ```typescript
-export default {
-  title: 'Components/ComponentName',
+const meta: Meta<typeof ComponentName> = {
+  title: 'Локальные компоненты/ComponentName',
   component: ComponentName,
-  tags: ['autodocs'],
-  args: { ... },
+  tags: ['!autodocs'],
 };
+export default meta;
 
-export const Default = {
+export const Default: StoryObj<typeof ComponentName> = {
   render: (args) => <ComponentName {...args} />,
 };
 ```
+
+Оформление stories (без JSDoc, `storySourceDoc`, категории) — по
+[гайду документации](../../../generators/meta-info/GUIDE.md#3-stories--примеры).
+Взаимодействие (клик, ввод, открытие) проверяй `play`-функцией с `expect` из
+`@storybook/test`.
 
 ### Правила
 
@@ -109,8 +134,21 @@ render(
 
 ### Компоненты форм (React Hook Form)
 
+Form-компоненты требуют `control` — оборачивай их в тестовую форму:
+
 ```typescript
-render(<FormTextField name="fieldName" rules={{ required: 'Обязательное поле' }} />);
+function TestForm() {
+  const { control } = useForm({ defaultValues: { fieldName: '' } });
+  return (
+    <FormTextField
+      name="fieldName"
+      control={control}
+      rules={{ required: 'Обязательное поле' }}
+    />
+  );
+}
+
+render(<TestForm />);
 ```
 
 ### TableCanvas / Table

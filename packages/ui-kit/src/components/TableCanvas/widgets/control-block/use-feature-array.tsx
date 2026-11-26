@@ -110,7 +110,7 @@ export const useFeatureArray = <
   setPinnedCols,
   hiddenCols,
   setHiddenCols,
-  getDefaultColumnsOrder,
+  getResetColumnsOrder,
   columnsControlConfig,
   colsWithKeyTextMap,
   tableConfigKeyTextBoolean,
@@ -161,7 +161,7 @@ export const useFeatureArray = <
   setPinnedCols: React.Dispatch<React.SetStateAction<string[]>>;
   hiddenCols: string[];
   setHiddenCols: React.Dispatch<React.SetStateAction<string[]>>;
-  getDefaultColumnsOrder: () => string[];
+  getResetColumnsOrder: () => string[];
   columnsControlConfig: ColumnsControlConfig;
   colsWithKeyTextMap: KeyTextMap;
   tableConfigKeyTextBoolean: boolean;
@@ -813,7 +813,7 @@ export const useFeatureArray = <
               setPinnedCols={setPinnedCols}
               hiddenCols={hiddenCols}
               setHiddenCols={setHiddenCols}
-              getDefaultColumnsOrder={getDefaultColumnsOrder}
+              getResetColumnsOrder={getResetColumnsOrder}
               columnConfig={columnConfig}
               columnsControlConfig={columnsControlConfig}
               colsWithKeyTextMap={colsWithKeyTextMap}

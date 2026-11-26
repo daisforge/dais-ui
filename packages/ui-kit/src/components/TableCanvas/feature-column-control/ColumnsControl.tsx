@@ -17,7 +17,7 @@ export const ColumnsControl = <Row extends ObjectForExtending, SummaryRow>({
   opened: boolean;
   onClose: () => void;
   columnsOrder: string[];
-  getDefaultColumnsOrder: () => string[];
+  getResetColumnsOrder: () => string[];
   setColumnsOrder: React.Dispatch<React.SetStateAction<string[]>>;
   pinnedCols: string[];
   setPinnedCols: React.Dispatch<React.SetStateAction<string[]>>;

@@ -1,5 +1,1 @@
-export const overflowDotsStyle = {
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-};
+export { overflowDotsStyle } from '@ui-kit/constants/tableVisuals';

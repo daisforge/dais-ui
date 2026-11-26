@@ -1,4 +1,9 @@
 import { mCls } from '@ui-kit/utils';
+import type {
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import { ComponentProps, forwardRef } from 'react';
 import { CSSObject, FlattenSimpleInterpolation } from 'styled-components';
 
@@ -28,7 +33,9 @@ const containerTypeMapper: Record<
   default: cls.containerTypeDefault,
 };
 
-const WidgetWithRef = forwardRef<HTMLDivElement, WidgetProps>(
+const WidgetWithRef: ForwardRefExoticComponent<
+  PropsWithoutRef<WidgetProps> & RefAttributes<HTMLDivElement>
+> = forwardRef<HTMLDivElement, WidgetProps>(
   ({ children, containerType = 'default', className, ...rest }, ref) => (
     <WidgetContainerTypeContext.Provider value={containerType}>
       <StyledContainer
@@ -42,7 +49,19 @@ const WidgetWithRef = forwardRef<HTMLDivElement, WidgetProps>(
   ),
 );
 
-export const Widget = Object.assign(WidgetWithRef, {
+// Явный тип с `typeof` частей: без него TypeScript разворачивает тип каждой
+// части прямо в .d.ts компонента.
+type WidgetComponent = typeof WidgetWithRef & {
+  Header: typeof WidgetHeader;
+  Footer: typeof WidgetFooter;
+  Content: typeof StyledContent;
+  Divider: typeof WidgetDivider;
+  ServiceButtons: typeof WidgetServiceButtons;
+  IconButtonDots: typeof WidgetIconButtonDots;
+  IconButtonBack: typeof WidgetIconButtonBack;
+};
+
+export const Widget: WidgetComponent = Object.assign(WidgetWithRef, {
   Header: WidgetHeader,
   Footer: WidgetFooter,
   Content: StyledContent,

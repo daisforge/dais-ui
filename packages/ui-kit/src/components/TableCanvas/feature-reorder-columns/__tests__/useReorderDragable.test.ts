@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { CHECKBOX_COLUMN_KEY } from '../../feature-select-row';
 import { ColumnConfigInternal } from '../../types/column-config-internal.type';
 import { sameOrder } from '../handlers';
 import { useReorderDragable } from '../useReorderDragable';
@@ -130,5 +131,114 @@ describe('useReorderDragable: скрытие столбцов', () => {
     });
 
     expect(result.current.reorderedColumns).toBe(visible);
+  });
+});
+
+describe('useReorderDragable: orderForReset', () => {
+  const columns = [a, b, c];
+  const props = {
+    ...baseProps,
+    allColumns: columns,
+    columns,
+    columnConfig: columns,
+  };
+
+  it('обновляет цель сброса без перестановки колонок', () => {
+    const { result, rerender } = renderHook(
+      (orderForReset: string[]) =>
+        useReorderDragable({
+          ...props,
+          tableConfigColumnsControl: {
+            enable: true,
+            orderDefault: ['c', 'b', 'a'],
+            orderForReset,
+          },
+        }),
+      { initialProps: ['b', 'a', 'c'] },
+    );
+    expect(result.current.columnsOrder).toEqual(['c', 'b', 'a']);
+    expect(result.current.getResetColumnsOrder()).toEqual(['b', 'a', 'c']);
+    rerender(['a', 'b', 'c']);
+    expect(result.current.columnsOrder).toEqual(['c', 'b', 'a']);
+    expect(result.current.getResetColumnsOrder()).toEqual(['a', 'b', 'c']);
+  });
+
+  it('без orderForReset начинает и сбрасывает к orderDefault', () => {
+    const { result } = renderHook(() =>
+      useReorderDragable({
+        ...props,
+        tableConfigColumnsControl: {
+          enable: true,
+          orderDefault: ['c', 'a', 'b'],
+        },
+      }),
+    );
+    expect(result.current.reorderedColumns).toEqual([c, a, b]);
+    expect(result.current.getResetColumnsOrder()).toEqual(['c', 'a', 'b']);
+  });
+
+  it('без orderDefault начинает с порядка сброса, даже если columnConfig задан в другом порядке', () => {
+    const { result } = renderHook(() =>
+      useReorderDragable({
+        ...props,
+        tableConfigColumnsControl: {
+          enable: true,
+          orderForReset: ['c', 'a', 'b'],
+        },
+      }),
+    );
+    expect(result.current.reorderedColumns).toEqual([c, a, b]);
+    expect(result.current.getResetColumnsOrder()).toEqual(['c', 'a', 'b']);
+  });
+
+  it('восстанавливает скрытые, новые и служебные колонки при устаревших сохранённых ключах', () => {
+    const { result } = renderHook(() =>
+      useReorderDragable({
+        ...props,
+        columns: [a, c],
+        selectingRowsIsActive: true,
+        tableConfigColumnsControl: {
+          enable: true,
+          orderDefault: ['c', 'old', 'a', 'c'],
+          orderForReset: ['b', 'removed', 'a', 'b'],
+        },
+      }),
+    );
+    expect(result.current.columnsOrder).toEqual([
+      CHECKBOX_COLUMN_KEY,
+      'c',
+      'a',
+      'b',
+    ]);
+    expect(result.current.reorderedColumns).toEqual([c, a]);
+    expect(result.current.getResetColumnsOrder()).toEqual([
+      CHECKBOX_COLUMN_KEY,
+      'b',
+      'a',
+      'c',
+    ]);
+  });
+
+  it('восстанавливает позицию пары key/text при показе только кода', () => {
+    const pair = { keyKey: 'b_code', textKey: 'b' };
+    const { result } = renderHook(() =>
+      useReorderDragable({
+        ...props,
+        columns: [a, col('b_code'), c],
+        tableConfigKeyTextBoolean: true,
+        keyText: 'key',
+        colsWithKeyTextMap: new Map([
+          [pair.keyKey, pair],
+          [pair.textKey, pair],
+        ]),
+        tableConfigColumnsControl: {
+          enable: true,
+          orderDefault: ['b', 'c', 'a'],
+          orderForReset: ['c', 'b_code', 'a'],
+        },
+      }),
+    );
+    expect(result.current.columnsOrder).toEqual(['b_code', 'c', 'a']);
+    expect(result.current.getResetColumnsOrder()).toEqual(['c', 'b_code', 'a']);
   });
 });

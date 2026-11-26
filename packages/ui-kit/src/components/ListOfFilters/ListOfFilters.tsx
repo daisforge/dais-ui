@@ -1,7 +1,6 @@
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { Collapse } from '@ui-kit/components/Collapse';
-import { COLORS } from '@ui-kit/components/Table';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
 import { IconClose } from '@ui-kit/icons';
 import { useDebouncedValue } from '@ui-kit/utils';
@@ -19,7 +18,6 @@ const SIZES = {
 };
 
 const BORDER_WIDTH = 1;
-const BORDER = `${BORDER_WIDTH}px solid ${() => COLORS.border}`;
 
 // const DURATION = 0.5;
 
@@ -112,8 +110,6 @@ const ListOfFiltersNotMemo = ({
         className={cls.container}
         $css={{
           display: 'flex',
-          borderInline: BORDER,
-          borderTop: BORDER,
           paddingInline: curPaddingInline,
           maxHeight: curMaxHeight,
           marginTop: paddingTop,
