@@ -1,5 +1,0 @@
-import{j as r}from"./react-DYHuXpTF.js";import m from"./DocArgsTemplate-CCB_moAE.js";import{c as n}from"./StoriesUtils-HCmPljPw.js";import"./_commonjsHelpers-BosuxZz1.js";import"./vendor-BpmB3NYD.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-BADHLMuD.js";import"./@tanstack/react-virtual-uAYy1xUY.js";import"./WithTooltip-KJL26V4Q-D-_6HSfR.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-BUhspFdO.js";const I={title:"Локальные компоненты/TableCanvas/API/tableConfig",parameters:{docs:{page:m,description:{component:"### API tableConfig:"}}},component:n},o={name:"API",render:()=>r.jsx(r.Fragment,{})};var e,t,a;o.parameters={...o.parameters,docs:{...(e=o.parameters)==null?void 0:e.docs,source:{originalSource:`{
-  name: 'API',
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  render: () => <></>
-}`,...(a=(t=o.parameters)==null?void 0:t.docs)==null?void 0:a.source}}};const P=["Docs"];export{o as Docs,P as __namedExportsOrder,I as default};
