@@ -58,11 +58,6 @@
       "ae-forgotten-export": {
         "logLevel": "none",
         "addToApiReportFile": false
-      },
-      // {@link X} в JSDoc ссылается и на типы, которые пакет не экспортирует
-      // (например RowErrorsConfig). Это ссылки в документации, а не API.
-      "ae-unresolved-link": {
-        "logLevel": "none"
       }
     },
     "tsdocMessageReporting": {
