@@ -236,7 +236,7 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   // блока (пусто = по центру). По нему ячейка-select расставляет контент и
   // уголок по высоте всего блока.
   __mergedCell?: { align?: SpanCellAlign };
-  /** Сводка ошибок строки ({@link RowErrorsSummary}). Нет у строк без ошибок. */
+  /** Сводка ошибок строки (`RowErrorsSummary`). Нет у строк без ошибок. */
   rowErrors?: RowErrorsSummary;
 };
 export type EditingCellInfoGlide<
@@ -514,7 +514,7 @@ export type TableGlideCustomProps<
    * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
-  /** Внешний вид: «чистый» вариант и зебра. См. {@link AppearanceConfig}. */
+  /** Внешний вид: «чистый» вариант и зебра. См. `AppearanceConfig`. */
   appearance?: AppearanceConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
@@ -527,7 +527,7 @@ export type TableGlideCustomProps<
   /** Возвращает true, если ячейка отмечена для подсветки в текущей сессии. */
   isCellEdited?: (row: R, columnKey: string) => boolean;
   /**
-   * Собирать сводку ошибок по строкам окна видимости ({@link RowErrorsSummary}
+   * Собирать сводку ошибок по строкам окна видимости (`RowErrorsSummary`
    * в `cellInfo.rowErrors`). Для сводки колонки с `isErrorCell` обходятся все,
    * а не только видимые, поэтому включается только когда сводка кому-то нужна
    * (столбец-индикатор ошибок).
