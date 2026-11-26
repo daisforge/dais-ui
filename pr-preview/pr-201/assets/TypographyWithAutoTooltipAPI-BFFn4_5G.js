@@ -1,0 +1,7 @@
+import{j as o}from"./react-UEdzNlUe.js";import{dd as i}from"./vendor-DX-rrd2O.js";import{M as e}from"./WithTooltip-KJL26V4Q-D5fxXK89.js";import{T as n}from"./TypeSourceViewer-BRbSJO9E.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BSCswbR3.js";import"./@tanstack/react-virtual-Z5qLdlzb.js";import"./preload-helper-EhFzO87Y.js";import"./index-Cu4lwwaE.js";import"./index-CTuxd491.js";import"./types.string-CieBX609.js";function r(p){const t={blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",p:"p",...i(),...p.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{title:"Локальные компоненты/TypographyWithAutoTooltip/API"}),`
+`,o.jsx(t.h1,{id:"typographywithautotooltip-api",children:"TypographyWithAutoTooltip API"}),`
+`,o.jsx(t.h2,{id:"typographywithautotooltipprops",children:"TypographyWithAutoTooltipProps"}),`
+`,o.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/Typography/TypographyWithAutoTooltip.types.ts",typeName:"TypographyWithAutoTooltipProps"}),`
+`,o.jsxs(t.blockquote,{children:[`
+`,o.jsxs(t.p,{children:["Остальные пропсы наследуются от ",o.jsx(t.code,{children:"TypographyProps"})," (кроме ",o.jsx(t.code,{children:"frame"}),")"]}),`
+`]})]})}function A(p={}){const{wrapper:t}={...i(),...p.components};return t?o.jsx(t,{...p,children:o.jsx(r,{...p})}):r(p)}export{A as default};
