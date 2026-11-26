@@ -788,9 +788,27 @@ function getSplitLines(
       ? font
       : `${font}${PRECISE_WRAP_FONT_SUFFIX}`;
 
-    lines = normalizeSplitResult(
-      split(ctx, text, splitFontKey, normalizedWrapWidth, hyperWrappingAllowed)
-    );
+    // Пустой абзац в canvas-hypertxt меряется как '' и портит среднюю ширину
+    // символа шрифта (0 / 0 = NaN) до clearCache: все следующие тексты этим
+    // шрифтом встают в одну строку. Поэтому абзацы делим сами, пустые не меряем.
+    const paragraphLines = text
+      .split('\n')
+      .flatMap((paragraph) =>
+        paragraph === ''
+          ? ['']
+          : normalizeSplitResult(
+              split(
+                ctx,
+                paragraph,
+                splitFontKey,
+                normalizedWrapWidth,
+                hyperWrappingAllowed
+              )
+            )
+      )
+      // Обрезка пробелов как у split для всего текста сразу
+      .map((line, index) => (index === 0 ? line.trimEnd() : line.trim()));
+    lines = rewrapOverflowingLines(ctx, paragraphLines, normalizedWrapWidth);
     setBoundedCacheValue(
       splitLinesCache,
       cacheKey,
@@ -799,6 +817,77 @@ function getSplitLines(
     );
   }
 
+  return lines;
+}
+
+/**
+ * canvas-hypertxt решает, что абзац влезает, по префиксу длиной
+ * `ширина / средняя ширина символа * 1.5`. Средняя ширина общая для всех текстов
+ * шрифта: если она завышена (до этого мерились тексты с широкими символами),
+ * префикс влезает, и абзац целиком уходит в одну строку. Поэтому строки шире
+ * места переносим сами. ctx.font уже выставлен в getSplitLines.
+ */
+function rewrapOverflowingLines(
+  ctx: CanvasRenderingContext2D,
+  lines: string[],
+  wrapWidth: number
+): string[] {
+  let result: string[] | null = null;
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i] ?? '';
+    if (ctx.measureText(line).width > wrapWidth) {
+      result ??= lines.slice(0, i);
+      result.push(...wrapByWords(ctx, line, wrapWidth));
+    } else if (result !== null) {
+      result.push(line);
+    }
+  }
+  return result ?? lines;
+}
+
+/** Жадный перенос по пробелам; слово шире места делится по символам */
+function wrapByWords(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  wrapWidth: number
+): string[] {
+  const lines: string[] = [];
+  let current = '';
+  for (const word of text.split(' ')) {
+    const candidate = current === '' ? word : `${current} ${word}`;
+    if (current === '' || ctx.measureText(candidate).width <= wrapWidth) {
+      current = candidate;
+    } else {
+      lines.push(current);
+      current = word;
+    }
+  }
+  lines.push(current);
+
+  return lines.flatMap((line) =>
+    ctx.measureText(line).width > wrapWidth
+      ? wrapByChars(ctx, line, wrapWidth)
+      : [line]
+  );
+}
+
+function wrapByChars(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  wrapWidth: number
+): string[] {
+  const lines: string[] = [];
+  let current = '';
+  for (const char of Array.from(text)) {
+    const candidate = current + char;
+    if (current !== '' && ctx.measureText(candidate).width > wrapWidth) {
+      lines.push(current);
+      current = char;
+    } else {
+      current = candidate;
+    }
+  }
+  lines.push(current);
   return lines;
 }
 
