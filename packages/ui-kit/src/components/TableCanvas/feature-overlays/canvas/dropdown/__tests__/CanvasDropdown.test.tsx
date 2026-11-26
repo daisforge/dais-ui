@@ -48,12 +48,16 @@ describe('CanvasDropdown на настоящем Dropdown', () => {
   const renderDropdown = (
     table: HTMLElement,
     overrides: Partial<CanvasNodeDropdownConfig> = {},
+    defaults?: Parameters<typeof normalizeDropdownConfig>[1],
   ) => {
     const close = vi.fn();
-    const config = normalizeDropdownConfig({
-      items: ITEMS,
-      ...overrides,
-    } as CanvasNodeDropdownConfig);
+    const config = normalizeDropdownConfig(
+      {
+        items: ITEMS,
+        ...overrides,
+      } as CanvasNodeDropdownConfig,
+      defaults,
+    );
     render(
       <HeaderContext.Provider value={headerContext}>
         <CanvasDropdown config={config} close={close} tableContainer={table} />
@@ -61,6 +65,35 @@ describe('CanvasDropdown на настоящем Dropdown', () => {
     );
     return close;
   };
+
+  it('сохраняет приоритет size и variant элемента над настройками таблицы', () => {
+    const defaults = { size: 'm', variant: 'tight' } as const;
+    expect(normalizeDropdownConfig({ items: ITEMS }, defaults)).toMatchObject(
+      defaults,
+    );
+    expect(
+      normalizeDropdownConfig(
+        { items: ITEMS, size: 'xs', variant: 'normal' },
+        defaults,
+      ),
+    ).toMatchObject({ size: 'xs', variant: 'normal' });
+  });
+
+  it.each([
+    { local: undefined, table: 220, width: '220px' },
+    { local: '20rem', table: 220, width: '20rem' },
+    { local: 600, table: '96px', width: '600px' },
+  ])(
+    'ширина списка при listWidth элемента $local и таблицы $table',
+    async ({ local, table, width }) => {
+      const { table: container } = createTable();
+      renderDropdown(container, { listWidth: local }, { listWidth: table });
+      const list = await screen.findByRole('tree');
+      const wrapper = list.parentElement;
+      expect(wrapper).toBeInstanceOf(HTMLElement);
+      expect(getComputedStyle(wrapper as HTMLElement).width).toBe(width);
+    },
+  );
 
   it('показывает пункты сразу после открытия', async () => {
     const { table } = createTable();

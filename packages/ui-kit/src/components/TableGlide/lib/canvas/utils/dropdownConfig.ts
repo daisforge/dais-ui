@@ -19,7 +19,8 @@ export interface CanvasDropdownErrorApi extends CanvasDropdownApi {
 
 /**
  * Настройки Dropdown: на Canvas-элементе (проп `dropdown`) или для всей таблицы
- * (`tableConfig.dropdown`). Поля `placement`, `offset`, `listWidth`,
+ * (`tableConfig.dropdown`). Числовой `listWidth` задаёт ширину в CSS-пикселях,
+ * строковый сохраняет указанные единицы. Поля `placement`, `offset`,
  * `listMaxHeight`, `variant`, `zIndex`, `closeOnSelect`, `renderItem`,
  * `beforeList`, `afterList` передаются в атомарный Dropdown как есть.
  */

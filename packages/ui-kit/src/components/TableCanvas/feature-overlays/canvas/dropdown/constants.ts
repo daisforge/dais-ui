@@ -15,7 +15,6 @@ export const DROPDOWN_DEFAULTS: Pick<
   | 'mouseLeaveDelay'
   | 'placement'
   | 'offset'
-  | 'variant'
   | 'zIndex'
   | 'closeOnSelect'
   | 'closeOnScroll'
@@ -28,7 +27,6 @@ export const DROPDOWN_DEFAULTS: Pick<
   mouseLeaveDelay: 200,
   placement: 'bottom-start',
   offset: [0, 4],
-  variant: 'normal',
   zIndex: POPOVER_Z_INDEX,
   closeOnSelect: true,
   closeOnScroll: true,

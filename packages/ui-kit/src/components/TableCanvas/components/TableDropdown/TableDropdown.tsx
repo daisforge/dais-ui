@@ -1,54 +1,10 @@
-import { Dropdown, DropdownItemOption } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption } from '@ui-kit/components/Dropdown';
 import { tableClassNames } from '@ui-kit/components/TableCanvas/styles';
 import React, { useEffect, useRef } from 'react';
-import styled, { CSSObject } from 'styled-components';
 
-import {
-  useHeaderContext,
-  useRefTableGlobalContainerContext,
-} from '../../contexts';
-import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
+import { useRefTableGlobalContainerContext } from '../../contexts';
+import { SizedTableDropdown } from './SizedTableDropdown';
 import { TableDropdownProps } from './types';
-
-const StyledDropdown: React.ComponentType<TableDropdownProps> = styled(
-  Dropdown,
-)<{ $css?: CSSObject }>(({ $css }) => $css);
-
-function SizedTableDropdown({
-  size,
-  variant,
-  listWidth,
-  $css,
-  ...props
-}: TableDropdownProps) {
-  const { rowSize } = useHeaderContext();
-  const config = getTableDropdownConfig(rowSize, size);
-  // Plasma интерполирует число как CSS-строку без единиц измерения.
-  const width = typeof listWidth === 'number' ? `${listWidth}px` : listWidth;
-  return (
-    <StyledDropdown
-      {...props}
-      size={size ?? config.size}
-      variant={variant ?? config.variant}
-      listWidth={width ?? 'max-content'}
-      $css={{
-        '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
-        // Подменю Plasma портализируется в обёртку родительского списка.
-        '& div:has(> ul[role="tree"]), & div:has(> ul[role="group"])': {
-          ...(listWidth == null && {
-            minWidth: config.minWidth,
-            maxWidth: config.maxWidth,
-          }),
-        },
-        '& .cell-textbox-title': {
-          whiteSpace: 'normal',
-          overflowWrap: 'anywhere',
-        },
-        ...$css,
-      }}
-    />
-  );
-}
 
 // Закрываем неуправляемый Plasma-дропдаун его же путём: диспатчим mousedown на
 // document. Его ловит внутренний useOutsideClick Plasma (target=document вне

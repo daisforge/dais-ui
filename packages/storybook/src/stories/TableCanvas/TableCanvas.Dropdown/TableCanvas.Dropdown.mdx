@@ -138,7 +138,19 @@ tableConfig={{
 }}
 ```
 
-`listWidth` и `size` по умолчанию зависят от размера строк таблицы, как у контекстного меню. Остальные встроенные значения: `trigger: 'click'`, `placement: 'bottom'`, `offset: [0, 4]`, `variant: 'normal'`, `closeOnSelect: true`, `closeOnScroll: true`, `closeOnOutsideClick: true`, `closeOnEsc: true`, `mouseEnterDelay: 300`, `mouseLeaveDelay: 200`.
+Меню в ячейке использует ту же шкалу, что и контекстное меню.
+
+| Размер строки | Размер меню | Вариант | Автоматическая ширина |
+| --- | --- | --- | --- |
+| small | XS | tight | 120–300 px |
+| medium | S | normal | 120–380 px |
+| big | M | normal | 140–440 px |
+
+Список растёт по содержимому до максимума, затем длинная подпись переносится. Явный `listWidth` имеет приоритет над обеими границами. Число задаёт ширину в пикселях, CSS-строка сохраняет единицы измерения. Явные `size` и `variant` имеют приоритет над шкалой строки.
+
+В истории «Все варианты (стенд)» переключайте размер строки на панели таблицы и нажимайте «Действия» в колонке «Клик». В Controls можно включить длинную подпись и задать ширину меню «⋮» в колонке «Вложенные».
+
+Остальные встроенные значения: `trigger: 'click'`, `placement: 'bottom-start'`, `offset: [0, 4]`, `closeOnSelect: true`, `closeOnScroll: true`, `closeOnOutsideClick: true`, `closeOnEsc: true`, `mouseEnterDelay: 300`, `mouseLeaveDelay: 200`.
 
 Подробное описание типов в разделе [API](/docs/локальные-компоненты-tablecanvas-dropdown-api--docs).
 

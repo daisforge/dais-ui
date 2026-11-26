@@ -30,7 +30,7 @@ export function normalizeDropdownConfig(
     offset: config.offset ?? defaults?.offset ?? DROPDOWN_DEFAULTS.offset,
     listWidth: config.listWidth ?? defaults?.listWidth,
     listMaxHeight: config.listMaxHeight ?? defaults?.listMaxHeight,
-    variant: config.variant ?? defaults?.variant ?? DROPDOWN_DEFAULTS.variant,
+    variant: config.variant ?? defaults?.variant,
     size: config.size ?? defaults?.size,
     zIndex: config.zIndex ?? defaults?.zIndex ?? DROPDOWN_DEFAULTS.zIndex,
     closeOnSelect:

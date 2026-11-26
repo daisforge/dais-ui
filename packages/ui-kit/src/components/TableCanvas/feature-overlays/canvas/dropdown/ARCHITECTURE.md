@@ -114,17 +114,15 @@ canvas/dropdown/
 `normalizeDropdownConfig(config, defaults)` берёт каждое поле сначала с
 элемента, затем из `tableConfig.dropdown`, затем из `DROPDOWN_DEFAULTS`:
 `trigger: 'click'`, `mouseEnterDelay: 300`, `mouseLeaveDelay: 200`,
-`placement: 'bottom-start'`, `offset: [0, 4]`, `variant: 'normal'`,
+`placement: 'bottom-start'`, `offset: [0, 4]`,
 `zIndex: POPOVER_Z_INDEX`, `closeOnSelect`, `closeOnScroll`,
 `closeOnOutsideClick`, `closeOnEsc`, `loadingItems` (один неактивный пункт
 «Загрузка...»). `trigger` берётся только с элемента: нода решает, ловить ли
 наведение, ещё до того, как известен `tableConfig`.
 
-Без дефолта: `items`, `getItems`, `listWidth`, `listMaxHeight`, `size`,
+Без дефолта: `items`, `getItems`, `listWidth`, `listMaxHeight`, `size`, `variant`,
 `renderItem`, `beforeList`, `afterList`, `renderError`, `onItemSelect`,
-`ariaLabel`, `onOpen`, `onClose`. `listWidth` и `size` по умолчанию берутся
-уже в компоненте из размера строк таблицы (`LIST_WIDTH`, `SIZES` по
-`rowSize`), как в `TableDropdown`.
+`ariaLabel`, `onOpen`, `onClose`. Размер, вариант и ширину по умолчанию выбирает общий компонент `SizedTableDropdown` по табличной шкале.
 
 `ResolvedCanvasOverlay` в `../core/types.ts` различает виды:
 `{ kind: 'popover' | 'dropdown', config }`. Общий код читает из `config`

@@ -427,7 +427,9 @@ const NESTED_ACTIONS = [
   { value: 'delete', label: 'Удалить', disabled: true },
 ];
 
-function ExampleAllVariants() {
+type AllVariantsArgs = { listWidth: number | string; longLabel: boolean };
+
+function ExampleAllVariants({ listWidth, longLabel }: AllVariantsArgs) {
   const [rows] = useState(createRows);
   const [log, setLog] = useState<{ id: number; text: string }[]>([]);
   const attempts = useRef<Record<number, number>>({});
@@ -468,7 +470,19 @@ function ExampleAllVariants() {
           >
             <Canvas.Button
               view="secondary"
-              dropdown={{ items: ACTIONS, ...events('Клик', row) }}
+              dropdown={{
+                items: longLabel
+                  ? [
+                      ...ACTIONS,
+                      {
+                        value: 'history',
+                        label:
+                          'Посмотреть подробную историю изменений и комментарии всех участников согласования заявки',
+                      },
+                    ]
+                  : ACTIONS,
+                ...events('Клик', row),
+              }}
             >
               Действия
             </Canvas.Button>
@@ -493,7 +507,7 @@ function ExampleAllVariants() {
               icon={<IconDotsVerticalCenteredOutline />}
               dropdown={{
                 items: NESTED_ACTIONS,
-                listWidth: 220,
+                listWidth,
                 ...events('Вложенные', row),
               }}
             />
@@ -726,7 +740,7 @@ function ExampleAllVariants() {
       },
       { key: 'developer', name: 'Developer', width: 140 },
     ],
-    [events, note],
+    [events, listWidth, longLabel, note],
   );
 
   return (
@@ -869,7 +883,20 @@ export const GlobalDefaultsStory: StoryObj = {
   render: ExampleGlobalDefaults,
 };
 
-export const AllVariantsStory: StoryObj = {
+export const AllVariantsStory: StoryObj<AllVariantsArgs> = {
+  args: { listWidth: '220px', longLabel: false },
+  argTypes: {
+    listWidth: {
+      name: 'Ширина меню «Вложенные»',
+      options: ['220px', '600px', '96px', '20rem'],
+      mapping: { '220px': 220, '600px': 600 },
+      control: {
+        type: 'select',
+        labels: { '220px': '220 (число)', '600px': '600 (число)' },
+      },
+    },
+    longLabel: { name: 'Длинная подпись в меню «Клик»', control: 'boolean' },
+  },
   name: 'Все варианты (стенд)',
   parameters: {
     docs: { disable: true },

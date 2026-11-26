@@ -5,7 +5,7 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 # Dropdown API
 
-Под капотом атомарный `Dropdown` из `@salutejs/sdds-finai`: пункты, `placement`, `offset`, `listWidth`, `variant`, `size` и `closeOnSelect` работают как в нём, описание в [документации SDDS Dropdown](https://plasma.sberdevices.ru/sdds-finai/components/dropdown/). Открытие, якорь и закрытие таблица берёт на себя, поэтому наружу отдаётся собственный набор типов ниже.
+Под капотом атомарный `Dropdown` из `@salutejs/sdds-finai`: пункты, `placement`, `offset` и `closeOnSelect` работают как в нём, описание в [документации SDDS Dropdown](https://plasma.sberdevices.ru/sdds-finai/components/dropdown/). Таблица выбирает размер и автоматическую ширину по высоте строки. Явные `size`, `variant` и `listWidth` переопределяют эти значения. Открытие, якорь и закрытие таблица берёт на себя, поэтому наружу отдаётся собственный набор типов ниже.
 
 ## CanvasNodeDropdownConfig
 
