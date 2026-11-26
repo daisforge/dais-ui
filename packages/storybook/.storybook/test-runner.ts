@@ -8,6 +8,7 @@ import {
   captureStory,
   type ScreenshotParameters,
 } from '../test/screenshots/capture';
+import { checkFinishedAnimations } from '../test/screenshots/checkFinishedAnimations';
 import {
   checkPersistedColumnOrder,
   persistedOrderStorageKey,
@@ -68,6 +69,8 @@ const config: TestRunnerConfig = {
           path.join(artifacts, 'runtime-browser.json'),
           JSON.stringify({ version: browser.version(), ...info }, null, 2),
         );
+        // Один раз на браузер проверяем, что захват не теряет animationend.
+        await checkFinishedAnimations(browser);
         inspectedBrowsers.add(browser);
       } finally {
         await session.detach();

@@ -105,14 +105,65 @@ async function stableCapture(
 }
 
 /** Таймер и отмена RAF находятся в браузере: таймаут в Node оставил бы RAF работающими. */
-async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
+export async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
   const completed = await page.evaluate(async (budgetMs) => {
     const started = performance.now();
+    // Каждое ожидание кадра ограничено общим бюджетом: если браузер не отдаёт
+    // кадр, RAF отменяется и подготовка завершается TimeoutError, а не зависает.
+    const nextFrame = () =>
+      new Promise<boolean>((resolve) => {
+        const remaining = budgetMs - (performance.now() - started);
+        if (remaining <= 0) {
+          resolve(false);
+          return;
+        }
+        let raf = 0;
+        const timer = setTimeout(() => {
+          cancelAnimationFrame(raf);
+          resolve(false);
+        }, remaining);
+        raf = requestAnimationFrame(() => {
+          clearTimeout(timer);
+          resolve(performance.now() - started < budgetMs);
+        });
+      });
+    const filled: Animation[] = [];
     document.getAnimations().forEach((animation) => {
-      const endTime = animation.effect?.getComputedTiming().endTime;
-      if (typeof endTime === 'number' && Number.isFinite(endTime))
-        animation.finish();
+      const timing = animation.effect?.getComputedTiming();
+      const endTime = timing?.endTime;
+      if (typeof endTime !== 'number' || !Number.isFinite(endTime)) return;
+      animation.finish();
+      if (timing?.fill === 'forwards' || timing?.fill === 'both')
+        filled.push(animation);
     });
+    if (filled.length) {
+      // animationend и finish браузер отправляет при следующем обновлении анимаций,
+      // перед колбэками RAF. Отмена в той же задаче заменила бы animationend на
+      // animationcancel, и компоненты, которые размонтируются по animationend
+      // (например, StoriesViewer при закрытии), остались бы в DOM.
+      if (!(await nextFrame())) return false;
+      // Завершённая анимация с fill: forwards/both остаётся активной и держит
+      // элемент в отдельном композитном слое. Текст в таком слое растеризуется
+      // по-разному от перерисовки к перерисовке. Переносим итоговые значения
+      // в inline-стиль и снимаем анимацию: кадр тот же, слой не нужен.
+      // Псевдоэлементам inline-стиль не задать, их оставляем как есть.
+      filled.forEach((animation) => {
+        const effect = animation.effect as KeyframeEffect | null;
+        // Обработчик завершения мог удалить элемент или перезапустить анимацию.
+        if (
+          animation.playState !== 'finished' ||
+          !effect?.target?.isConnected ||
+          effect.pseudoElement
+        )
+          return;
+        try {
+          animation.commitStyles();
+          animation.cancel();
+        } catch {
+          // Элемент без отрисовки (display: none) не принимает commitStyles.
+        }
+      });
+    }
     // Перерисовываем видимую область грида, чтобы проверять и повторную отрисовку фото.
     // Выделение, наведение и данные при этом не меняем.
     const repaint = (
@@ -121,21 +172,7 @@ async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
     const grids = repaint?.() ?? 0;
     if (!grids && document.querySelector('.gdg-table'))
       throw new Error('Canvas snapshot repaint instrumentation is missing');
-    const remaining = budgetMs - (performance.now() - started);
-    if (remaining <= 0) return false;
-    return new Promise<boolean>((resolve) => {
-      let raf = 0;
-      const timer = setTimeout(() => {
-        cancelAnimationFrame(raf);
-        resolve(false);
-      }, remaining);
-      raf = requestAnimationFrame(() => {
-        raf = requestAnimationFrame(() => {
-          clearTimeout(timer);
-          resolve(performance.now() - started < budgetMs);
-        });
-      });
-    });
+    return (await nextFrame()) && nextFrame();
   }, timeoutMs);
   if (!completed)
     throw Object.assign(
