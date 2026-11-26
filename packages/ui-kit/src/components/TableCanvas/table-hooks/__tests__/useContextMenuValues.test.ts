@@ -8,10 +8,15 @@ type Row = { id: number };
 
 const ITEMS = [{ value: 'edit', label: 'Редактировать' }];
 
-const createEvent = (localEventY = 20) =>
+const createEvent = (
+  localEventY = 20,
+  height = 32,
+  kind: 'cell' | 'header' = 'cell',
+) =>
   ({
+    kind,
     preventDefault: vi.fn(),
-    bounds: { x: 12, y: 40, width: 160, height: 32 },
+    bounds: { x: 12, y: 40, width: 160, height },
     localEventX: 10,
     localEventY,
   } as never);
@@ -44,7 +49,7 @@ const openCell = (result: ReturnType<typeof setup>['result']) =>
 
 const openHeader = (result: ReturnType<typeof setup>['result']) =>
   act(() => {
-    result.current.openHeaderContextMenu(0, createEvent(), {
+    result.current.openHeaderContextMenu(0, createEvent(20, 32, 'header'), {
       column: { key: 'name' },
       ctxs: {},
       refTable: {},
@@ -72,6 +77,48 @@ describe('useContextMenuValues', () => {
     });
     openHeader(result);
     expect(result.current.position).toEqual({ x: 22, y: 40, height: 32 });
+  });
+
+  it.each([
+    { height: 49, expected: { x: 22, y: 40, height: 49 } },
+    { height: 50, expected: { x: 22, y: 45 } },
+    { height: 480, expected: { x: 22, y: 45 } },
+  ])('выбирает якорь при высоте $height px', ({ height, expected }) => {
+    const { result } = setup({
+      onCellContextMenuDropdown: { getDropdownItems: () => ITEMS },
+    });
+    act(() =>
+      result.current.openCellContextMenu(
+        [0, 0] as never,
+        createEvent(5, height),
+        CELL_INFO,
+      ),
+    );
+    expect(result.current.position).toEqual(expected);
+  });
+
+  it('отсчитывает явный offset от клика отдельно для ячейки и заголовка', () => {
+    const { result, rerender } = setup({
+      onCellContextMenuDropdown: {
+        offset: [0, 0],
+        getDropdownItems: () => ITEMS,
+      },
+      onHeaderContextMenuDropdown: { getDropdownItems: () => ITEMS },
+    });
+    openCell(result);
+    expect(result.current.position).toEqual({ x: 22, y: 60 });
+    openHeader(result);
+    expect(result.current.position).toEqual({ x: 22, y: 40, height: 32 });
+
+    rerender({
+      onHeaderContextMenuDropdown: {
+        offset: [6, 8],
+        getDropdownItems: () => ITEMS,
+      },
+    });
+    openHeader(result);
+    expect(result.current.position).toEqual({ x: 22, y: 60 });
+    expect(result.current.offset).toEqual([6, 8]);
   });
 
   it('onOpen ячейки вызывается при каждом открытии, даже если пункты уже есть', () => {

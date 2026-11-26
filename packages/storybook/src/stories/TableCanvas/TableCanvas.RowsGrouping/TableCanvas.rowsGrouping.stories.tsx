@@ -27,14 +27,36 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 
 `;
 
-export const SimpleTable: StoryObj = {
+export const SimpleTable: StoryObj<{ manyColumns: boolean }> = {
+  decorators: [(Story, { args }) => <Story key={String(args.manyColumns)} />],
+  args: { manyColumns: false },
+  argTypes: {
+    manyColumns: { name: '24 дополнительных столбца', control: 'boolean' },
+  },
   ...storySourceDoc({
     preCode,
     previewSource: 'shown',
   }),
   name: 'Простая группировка',
-  render: () => {
-    const [rows] = useState(createRowsForGrouping);
+  render: ({ manyColumns }) => {
+    const [sourceRows] = useState(createRowsForGrouping);
+    const years = useMemo(
+      () => (manyColumns ? Array.from({ length: 24 }, (_, i) => 2000 + i) : []),
+      [manyColumns],
+    );
+    const rows = useMemo(
+      () =>
+        sourceRows.map((row) => ({
+          ...row,
+          ...Object.fromEntries(
+            years.map((year) => [
+              String(year),
+              row.year === year ? row.gold : 0,
+            ]),
+          ),
+        })),
+      [sourceRows, years],
+    );
 
     const [groupByArr, setGroupByArr] = useState<string[]>([]);
 
@@ -85,8 +107,13 @@ export const SimpleTable: StoryObj = {
             },
           },
         },
+        ...years.map((year) => ({
+          key: String(year),
+          name: String(year),
+          rowsGrouping: { columnGroupLabel: `Золотые медали за ${year} год` },
+        })),
       ],
-      [],
+      [years],
     );
 
     return (

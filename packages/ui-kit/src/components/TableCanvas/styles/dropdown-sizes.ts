@@ -2,6 +2,9 @@ import type { DropdownProps } from '@ui-kit/components/Dropdown';
 
 import type { SIZE } from './styles.constants';
 
+// Для длинных списков настройки и группировки оставляем место над или под кнопкой.
+export const TABLE_SETTINGS_LIST_MAX_HEIGHT = 'min(360px, 50dvh)';
+
 // Диапазоны автоматической ширины включают отступы списка.
 const dropdownSizes = {
   small: {

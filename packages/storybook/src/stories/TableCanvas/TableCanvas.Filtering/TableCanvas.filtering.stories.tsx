@@ -185,14 +185,36 @@ export const FilteringTable: StoryObj = {
                 </TableFilterSelectListItem>
               );
             },
-            afterList(props) {
+            afterList({ headerContextState, setPopoverIsOpen }) {
               return (
-                <TableFilterSelectListItem
-                  $size={props.headerContextState.rowSize}
+                <li
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 4,
+                    padding: 4,
+                  }}
                 >
-                  Произвольный вспомогательный элемент заголовка списка с
-                  подсказкой внизу списка
-                </TableFilterSelectListItem>
+                  <Button
+                    size="xs"
+                    view="secondary"
+                    onClick={() =>
+                      headerContextState.setFilters?.((prev) => ({
+                        ...prev,
+                        issueType: [],
+                      }))
+                    }
+                  >
+                    Сбросить выбор
+                  </Button>
+                  <Button
+                    size="xs"
+                    view="secondary"
+                    onClick={() => setPopoverIsOpen(false)}
+                  >
+                    Закрыть
+                  </Button>
+                </li>
               );
             },
             component: 'select',

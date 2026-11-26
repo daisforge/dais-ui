@@ -7,7 +7,10 @@ import styled from 'styled-components';
 
 import { AnimatedCounter } from '../components/AnimatedCounter';
 import type { SIZE } from '../styles';
-import { getTableDropdownConfig } from '../styles/dropdown-sizes';
+import {
+  getTableDropdownConfig,
+  TABLE_SETTINGS_LIST_MAX_HEIGHT,
+} from '../styles/dropdown-sizes';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { DOM_METADATA_ACTIONS } from '../types/dom-metadata-actions';
 import { ControlBlockButtonProps } from '../widgets/control-block/control-block-button.types';
@@ -212,6 +215,7 @@ export const useGetRowsGroupingBtnProps = <
           }
         },
         items: dropdownOptions,
+        listMaxHeight: TABLE_SETTINGS_LIST_MAX_HEIGHT,
         closeOnSelect: false,
         $css: resetOptionStyle(),
       },

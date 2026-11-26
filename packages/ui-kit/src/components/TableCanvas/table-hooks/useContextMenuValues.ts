@@ -1,6 +1,11 @@
+import type {
+  GridMouseCellEventArgs,
+  GridMouseHeaderEventArgs,
+} from '@daisforge/glide-data-grid';
 import { DropdownProps } from '@ui-kit/components/Dropdown';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import type { ContextMenuPosition } from '../contexts';
 import { ContextMenuDropdownItem } from '../feature-context-menu';
 import { TablePopoverContextValue } from '../feature-overlays';
@@ -11,6 +16,26 @@ import {
   TableInfoWithRow,
 } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
+
+function getMenuPosition(
+  {
+    bounds,
+    kind,
+    localEventX,
+    localEventY,
+  }: GridMouseCellEventArgs | GridMouseHeaderEventArgs,
+  offset: DropdownProps['offset'],
+): ContextMenuPosition {
+  const x = bounds.x + localEventX;
+  // В границы строки Glide включает нижнюю линию сетки толщиной 1 px.
+  const height = kind === 'cell' ? bounds.height - 1 : bounds.height;
+  // Явное смещение задано относительно клика. У высоких строк границы
+  // могут оказаться далеко от курсора или за пределами окна.
+  if (offset != null || height > getRowHeightBySize('big')) {
+    return { x, y: bounds.y + localEventY };
+  }
+  return { x, y: bounds.y, height: bounds.height };
+}
 
 interface ContextMenuState<
   RowType extends ObjectForExtending,
@@ -173,11 +198,10 @@ export const useContextMenuValues = <
       if (!onHeaderContextMenuDropdown) return;
 
       const params = { column, refTable, ctxs };
-      const position = {
-        x: event.bounds.x + event.localEventX,
-        y: event.bounds.y,
-        height: event.bounds.height,
-      };
+      const position = getMenuPosition(
+        event,
+        onHeaderContextMenuDropdown.offset,
+      );
       const context = {
         type: 'header' as const,
         data: { header: { column, ctxs } },
@@ -220,11 +244,7 @@ export const useContextMenuValues = <
       if (!onCellContextMenuDropdown) return;
 
       const params = { row, column, refTable, ctxs };
-      const position = {
-        x: event.bounds.x + event.localEventX,
-        y: event.bounds.y,
-        height: event.bounds.height,
-      };
+      const position = getMenuPosition(event, onCellContextMenuDropdown.offset);
       const context = {
         type: 'cell' as const,
         data: { cell: { row, column, ctxs } },
