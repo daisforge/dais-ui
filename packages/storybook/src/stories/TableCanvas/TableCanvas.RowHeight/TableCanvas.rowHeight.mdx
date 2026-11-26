@@ -53,6 +53,7 @@ import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
 
 - `RowHeightFunc` получает `currentRowSize` — объект с `rowSizeName` и `rowSizeValue`, что позволяет адаптировать высоту к текущему выбранному размеру
 - При использовании `rowHeight` как функции, рекомендуется мемоизировать её для производительности
+- `RowHeightFunc` не знает ширину колонок: если высота зависит от ширины, запоминайте её в `tableConfig.onColumnResize`, например в ref (пример «Row height»). После ресайза таблица перерисовывается и заново вызывает функцию. Высоту по переносу текста без своего расчёта даёт `'auto'`
 
 > Подробнее о типах и пропсах — [RowHeight API](?path=/docs/локальные-компоненты-tablecanvas-rowheight-api--docs)
 

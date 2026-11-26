@@ -11,7 +11,13 @@ import {
   SIZES,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import React, { ComponentType, useCallback, useMemo, useState } from 'react';
+import React, {
+  ComponentType,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/RowHeight',
@@ -79,12 +85,25 @@ export const RowHeight: StoryObj = {
       [],
     );
 
+    // Функция высоты не знает ширину колонки: после ресайза берём её из onColumnResize
+    const loremWidthRef = useRef(500);
+
+    const onColumnResize = useCallback(
+      (column: { id?: string }, newSize: number) => {
+        if (column.id === 'loremIpsum') loremWidthRef.current = newSize;
+      },
+      [],
+    );
+
     const rowHeight: RowHeightFunc<Row> = useCallback((r, currenRowSize) => {
       const symbolWidth = 11.5;
 
       const paddingInline = 16;
-      const widthOfLoremCol = 500 - paddingInline * 2;
-      const symbolsInOneLine = Math.round(widthOfLoremCol / symbolWidth);
+      const widthOfLoremCol = loremWidthRef.current - paddingInline * 2;
+      const symbolsInOneLine = Math.max(
+        1,
+        Math.round(widthOfLoremCol / symbolWidth),
+      );
       const heightOfLineInitial = 22; // в css
       const heightOfLine = heightOfLineInitial - 2; // скорректированный
 
@@ -107,6 +126,7 @@ export const RowHeight: StoryObj = {
         tableConfig={{
           containerStyle: { height: 700 },
           rowHeight,
+          onColumnResize,
         }}
         columnConfig={columnConfig}
         rows={rows}
