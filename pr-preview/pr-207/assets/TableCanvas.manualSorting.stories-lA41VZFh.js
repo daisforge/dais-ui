@@ -1,0 +1,65 @@
+import{r,b as f}from"./react-UEdzNlUe.js";import{c as C}from"./tableData-DKA5H0bF.js";import b from"./DocStoryTemplate-DUafcp_1.js";import{s as w}from"./storySourceDoc-tVKyHcEN.js";import{T}from"./TableCanvas-CZpwsoeY.js";import"./_commonjsHelpers-BosuxZz1.js";import"./vendor-DTHFTCxs.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BDqbx52B.js";import"./@tanstack/react-virtual-Cc6cMCGC.js";import"./WithTooltip-KJL26V4Q-C3x9tCBM.js";import"./preload-helper-BOyu4uG3.js";import"./index-Cu4lwwaE.js";import"./index-D2sVbA6U.js";import"./@sddsjs/sdds_finai-Bv0LRYjs.js";import"./utils-Cc8UerBz.js";import"./constants-YnncqoDz.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-Jb2Onqi_.js";import"./@salutejs/plasma-icons-C6iRh3Pq.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./Switch-DUic9P4N.js";import"./Box-CAVr5OBu.js";import"./Collapse-CKKPV_S6.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableStateColors-CGhRd5g5.js";import"./TableGlide-B6g4hc_2.js";import"./@daisforge/glide-data-grid-7SWKw7OM.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUtilsSearch-blgVacgU.js";import"./TableTabs-GaaUELLw.js";import"./sharedUiSearch-Br8C3RCh.js";import"./TextField-Cu6HokJS.js";import"./sharedUtilsInputs-t7ShkDmK.js";import"./Typography-CPfrmcSS.js";import"./ListOfFilters-CaFybgEu.js";import"./FiltersActions-BQ_4x4XD.js";import"./IconButton-s9L26CSR.js";import"./Tooltip-DNh4Yts8.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-uBgqq2ir.js";import"./NumberFormat-DF3lboLZ.js";import"./EmptyState-DsJjulzh.js";import"./unidentified@3x-9d_s2m7N.js";import"./ErrorPage-D2aEy8hF.js";import"./Autocomplete-zKBYUNFR.js";const ft={title:"Локальные компоненты/TableCanvas/Sorting/Manual",tags:["!autodocs"],parameters:{docs:{page:b}}},V=`
+import { ColumnConfig, TableCanvas } from '@daisforge/ui';
+
+`,n={...w({preCode:V,previewSource:"shown"}),render:()=>{const s=r.useMemo(()=>C(),[]),[c,a]=r.useState(s),S=r.useMemo(()=>[{key:"id",name:"ID",sortingType:"numberSort"},{key:"task",name:"Title",sortingType:"stringSort"},{key:"priority",name:"Priority",sortingType:"stringSort"},{key:"issueType",name:"Issue Type",sortingType:"stringSort"},{key:"complete",name:"% Complete",sortingType:"numberSort"}],[]),i=r.useState([]),[m]=i;return r.useEffect(()=>{const e=m[0];if(!e){a(s);return}const y=[...s].sort((g,d)=>{const t=g[e.columnKey],o=d[e.columnKey];return typeof t=="number"&&typeof o=="number"?e.direction==="ASC"?t-o:o-t:typeof t=="string"&&typeof o=="string"&&t[0]&&o[0]?e.direction==="ASC"?t.localeCompare(o):o.localeCompare(t):0});a(y)},[m]),f.jsxDEV(T,{tableConfig:{containerStyle:{height:"700px"},sorting:{state:i,manualSorting:!0}},columnConfig:S,rows:c},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.Sorting/TableCanvas.manualSorting.stories.tsx",lineNumber:110,columnNumber:7},void 0)}};var p,u,l;n.parameters={...n.parameters,docs:{...(p=n.parameters)==null?void 0:p.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  render: () => {
+    const rows = useMemo(() => createRows(), []);
+    const [sortedRows, setSortedRows] = useState(rows);
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'id',
+      name: 'ID',
+      sortingType: 'numberSort'
+    }, {
+      key: 'task',
+      name: 'Title',
+      sortingType: 'stringSort'
+    }, {
+      key: 'priority',
+      name: 'Priority',
+      sortingType: 'stringSort'
+    }, {
+      key: 'issueType',
+      name: 'Issue Type',
+      sortingType: 'stringSort'
+    }, {
+      key: 'complete',
+      name: '% Complete',
+      sortingType: 'numberSort'
+    }], []);
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
+    const [state] = sortingStateAndSetter;
+    useEffect(() => {
+      const sortColState = state[0];
+      if (!sortColState) {
+        setSortedRows(rows);
+        return;
+      }
+      const sortRows = [...rows].sort((a, b) => {
+        const aValue = a[sortColState.columnKey as keyof Row];
+        const bValue = b[sortColState.columnKey as keyof Row];
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortColState.direction === 'ASC' ? aValue - bValue : bValue - aValue;
+        }
+        if (typeof aValue === 'string' && typeof bValue === 'string' && aValue[0] && bValue[0]) {
+          return sortColState.direction === 'ASC' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        }
+        return 0;
+      });
+      setSortedRows(sortRows);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
+    return <TableCanvas tableConfig={{
+      containerStyle: {
+        height: '700px'
+      },
+      sorting: {
+        state: sortingStateAndSetter,
+        manualSorting: true
+      }
+    }} columnConfig={columnConfig} rows={sortedRows} />;
+  }
+}`,...(l=(u=n.parameters)==null?void 0:u.docs)==null?void 0:l.source}}};const Ct=["ManualSorting"];export{n as ManualSorting,Ct as __namedExportsOrder,ft as default};

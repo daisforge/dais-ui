@@ -1,0 +1,6 @@
+import{j as e}from"./react-UEdzNlUe.js";import{df as s}from"./vendor-DTHFTCxs.js";import{M as l}from"./WithTooltip-KJL26V4Q-C3x9tCBM.js";import{T as r}from"./TypeSourceViewer-BBMoLB6b.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BDqbx52B.js";import"./@tanstack/react-virtual-Cc6cMCGC.js";import"./preload-helper-BOyu4uG3.js";import"./index-Cu4lwwaE.js";import"./index-D2sVbA6U.js";import"./types.string-DJIoVG77.js";function o(t){const n={h1:"h1",h2:"h2",...s(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(l,{title:"Локальные компоненты/TableCanvas/FullScreenMode/API"}),`
+`,e.jsx(n.h1,{id:"full-screen-mode-api",children:"Full Screen Mode API"}),`
+`,e.jsx(n.h2,{id:"fullscreen",children:"FullScreen"}),`
+`,e.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-full-screen/types.ts",typeName:"FullScreen"}),`
+`,e.jsx(n.h2,{id:"fullscreenobj",children:"FullScreenObj"}),`
+`,e.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-full-screen/types.ts",typeName:"FullScreenObj"})]})}function S(t={}){const{wrapper:n}={...s(),...t.components};return n?e.jsx(n,{...t,children:e.jsx(o,{...t})}):o(t)}export{S as default};
