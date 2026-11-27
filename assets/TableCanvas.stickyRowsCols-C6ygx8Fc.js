@@ -1,0 +1,20 @@
+import{j as o}from"./react-DYHuXpTF.js";import{df as n}from"./vendor-4go4qBMz.js";import{M as s,S as m}from"./WithTooltip-KJL26V4Q-vPnt8NfR.js";import{T as p}from"./TableCanvas.stickyRowsCols.stories-0RJmH0Jz.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-DDsYmQNq.js";import"./@tanstack/react-virtual-BBX7Noea.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-CAE-Y7vG.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-DXKmSnyp.js";import"./StoryHint-Bw3q76EW.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-CeWzPWcl.js";import"./@sddsjs/sdds_finai-Bv0LRYjs.js";import"./utils-Cr0_bERK.js";import"./constants-YnncqoDz.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-C2CeMSda.js";import"./@salutejs/plasma-icons-EIkzXMi-.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./Switch-KECbQF2z.js";import"./Box-2OtfpzOT.js";import"./Collapse-DvjEILT3.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableStateColors-CGhRd5g5.js";import"./TableGlide-Djj5Lv5j.js";import"./@daisforge/glide-data-grid-JvVugrvq.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUtilsSearch-blgVacgU.js";import"./TableTabs-DAZ_3Byo.js";import"./sharedUiSearch-DIJ_h18-.js";import"./TextField-CYooKCoB.js";import"./sharedUtilsInputs-Cv7WBy-o.js";import"./Typography-ComT6ZJz.js";import"./ListOfFilters-BUydk7WI.js";import"./FiltersActions-6Mh-YlfW.js";import"./IconButton-DsDRIEsy.js";import"./Tooltip-B7z40_Hf.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-CO4by0Sc.js";import"./NumberFormat-Yp9-4Qey.js";import"./EmptyState-DRm7_2iP.js";import"./unidentified@3x-iHLYaSSf.js";import"./ErrorPage-sO1bIxt-.js";import"./Autocomplete-BQgFMGME.js";function r(t){const i={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...t.components};return o.jsxs(o.Fragment,{children:[o.jsx(s,{of:p,name:"Docs"}),`
+`,o.jsx(i.h1,{id:"липкие-строки-и-колонки-tablecanvas",children:"Липкие строки и колонки (TableCanvas)"}),`
+`,o.jsx(i.p,{children:o.jsx(i.strong,{children:"tableConfig.stickyColumns, tableConfig.stickyRows"})}),`
+`,o.jsxs(i.p,{children:["Строки и колонки, которые прилипают к краю таблицы при прокрутке, как ",o.jsx(i.code,{children:"position: sticky"})," в CSS."]}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsx(i.li,{children:"Элемент едет вместе с таблицей, пока не дойдёт до края, затем остаётся на месте."}),`
+`,o.jsx(i.li,{children:"Следующие липкие встают под ним (строки) или правее него (колонки)."}),`
+`,o.jsxs(i.li,{children:["В отличие от закреплённых колонок (",o.jsx(i.code,{children:"columnsControl.pinnedDefault"}),"), липкая колонка остаётся на своём месте в таблице."]}),`
+`]}),`
+`,o.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsx(i.li,{children:"Колонки задаются ключами или предикатом по колонке — порядок колонок и реордер не важны."}),`
+`,o.jsx(i.li,{children:"Строки задаются предикатом или индексами. Предикат работает с сортировкой и фильтрами, его результаты кешируются (подгрузка чанками проверяет только новые строки). Индексы не требуют прохода по строкам — для таблиц на миллионы строк."}),`
+`,o.jsx(i.li,{children:"Сочетается с закреплёнными колонками, нумерацией строк, группировкой колонок, итоговыми строками и слитыми ячейками."}),`
+`,o.jsx(i.li,{children:"Разная высота строк поддерживается."}),`
+`]}),`
+`,o.jsxs(i.blockquote,{children:[`
+`,o.jsxs(i.p,{children:["Подробнее о типах — ",o.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-stickyrowscols-api--docs",children:"StickyRowsCols API"})]}),`
+`]}),`
+`,o.jsx(m,{})]})}function no(t={}){const{wrapper:i}={...n(),...t.components};return i?o.jsx(i,{...t,children:o.jsx(r,{...t})}):r(t)}export{no as default};

@@ -1,9 +1,0 @@
-import{j as e}from"./react-DYHuXpTF.js";import{df as s}from"./vendor-4go4qBMz.js";import{M as i}from"./WithTooltip-KJL26V4Q-vPnt8NfR.js";import{T as r}from"./TypeSourceViewer-BmXY6joR.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-DDsYmQNq.js";import"./@tanstack/react-virtual-BBX7Noea.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-CAE-Y7vG.js";import"./types.string-DScL2uB7.js";function t(o){const n={code:"code",h1:"h1",h2:"h2",p:"p",...s(),...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/TableCanvas/Custom renders/API"}),`
-`,e.jsx(n.h1,{id:"custom-render-api",children:"Custom Render API"}),`
-`,e.jsxs(n.p,{children:["Кастомный рендеринг настраивается через свойства ",e.jsx(n.code,{children:"columnConfig"}),"."]}),`
-`,e.jsx(n.h2,{id:"cellinfo-rendercell",children:"CellInfo (renderCell)"}),`
-`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",typeName:"CellInfo",language:"ts"}),`
-`,e.jsx(n.h2,{id:"headercellinfo-renderheadercell",children:"HeaderCellInfo (renderHeaderCell)"}),`
-`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",typeName:"HeaderCellInfo",language:"ts"}),`
-`,e.jsx(n.h2,{id:"name",children:"name"}),`
-`,e.jsxs(n.p,{children:["Свойство ",e.jsx(n.code,{children:"name"})," в ",e.jsx(n.code,{children:"columnConfig"})," принимает ",e.jsx(n.code,{children:"string | ReactElement"}),". Для кастомного заголовка можно передать ",e.jsx(n.code,{children:"Canvas.Element"}),"."]})]})}function I(o={}){const{wrapper:n}={...s(),...o.components};return n?e.jsx(n,{...o,children:e.jsx(t,{...o})}):t(o)}export{I as default};
