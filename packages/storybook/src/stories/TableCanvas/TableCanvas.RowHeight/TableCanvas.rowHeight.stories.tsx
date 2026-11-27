@@ -11,13 +11,7 @@ import {
   SIZES,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import React, {
-  ComponentType,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { ComponentType, useCallback, useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/RowHeight',
@@ -85,41 +79,45 @@ export const RowHeight: StoryObj = {
       [],
     );
 
-    // Функция высоты не знает ширину колонки: после ресайза берём её из onColumnResize
-    const loremWidthRef = useRef(500);
+    // Функция высоты не знает ширину колонки: после ресайза берём её из onColumnResize.
+    // Новая функция rowHeight нужна, чтобы таблица пересчитала и смещения строк для прокрутки
+    const [loremWidth, setLoremWidth] = useState(500);
 
     const onColumnResize = useCallback(
       (column: { id?: string }, newSize: number) => {
-        if (column.id === 'loremIpsum') loremWidthRef.current = newSize;
+        if (column.id === 'loremIpsum') setLoremWidth(newSize);
       },
       [],
     );
 
-    const rowHeight: RowHeightFunc<Row> = useCallback((r, currenRowSize) => {
-      const symbolWidth = 11.5;
+    const rowHeight: RowHeightFunc<Row> = useCallback(
+      (r, currenRowSize) => {
+        const symbolWidth = 11.5;
 
-      const paddingInline = 16;
-      const widthOfLoremCol = loremWidthRef.current - paddingInline * 2;
-      const symbolsInOneLine = Math.max(
-        1,
-        Math.round(widthOfLoremCol / symbolWidth),
-      );
-      const heightOfLineInitial = 22; // в css
-      const heightOfLine = heightOfLineInitial - 2; // скорректированный
+        const paddingInline = 16;
+        const widthOfLoremCol = loremWidth - paddingInline * 2;
+        const symbolsInOneLine = Math.max(
+          1,
+          Math.round(widthOfLoremCol / symbolWidth),
+        );
+        const heightOfLineInitial = 22; // в css
+        const heightOfLine = heightOfLineInitial - 2; // скорректированный
 
-      const allSymbols = r.loremIpsum.length;
+        const allSymbols = r.loremIpsum.length;
 
-      const countOfLine = Math.ceil(allSymbols / symbolsInOneLine);
-      const paddingBlock = Number(
-        SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2),
-      );
+        const countOfLine = Math.ceil(allSymbols / symbolsInOneLine);
+        const paddingBlock = Number(
+          SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2),
+        );
 
-      const neededHeight = heightOfLine * countOfLine + paddingBlock * 2;
+        const neededHeight = heightOfLine * countOfLine + paddingBlock * 2;
 
-      return neededHeight > currenRowSize.rowSizeValue
-        ? neededHeight
-        : currenRowSize.rowSizeValue;
-    }, []);
+        return neededHeight > currenRowSize.rowSizeValue
+          ? neededHeight
+          : currenRowSize.rowSizeValue;
+      },
+      [loremWidth],
+    );
 
     return (
       <TableCanvas
