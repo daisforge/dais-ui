@@ -74,6 +74,15 @@ export const DETAIL_PANEL_ROW_CLASS = 'detail-panel-row';
 export const ROW_IDX_START_CLASS = 'row-idx-';
 export const FIRST_ROW = `${ROW_IDX_START_CLASS}0`;
 
+/**
+ * Прежние фиксированные ширины списков TableCanvas для small, medium и big.
+ *
+ * @deprecated Для автоматической ширины опустите `listWidth`. Список растёт
+ * по содержимому в диапазоне 120–300 px для small, 120–380 px для medium
+ * и 140–440 px для big. Чтобы задать свою ширину, передайте `listWidth`
+ * явно: число в пикселях или CSS-строку. Явное значение имеет приоритет
+ * над обеими границами.
+ */
 export const LIST_WIDTH: Record<SIZE, string> = {
   small: '200px',
   medium: '240px',

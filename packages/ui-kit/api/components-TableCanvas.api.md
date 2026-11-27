@@ -3379,7 +3379,7 @@ type LinkView_2<V extends string | undefined> = V extends string ? `link${Capita
 // @public (undocumented)
 type LinkView_3 = Extract<LinkAllProps['view'], string>;
 
-// @public (undocumented)
+// @public @deprecated
 export const LIST_WIDTH: Record<SIZE, string>;
 
 // @public (undocumented)

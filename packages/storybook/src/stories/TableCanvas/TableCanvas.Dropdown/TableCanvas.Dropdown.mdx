@@ -150,6 +150,8 @@ tableConfig={{
 
 При обновлении с 1.30.1 у меню без явных настроек для `small` меняется `variant` с `normal` на `tight`, а для `big` — `size` с `s` на `m`. Раньше ширина для строк `small`, `medium` и `big` была фиксированной — 200, 240 и 320 px соответственно. Например, чтобы сохранить прежний вид меню в таблице с `big`, задайте `tableConfig.dropdown` равным `{ size: 's', listWidth: 320 }`.
 
+Константа `LIST_WIDTH` из `@daisforge/ui/components/TableCanvas` помечена как устаревшая. Если вы передавали `listWidth={LIST_WIDTH[rowSize]}`, уберите этот проп для перехода на автоматическую ширину.
+
 В истории «Все варианты (стенд)» переключайте размер строки на панели таблицы и нажимайте «Действия» в колонке «Клик». В Controls можно включить длинную подпись и задать ширину меню «⋮» в колонке «Вложенные».
 
 Остальные встроенные значения: `trigger: 'click'`, `placement: 'bottom-start'`, `offset: [0, 4]`, `closeOnSelect: true`, `closeOnScroll: true`, `closeOnOutsideClick: true`, `closeOnEsc: true`, `mouseEnterDelay: 300`, `mouseLeaveDelay: 200`.
