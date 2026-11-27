@@ -11,7 +11,7 @@ import * as TableFilteringStories from './TableCanvas.filtering.stories';
 
 Фильтр в шапке открывается под иконкой. При нехватке места справа список выравнивается по её правому краю. Автоматическая ширина списка составляет 120–300 px для XS, 120–380 px для S и 140–440 px для M. При достижении максимума длинные подписи переносятся. Ширину формы с `customRender` задаёт приложение. У публичного `TableFilterSelect` минимальная высота пункта по размерам строки составляет 24, 40 и 48 px. Галочка одиночного выбора в строке `medium` имеет размер 16 px.
 
-В примере Filtering Table откройте фильтр в заголовке Priority, чтобы увидеть перенос длинных подписей. Кнопка размера строки на панели меняет плотность таблицы. В примере Manual короткий список открывается у Priority, а поле ввода — у Title.
+В примере Filtering Table откройте фильтр в заголовке Priority, чтобы увидеть перенос длинных подписей. В столбце Issue Type над вариантами находятся поиск, подсказка и массовый выбор, а под ними — действия «Сбросить выбор» и «Закрыть». Кнопка размера строки на панели меняет плотность таблицы. В примере Manual короткий список открывается у Priority, а поле ввода — у Title.
 
 ## Ключевые особенности
 
@@ -30,6 +30,32 @@ import * as TableFilteringStories from './TableCanvas.filtering.stories';
 ### Select
 
 Фильтр выбором из списка. Поддержка одиночного (`'single'`) и множественного (`'multiple'`) выбора. В заголовке таблицы список сохраняет ширину при вводе и очистке поискового запроса. При следующем открытии ширина снова определяется по содержимому.
+
+В режиме `listControls: 'slots'` без слотов видны только варианты. Чтобы вернуть прежний интерфейс, передайте оба готовых элемента в `beforeList`. Каждый можно использовать отдельно или вместе с содержимым приложения. Компоненты берут состояние из фильтра заголовка.
+
+```tsx
+import { type ColumnConfig, TableFilterSearch, TableFilterSelectAll } from '@daisforge/ui/components/TableCanvas';
+
+const filtering: ColumnConfig<{ status: string }>['filtering'] = {
+  component: 'select',
+  keyInFilterState: 'status',
+  filter: { typeOfValue: 'multiple', filteringType: (values, value) => !values.length || values.includes(value) },
+  valueInRow: (row: { status: string }) => row.status,
+  selectOptions: {
+    type: 'constant',
+    options: [{ value: 'open', text: 'Открыт' }, { value: 'closed', text: 'Закрыт' }],
+  },
+  listControls: 'slots',
+  beforeList: () => (
+    <>
+      <TableFilterSearch />
+      <TableFilterSelectAll />
+    </>
+  ),
+};
+```
+
+«Выбрать всё» появляется при двух и более видимых вариантах и переключает весь исходный набор. Прокручиваются только варианты. Верхний слот и действия в `afterList` остаются видимыми при заданном `listMaxHeight`. Без `listControls` сохраняется опубликованный интерфейс со встроенными элементами. Сайдбар использует собственные элементы поиска и выбора.
 
 Если вы собираете свой список с `TableFilterSelectListItem` из `@daisforge/ui/components/TableCanvas`, пункт сам задаёт расстояние между иконкой или чекбоксом и подписью. Для строк `small` и `medium` это 6 px, для `big` — 8 px. Если раньше вы задавали иконке или чекбоксу `marginRight` для этого отступа, уберите его, иначе отступы сложатся.
 

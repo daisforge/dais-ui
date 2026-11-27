@@ -10,7 +10,7 @@ import { TableDropdownProps } from './types';
 // document. Его ловит внутренний useOutsideClick Plasma (target=document вне
 // меню) и закрывает штатно, со своей анимацией и onToggle(false), без ремаунта.
 // Один механизм на оба случая: клик в canvas и ручное закрытие по выбору пункта.
-const closeTableDropdown = () => {
+export const closeTableDropdown = () => {
   document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
 };
 

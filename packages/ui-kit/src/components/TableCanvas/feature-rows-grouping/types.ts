@@ -98,6 +98,12 @@ export type RowsGrouping<
    * `groupButton` - свойство для кастомизации кнопки с выпадающим списком
    */
   groupButton?: {
+    /**
+     * В режиме confirm выбор и сброс меняют черновик до нажатия «Применить».
+     * Переданный в onItemSelect setter в этом режиме также меняет черновик.
+     * @default 'instant'
+     */
+    applyMode?: 'instant' | 'confirm';
     getGroupedCount?: (props: {
       /**
        * высчитанное автоматически количество активных группировок.

@@ -165,7 +165,7 @@ const FilterComponentInPopoverInner = <
   const keyInFilterState =
     columnConfigFiltering.keyInFilterState as keyof typeof filters;
 
-  const valueX = filters?.[keyInFilterState] as string;
+  const value = filters?.[keyInFilterState];
   const mode = columnConfigFiltering.filter.typeOfValue;
 
   const handleSingleChange = (v: string) => {
@@ -185,19 +185,6 @@ const FilterComponentInPopoverInner = <
     }));
   };
 
-  const { value, onChange } = (() => {
-    if (mode === 'single') {
-      return {
-        value: valueX,
-        onChange: handleSingleChange,
-      };
-    }
-    return {
-      value: valueX as unknown as string[],
-      onChange: handleMultiChange,
-    };
-  })();
-
   const options = (() => {
     if (columnConfigFiltering.selectOptions.type === 'constant') {
       return columnConfigFiltering.selectOptions.options;
@@ -213,23 +200,32 @@ const FilterComponentInPopoverInner = <
 
     return [];
   })();
-  const BeforeList = columnConfigFiltering?.beforeList ?? (() => undefined);
-  const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
+  const { beforeList: BeforeList, afterList: AfterList } =
+    columnConfigFiltering;
+  // Тип состояния фильтров задаётся приложением. Конфигурация колонки определяет тип значения и слота.
+  const slotProps = props as FilterComponentInPopoverProps<
+    ObjectForExtending,
+    ColumnConfig<R, SR>
+  >;
+  const selection =
+    mode === 'single'
+      ? { mode, value: value as string, onChange: handleSingleChange }
+      : {
+          mode,
+          value: value as string[] | undefined,
+          onChange: handleMultiChange,
+        };
 
   return (
     <HeaderFilterList key={columnConfig.key} size={rowSize}>
       <ComboboxX
-        // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
+        {...selection}
         size={rowSize}
-        mode={mode as 'single'}
-        value={value as string}
-        onChange={onChange as (v: string) => void}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        options={options as any}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        beforeList={<BeforeList {...(props as any)} />}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        afterList={<AfterList {...(props as any)} />}
+        listControls={columnConfigFiltering.listControls}
+        // Значения передаются приложению в исходном виде, включая числовые ключи.
+        options={options as Option[]}
+        beforeList={BeforeList && <BeforeList {...slotProps} />}
+        afterList={AfterList && <AfterList {...slotProps} />}
         listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
       />
     </HeaderFilterList>

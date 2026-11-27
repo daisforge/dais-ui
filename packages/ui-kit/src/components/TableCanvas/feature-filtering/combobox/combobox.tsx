@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 import { Box } from '@ui-kit/components/Box';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { EmptyState } from '@ui-kit/components/EmptyState';
@@ -8,14 +7,12 @@ import { ReactNode, useMemo, useState } from 'react';
 
 import { SIZE } from '../../styles';
 import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
-import { useFocusSearchInput } from '../use-focus-search-input';
-import { inputStopPropagation } from '../utils';
 import {
-  StyledList,
-  StyledListItem,
-  StyledSearchBlockFilter,
-  StyledTotalListItemContainer,
-} from './styled';
+  FilterControlsContext,
+  TableFilterSearch,
+  TableFilterSelectAll,
+} from './filter-controls';
+import { StyledList, StyledListItem } from './styled';
 
 type Single = {
   mode?: 'single';
@@ -24,41 +21,25 @@ type Single = {
 };
 type Multiple = {
   mode?: 'multiple';
-  value: string[];
+  value?: string[];
   onChange: (v: string[]) => void;
 };
 
 function isSingle(
   m: 'single' | 'multiple',
   onChange: ((v: string[]) => void) | ((v: string) => void),
-): onChange is (v: string) => void;
-
-function isSingle(
-  m: 'single' | 'multiple',
-  value: string | string[],
-): value is string;
-function isSingle(m: 'single' | 'multiple', _valueOrOnChange: unknown) {
+): onChange is (v: string) => void {
   return m === 'single';
 }
 
-const getItemIsSelected = (
-  o: { text: string; value: string },
-  mode: 'multiple' | 'single',
-  value: string | string[],
-) => {
-  if (isSingle(mode, value)) {
-    return o.value === value;
-  }
-  return value.some((selectedV) => selectedV === o.value);
-};
-
 export const ComboboxX = ({
-  value,
+  value = [],
   onChange,
   mode = 'single',
   options,
   tabIndex,
   beforeList,
+  listControls = 'default',
   afterList,
   size = 'medium',
   listMaxHeight = '360px',
@@ -68,157 +49,153 @@ export const ComboboxX = ({
   tabIndex?: number | undefined;
   size?: SIZE;
   beforeList?: ReactNode;
+  listControls?: 'default' | 'slots';
   afterList?: ReactNode;
   listMaxHeight?: string;
   width?: string;
 }) => {
-  const [inputValue, setInputValue] = useState(
-    options.find((o) => o.value === value)?.text ?? '',
+  const selectedLabel = useMemo(
+    () => String(options.find((o) => o.value === value)?.text ?? ''),
+    [options, value],
   );
-
-  // Детерминированный фокус в инпут поиска при открытии поповера (см. хук).
-  const searchInputRef = useFocusSearchInput();
-
-  const optionsLabelMap = useMemo(
-    () => new Map(options.map((el) => [el.value, el.text])),
-    [options],
-  );
-
+  const [inputValue, setInputValue] = useState(selectedLabel);
   const filteredOptions = useMemo(() => {
-    if (isSingle(mode, value)) {
-      if (inputValue === '' || optionsLabelMap.get(value) === inputValue) {
-        return options;
-      }
-      return options.filter((o) =>
-        o.text.toLowerCase().includes(inputValue.toLowerCase()),
-      );
-    }
-
-    if (inputValue === '') {
+    if (!inputValue || (mode === 'single' && inputValue === selectedLabel))
       return options;
-    }
-    return options.filter((o) =>
-      o.text.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-  }, [inputValue, mode, options, optionsLabelMap, value]);
+    const query = inputValue.toLowerCase();
+    return options.filter((o) => String(o.text).toLowerCase().includes(query));
+  }, [inputValue, mode, options, selectedLabel]);
 
-  const checkAllStates = {
-    indeterminate: value?.length !== 0 && value?.length !== options.length,
-    checked: value?.length !== 0 && value?.length === options.length,
-    onChange: () => {},
-  };
-  const { checkboxSize, iconSize, iconWidth, searchSize } =
-    getTableDropdownConfig(size);
+  const selected = useMemo(
+    () => new Set(Array.isArray(value) ? value : []),
+    [value],
+  );
+  const { checkboxSize, iconSize, iconWidth } = getTableDropdownConfig(size);
+  const controls = useMemo(() => {
+    const checked =
+      options.length > 0 && options.every((o) => selected.has(o.value));
+    return {
+      size,
+      tabIndex,
+      inputValue,
+      setInputValue,
+      checked,
+      indeterminate: !checked && options.some((o) => selected.has(o.value)),
+      dividerBefore: listControls === 'default' && !!beforeList,
+      selectAll:
+        !isSingle(mode, onChange) && filteredOptions.length > 1
+          ? () => {
+              setInputValue('');
+              onChange(checked ? [] : options.map((o) => o.value));
+            }
+          : undefined,
+    };
+  }, [
+    beforeList,
+    selected,
+    filteredOptions.length,
+    inputValue,
+    listControls,
+    mode,
+    onChange,
+    options,
+    size,
+    tabIndex,
+  ]);
 
   return (
-    <Box
-      $css={{
-        width: width ?? 'unset',
-      }}
-    >
-      <StyledSearchBlockFilter
-        data-table-filter-search
-        ref={searchInputRef}
-        size={searchSize}
-        autoComplete="off"
-        tabIndex={tabIndex}
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        onKeyDown={inputStopPropagation}
-      />
-      <StyledList $maxHeight={listMaxHeight}>
+    <FilterControlsContext.Provider value={controls}>
+      <Box $css={{ width: width ?? 'unset' }}>
+        {listControls === 'default' && <TableFilterSearch />}
         {beforeList}
-        {!isSingle(mode, onChange) && filteredOptions.length > 1 && (
-          <StyledTotalListItemContainer
-            $listIsNonEmpty={!!filteredOptions.length}
-            $beforeList={!!beforeList}
-          >
-            <StyledListItem
-              $size={size}
-              $selected={checkAllStates.checked}
-              onClick={() => {
-                setInputValue('');
+        {listControls === 'default' && <TableFilterSelectAll />}
+        <StyledList
+          role="listbox"
+          aria-label="Варианты фильтра"
+          aria-multiselectable={mode === 'multiple'}
+          $maxHeight={listMaxHeight}
+        >
+          {filteredOptions.length === 0 ? (
+            <li role="presentation">
+              <EmptyState
+                size="s"
+                variant="not-result"
+                title="Ничего не найдено"
+              />
+            </li>
+          ) : (
+            filteredOptions.map((o, index) => {
+              const itemIsSelected =
+                mode === 'single' ? o.value === value : selected.has(o.value);
 
-                if (checkAllStates.checked) {
-                  onChange([]);
+              const itemOnClick = () => {
+                if (isSingle(mode, onChange)) {
+                  onChange(o.value);
+                  setInputValue(String(o.text));
                   return;
                 }
-                onChange(options.map((el) => el.value));
-              }}
-            >
-              <Checkbox
-                {...checkAllStates}
-                size={checkboxSize}
-                style={{
-                  pointerEvents: 'none',
-                }}
-              />
-              Выбрать всё
-            </StyledListItem>
-          </StyledTotalListItemContainer>
-        )}
-        {filteredOptions.length === 0 ? (
-          <EmptyState size="s" variant="not-result" title="Ничего не найдено" />
-        ) : (
-          filteredOptions.map((o) => {
-            const itemIsSelected = getItemIsSelected(o, mode, value);
+                const next = new Set(selected);
+                if (itemIsSelected) next.delete(o.value);
+                else next.add(o.value);
+                onChange([...next]);
+              };
 
-            const itemOnClick = () => {
-              if (isSingle(mode, onChange)) {
-                onChange(o.value);
-                setInputValue(o.text);
-                return;
-              }
-              if (!isSingle(mode, value)) {
-                const selecteds = new Set(value);
-                selecteds[selecteds.has(o.value) ? 'delete' : 'add'](o.value);
-                onChange([...selecteds]);
-              }
-            };
-
-            return (
-              <StyledListItem
-                $size={size}
-                $selected={itemIsSelected}
-                key={o.value}
-                onClick={itemOnClick}
-              >
-                {mode === 'single' && (
-                  <span
-                    style={{
-                      width: iconWidth,
-                      minWidth: iconWidth,
-                      display: 'inline-flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      visibility: itemIsSelected ? 'visible' : 'hidden',
-                    }}
-                  >
-                    <IconDone size={iconSize} color={textAccent} />
-                  </span>
-                )}
-                {mode === 'multiple' && (
-                  <Checkbox
-                    checked={itemIsSelected}
-                    onChange={() => {}}
-                    size={checkboxSize}
-                    style={{
-                      pointerEvents: 'none',
-                    }}
-                  />
-                )}
-                {o.text}
-              </StyledListItem>
-            );
-          })
-        )}
+              return (
+                <StyledListItem
+                  $size={size}
+                  $selected={itemIsSelected}
+                  key={o.value}
+                  role="option"
+                  aria-selected={itemIsSelected}
+                  tabIndex={index === 0 ? 0 : -1}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      itemOnClick();
+                    }
+                    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                      event.preventDefault();
+                      const adjacent =
+                        event.key === 'ArrowDown'
+                          ? event.currentTarget.nextElementSibling
+                          : event.currentTarget.previousElementSibling;
+                      if (adjacent instanceof HTMLElement) adjacent.focus();
+                    }
+                  }}
+                  onClick={itemOnClick}
+                >
+                  {mode === 'single' && (
+                    <span
+                      style={{
+                        width: iconWidth,
+                        minWidth: iconWidth,
+                        display: 'inline-flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        visibility: itemIsSelected ? 'visible' : 'hidden',
+                      }}
+                    >
+                      <IconDone size={iconSize} color={textAccent} />
+                    </span>
+                  )}
+                  {mode === 'multiple' && (
+                    <Checkbox
+                      checked={itemIsSelected}
+                      onChange={() => {}}
+                      size={checkboxSize}
+                      style={{
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  )}
+                  {o.text}
+                </StyledListItem>
+              );
+            })
+          )}
+        </StyledList>
         {afterList}
-      </StyledList>
-    </Box>
+      </Box>
+    </FilterControlsContext.Provider>
   );
 };

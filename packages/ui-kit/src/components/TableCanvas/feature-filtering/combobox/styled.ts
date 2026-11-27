@@ -15,10 +15,6 @@ export const StyledTotalListItemContainer = styled(Box)<{
   $beforeList: boolean;
 }>`
   background-color: ${COLORS.white};
-  /* закомментировано, пока beforeList не sticky
-  position: sticky;
-  top: 0;
-  z-index: 1; */
   position: relative;
   ${({ $listIsNonEmpty }) =>
     $listIsNonEmpty &&
@@ -50,6 +46,16 @@ export const StyledTotalListItemContainer = styled(Box)<{
         border-bottom: 1px solid ${COLORS.border};
       }
     `}
+`;
+
+// Вся строка переключает нативный чекбокс, включая свободное место справа.
+export const SelectAllLabel = styled.label`
+  cursor: pointer;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
 `;
 
 const listStylesMapper = {

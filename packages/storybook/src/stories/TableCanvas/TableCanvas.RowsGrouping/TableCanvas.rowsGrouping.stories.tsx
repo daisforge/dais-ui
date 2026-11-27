@@ -2,6 +2,7 @@
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, waitFor, within } from '@storybook/test';
 import {
   ColumnConfig,
   SortColumn,
@@ -10,6 +11,7 @@ import {
 import { IconRefresh } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
 
+import { settle } from '../visual-helpers';
 import { createRowsForGrouping, type RowForGrouping } from './dataRowGrouping';
 
 const meta: Meta = {
@@ -32,11 +34,14 @@ import { IconRefresh } from '@daisforge/ui/icons';
 export const SimpleTable: StoryObj<{
   manyColumns: boolean;
   narrowPanel: boolean;
+  confirm: boolean;
+  onApply?: (keys: string[]) => void;
 }> = {
   decorators: [(Story, { args }) => <Story key={String(args.manyColumns)} />],
-  args: { manyColumns: false, narrowPanel: false },
+  args: { manyColumns: false, narrowPanel: false, confirm: false },
   argTypes: {
     manyColumns: { name: '24 дополнительных столбца', control: 'boolean' },
+    confirm: { name: 'Применение по кнопке', control: 'boolean' },
     narrowPanel: { name: 'Узкая панель', control: 'boolean' },
   },
   ...storySourceDoc({
@@ -44,7 +49,7 @@ export const SimpleTable: StoryObj<{
     previewSource: 'shown',
   }),
   name: 'Простая группировка',
-  render: ({ manyColumns, narrowPanel }) => {
+  render: ({ manyColumns, narrowPanel, confirm, onApply }) => {
     const [sourceRows] = useState(createRowsForGrouping);
     const years = useMemo(
       () => (manyColumns ? Array.from({ length: 24 }, (_, i) => 2000 + i) : []),
@@ -148,9 +153,18 @@ export const SimpleTable: StoryObj<{
           },
           rowsGrouping: {
             rowKeyGetter: (r) => r.id,
-            groupByState: [groupByArr, setGroupByArr],
+            groupByState: [
+              groupByArr,
+              (update) => {
+                const next =
+                  typeof update === 'function' ? update(groupByArr) : update;
+                onApply?.(next);
+                setGroupByArr(next);
+              },
+            ],
 
             groupButton: {
+              applyMode: confirm ? 'confirm' : 'instant',
               defaultCustomItems: [
                 { value: 'gold', label: 'Gold as custom option' },
               ],
@@ -326,3 +340,55 @@ export const MultipleFeaturesTable: StoryObj = {
     );
   },
 };
+
+function confirmGrouping(narrowPanel: boolean): typeof SimpleTable {
+  const onApply = fn();
+  return {
+    ...SimpleTable,
+    name: narrowPanel ? 'Применение из подменю' : 'Применение из списка',
+    args: { ...SimpleTable.args, narrowPanel, confirm: true, onApply },
+    parameters: { screenshot: { keepState: true, capture: 'page' } },
+    play: async ({ canvasElement }) => {
+      onApply.mockClear();
+      const page = within(canvasElement.ownerDocument.body);
+      const open = async () => {
+        if (narrowPanel) {
+          await userEvent.click(
+            await page.findByLabelText('Дополнительные действия'),
+          );
+          await userEvent.click(
+            await page.findByRole('option', { name: 'Группировать' }),
+          );
+        } else {
+          await userEvent.click(
+            await page.findByRole('combobox', { name: /Группировать/ }),
+          );
+        }
+        await page.findByText('Сбросить все');
+      };
+      const option = (name: string) =>
+        page.getByRole('option', { name: new RegExp(name) });
+      const applyRole = narrowPanel ? 'option' : 'button';
+      await settle();
+      await open();
+      await userEvent.click(option('Sport'));
+      await userEvent.click(option('Country'));
+      expect(onApply).not.toHaveBeenCalled();
+      await userEvent.click(page.getByRole(applyRole, { name: 'Применить' }));
+      expect(onApply).toHaveBeenCalledTimes(1);
+      expect(onApply).toHaveBeenLastCalledWith(['sport', 'country']);
+      await waitFor(() => expect(page.queryByText('Сбросить все')).toBeNull());
+      await open();
+      await userEvent.click(option('Sport'));
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(page.queryByText('Сбросить все')).toBeNull());
+      await open();
+      expect(within(option('Sport')).getByRole('checkbox')).toBeChecked();
+      expect(within(option('Country')).getByRole('checkbox')).toBeChecked();
+      expect(onApply).toHaveBeenCalledTimes(1);
+    },
+  };
+}
+
+export const ConfirmWide = confirmGrouping(false);
+export const ConfirmNarrow = confirmGrouping(true);

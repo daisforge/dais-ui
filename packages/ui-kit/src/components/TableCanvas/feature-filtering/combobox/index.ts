@@ -1,6 +1,7 @@
 import { ComboboxX } from './combobox';
 
 export { ComboboxX, ComboboxX as TableFilterSelect };
+export { TableFilterSearch, TableFilterSelectAll } from './filter-controls';
 export {
   StyledList as TableFilterSelectList,
   StyledListItem as TableFilterSelectListItem,

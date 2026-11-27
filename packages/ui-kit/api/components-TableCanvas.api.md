@@ -1708,6 +1708,7 @@ export type ColumnConfig<Row extends ObjectForExtending, SummRow = unknown, Cust
         filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;
     } | {
         component: 'select';
+        listControls?: 'default' | 'slots';
         beforeList?: (props: FilterComponentInPopoverProps<ObjectForExtending, ColumnConfig<Row, SummRow>>) => ReactNode;
         afterList?: (props: FilterComponentInPopoverProps<ObjectForExtending, ColumnConfig<Row, SummRow>>) => ReactNode;
         filter: {
@@ -3448,7 +3449,7 @@ export const MIN_CONTENT_HEIGHT = 316;
 // @public (undocumented)
 type Multiple = {
     mode?: 'multiple';
-    value: string[];
+    value?: string[];
     onChange: (v: string[]) => void;
 };
 
@@ -3913,6 +3914,7 @@ type RowsGrouping<RowType extends ObjectForExtending, SummaryRowType = unknown, 
         }) => boolean;
     };
     groupButton?: {
+        applyMode?: 'instant' | 'confirm';
         getGroupedCount?: (props: {
             currCount: number;
             groupedCols: string[];
@@ -4890,8 +4892,11 @@ type TableDropdownProps = DropdownProps & {
     $css?: CSSObject;
 };
 
+// @public
+export const TableFilterSearch: FC;
+
 // @public (undocumented)
-export const TableFilterSelect: ({ value, onChange, mode, options, tabIndex, beforeList, afterList, size, listMaxHeight, width, }: (Single | Multiple) & {
+export const TableFilterSelect: ({ value, onChange, mode, options, tabIndex, beforeList, listControls, afterList, size, listMaxHeight, width, }: (Single | Multiple) & {
     options: {
         text: string;
         value: string;
@@ -4899,10 +4904,14 @@ export const TableFilterSelect: ({ value, onChange, mode, options, tabIndex, bef
     tabIndex?: number | undefined;
     size?: SIZE;
     beforeList?: ReactNode;
+    listControls?: 'default' | 'slots';
     afterList?: ReactNode;
     listMaxHeight?: string;
     width?: string;
 }) => JSX_2.Element;
+
+// @public
+export const TableFilterSelectAll: FC;
 
 // @public (undocumented)
 export const TableFilterSelectList: StyledComponent<"ul", DefaultTheme, {

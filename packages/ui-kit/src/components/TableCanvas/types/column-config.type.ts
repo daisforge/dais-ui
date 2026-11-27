@@ -272,6 +272,12 @@ export type ColumnConfig<
     | {
         component: 'select';
         /**
+         * Состав списка в заголовке. В режиме slots поиск и массовый выбор
+         * подключаются через beforeList с TableFilterSearch и TableFilterSelectAll.
+         * @default 'default'
+         */
+        listControls?: 'default' | 'slots';
+        /**
          * Произвольное содержимое над списком опций фильтра.
          *
          * Рендерится и в поповере фильтра в шапке колонки, и в сайдбаре

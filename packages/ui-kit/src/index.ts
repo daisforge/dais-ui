@@ -101,6 +101,8 @@ export type {
 } from './components/TableCanvas';
 export {
   TableCanvas,
+  TableFilterSearch,
+  TableFilterSelectAll,
   useLeftSidebar,
   useRightSidebar,
 } from './components/TableCanvas';

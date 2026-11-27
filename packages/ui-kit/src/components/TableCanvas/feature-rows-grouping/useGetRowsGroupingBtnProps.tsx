@@ -2,7 +2,7 @@ import { Checkbox } from '@ui-kit/components/Checkbox';
 import { DropdownProps } from '@ui-kit/components/Dropdown';
 import { IconClose, IconCubeOutline } from '@ui-kit/icons';
 import { textSecondary } from '@ui-kit/tokens';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { AnimatedCounter } from '../components/AnimatedCounter';
@@ -19,6 +19,7 @@ import {
   ITEM_ID_GROUPED_ROWS,
   NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from './constants';
+import { GroupingApply } from './GroupingApply';
 
 const resetOptionStyle = () => ({
   '& .reset-groups-btn > div > div': {
@@ -83,15 +84,26 @@ export const useGetRowsGroupingBtnProps = <
   setGroupedCols: React.Dispatch<React.SetStateAction<string[]>> | undefined;
 }) => {
   const {
+    applyMode,
     getGroupedCount: getGroupedCountExternal,
     onItemSelect: onItemSelectExternal,
     defaultCustomItems: defaultCustomItemsExternal,
   } = tableConfig?.rowsGrouping?.groupButton ?? {};
   const rowsGroupingDomMetadata = tableConfig?.rowsGrouping?.domMetadata;
+  const [draft, setDraft] = useState<string[]>();
+  const discard = useCallback(() => setDraft(undefined), []);
   return useMemo(() => {
     if (!isActivatedRowsGrouping || !groupedCols) {
       return { rowsGroupingButtonProps: {} };
     }
+    const confirm = applyMode === 'confirm';
+    const selection = confirm ? draft ?? groupedCols : groupedCols;
+    const changeSelection = confirm
+      ? (update: React.SetStateAction<string[]>) =>
+          setDraft((prev) =>
+            typeof update === 'function' ? update(prev ?? groupedCols) : update,
+          )
+      : setGroupedCols;
     const { checkboxSize, iconSize } = getTableDropdownConfig(rowSize);
     const columns = {
       visible: [] as string[],
@@ -108,8 +120,7 @@ export const useGetRowsGroupingBtnProps = <
         return enabled;
       })
       .map((col) => {
-        const indexInGrouped =
-          groupedCols?.findIndex((k) => k === col.key) ?? -1;
+        const indexInGrouped = selection.findIndex((k) => k === col.key) ?? -1;
         const checked = indexInGrouped > -1;
 
         const label = col.rowsGrouping?.columnGroupLabel ?? col.key;
@@ -127,7 +138,7 @@ export const useGetRowsGroupingBtnProps = <
     const customOptions = (defaultCustomItemsExternal ?? []).map((i) => {
       columns.visible.push(i.value.toString());
 
-      const indexInGrouped = groupedCols?.findIndex((k) => k === i.value) ?? -1;
+      const indexInGrouped = selection.findIndex((k) => k === i.value) ?? -1;
       const checked = indexInGrouped > -1;
       return {
         contentLeft: <CheckBoxI checked={checked} size={checkboxSize} />,
@@ -158,6 +169,7 @@ export const useGetRowsGroupingBtnProps = <
 
     const rowsGroupingButtonProps: ControlBlockButtonProps = {
       text: 'Группировать',
+      'aria-label': 'Группировать',
       contentLeft: <IconCubeOutline color="inherit" />,
       // В overflow дропдауне иконку берём на ступень меньше на маленьком
       // rowSize (как остальные пункты дропдауна)
@@ -175,9 +187,13 @@ export const useGetRowsGroupingBtnProps = <
       disableContentRightFlip: true,
       dropdown: {
         onItemSelect(item) {
-          if (setGroupedCols) {
+          if (changeSelection) {
             if (onItemSelectExternal) {
-              onItemSelectExternal({ item, setGroupedCols, columns });
+              onItemSelectExternal({
+                item,
+                setGroupedCols: changeSelection,
+                columns,
+              });
               rowsGroupingDomMetadata?.onClick?.(undefined, {
                 action: DOM_METADATA_ACTIONS.CUSTOM_ITEM_SELECT,
                 columnKey: item.value,
@@ -185,7 +201,7 @@ export const useGetRowsGroupingBtnProps = <
               return;
             }
             if (item.value === 'reset') {
-              setGroupedCols([]);
+              changeSelection([]);
               rowsGroupingDomMetadata?.onClick?.(undefined, {
                 action: DOM_METADATA_ACTIONS.RESET_GROUPS,
               });
@@ -196,7 +212,7 @@ export const useGetRowsGroupingBtnProps = <
               return;
             }
 
-            setGroupedCols((prev) => {
+            changeSelection((prev) => {
               const copy = [...prev];
               const index = copy.findIndex((k) => k === item.value);
               const willBeEnabled = index === -1;
@@ -214,6 +230,12 @@ export const useGetRowsGroupingBtnProps = <
             });
           }
         },
+        afterList: confirm && (
+          <GroupingApply
+            onApply={() => setGroupedCols?.(selection)}
+            onDiscard={discard}
+          />
+        ),
         items: dropdownOptions,
         listMaxHeight: TABLE_SETTINGS_LIST_MAX_HEIGHT,
         closeOnSelect: false,
@@ -224,9 +246,14 @@ export const useGetRowsGroupingBtnProps = <
       ...rowsGroupingDomMetadata?.dataAttributes,
     };
     return { rowsGroupingButtonProps };
-    // не включены getGroupedCountExternal, onItemSelectExternal, defaultCustomItemsExternal - достаточно проверить isActivatedRowsGrouping
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    applyMode,
+    defaultCustomItemsExternal,
+    discard,
+    draft,
+    getGroupedCountExternal,
+    onItemSelectExternal,
+    rowsGroupingDomMetadata,
     columnConfig,
     groupedCols,
     isActivatedRowsGrouping,

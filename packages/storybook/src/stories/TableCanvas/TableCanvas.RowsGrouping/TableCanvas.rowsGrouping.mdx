@@ -30,4 +30,10 @@ import * as TableRowsGroupingStories from './TableCanvas.rowsGrouping.stories';
 
 > Подробнее о типах — [RowsGrouping API](?path=/docs/локальные-компоненты-tablecanvas-rowsgrouping-api--docs)
 
+## Применение группировки
+
+По умолчанию каждый выбор сразу обновляет `groupByState`. Задайте `rowsGrouping.groupButton.applyMode: 'confirm'`, чтобы собрать несколько столбцов и передать их setter одним вызовом. Порядок выбора задаёт порядок уровней. «Сбросить все» очищает черновик, Escape и закрытие меню отбрасывают его. В этом режиме `groupButton.onItemSelect` получает setter черновика.
+
+На широкой панели «Применить» находится под списком. На узкой панели откройте «Дополнительные действия» → «Группировать» и выберите последний пункт «Применить».
+
 <Stories />
