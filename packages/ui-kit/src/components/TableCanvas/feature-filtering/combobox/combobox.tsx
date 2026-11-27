@@ -117,6 +117,7 @@ export const ComboboxX = ({
       }}
     >
       <StyledSearchBlockFilter
+        data-table-filter-search
         ref={searchInputRef}
         size={searchSize}
         autoComplete="off"

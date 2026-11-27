@@ -1,5 +1,5 @@
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { FILTER_POPOVER_PADDING } from '../../feature-overlays/constants';
@@ -20,17 +20,43 @@ const filterDebug = createDebugLogger('TABLE_CANVAS_FILTER');
 
 const FilterListContainer = styled.div<{
   $size: SIZE;
-}>(({ $size }) => {
+  $searchWidth?: string;
+}>(({ $size, $searchWidth }) => {
   const { minWidth, maxWidth } = getTableDropdownConfig($size);
   const padding = 2 * FILTER_POPOVER_PADDING;
   return {
-    width: 'max-content',
+    width: $searchWidth ?? 'max-content',
     minWidth: minWidth - padding,
     maxWidth: maxWidth - padding,
     // Размер списка задают подписи пунктов. Поле занимает доступную ширину.
     [`${StyledSearchBlockFilter}`]: { contain: 'inline-size' },
   };
 });
+
+function HeaderFilterList({
+  size,
+  children,
+}: React.PropsWithChildren<{ size: SIZE }>) {
+  const [searchWidth, setSearchWidth] = useState<string>();
+  return (
+    <FilterListContainer
+      $size={size}
+      $searchWidth={searchWidth}
+      onInputCapture={(event) => {
+        if (
+          searchWidth === undefined &&
+          event.target instanceof Element &&
+          event.target.closest('[data-table-filter-search]')
+        ) {
+          // Измеряем до фильтрации, пока длинные подписи ещё участвуют в вёрстке.
+          setSearchWidth(getComputedStyle(event.currentTarget).width);
+        }
+      }}
+    >
+      {children}
+    </FilterListContainer>
+  );
+}
 
 const StyledFreeTextFilter = styled(StyledSearchBlockFilter)<{
   $width: number;
@@ -191,7 +217,7 @@ const FilterComponentInPopoverInner = <
   const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
 
   return (
-    <FilterListContainer $size={rowSize}>
+    <HeaderFilterList key={columnConfig.key} size={rowSize}>
       <ComboboxX
         // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
         size={rowSize}
@@ -206,7 +232,7 @@ const FilterComponentInPopoverInner = <
         afterList={<AfterList {...(props as any)} />}
         listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
       />
-    </FilterListContainer>
+    </HeaderFilterList>
   );
 };
 

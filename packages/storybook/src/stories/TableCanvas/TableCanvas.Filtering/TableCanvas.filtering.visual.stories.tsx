@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, waitFor, within } from '@storybook/test';
+import { expect, fireEvent, waitFor, within } from '@storybook/test';
 import type { SIZE } from '@ui-kit/components/TableCanvas/styles';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import React, { createRef } from 'react';
@@ -88,6 +88,28 @@ function headerFilter(
             : anchor.left;
         expect(Math.abs(popup.left - expectedX)).toBeLessThanOrEqual(1);
       });
+      if (column === 'status') {
+        const dialog = page.getByRole('dialog');
+        const list = within(dialog);
+        const search = list.getByRole('textbox');
+        const initialX = search.getBoundingClientRect().left;
+        const assertSearchPosition = () => {
+          expect(dialog.getBoundingClientRect().width).toBe(maxWidth);
+          expect(
+            Math.abs(search.getBoundingClientRect().left - initialX),
+          ).toBeLessThanOrEqual(1);
+        };
+
+        fireEvent.input(search, { target: { value: 'В работе' } });
+        await waitFor(() =>
+          expect(list.getAllByRole('listitem')).toHaveLength(1),
+        );
+        assertSearchPosition();
+
+        fireEvent.input(search, { target: { value: '' } });
+        await list.findByText('Выбрать всё');
+        assertSearchPosition();
+      }
     },
   };
 }
