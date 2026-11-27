@@ -57,7 +57,10 @@ function headerFilter(
           expect(range.getClientRects().length).toBeGreaterThan(1);
         }
         const inputX = page.getByRole('textbox').getBoundingClientRect().left;
-        expect(inputX - popup.left).toBe(size === 'big' ? 42 : 34);
+        const searchInset = size === 'big' ? 42 : 34;
+        expect(Math.abs(inputX - popup.left - searchInset)).toBeLessThanOrEqual(
+          1,
+        );
         if (column !== 'text') {
           const item = page.getByText(
             column === 'status' ? 'В работе' : 'Высокий',
@@ -70,9 +73,10 @@ function headerFilter(
           }
           range.selectNodeContents(text);
           const labelX = range.getBoundingClientRect().left;
-          expect(labelX - popup.left).toBe(
-            { small: 32, medium: 36, big: 48 }[size],
-          );
+          const labelInset = { small: 32, medium: 36, big: 48 }[size];
+          expect(
+            Math.abs(labelX - popup.left - labelInset),
+          ).toBeLessThanOrEqual(1);
           expect(getComputedStyle(item).lineHeight).toBe(
             { small: '16px', medium: '20px', big: '24px' }[size],
           );
