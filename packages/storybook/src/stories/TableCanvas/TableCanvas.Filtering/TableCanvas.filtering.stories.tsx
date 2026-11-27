@@ -16,7 +16,9 @@ import { Divider } from '@ui-kit/components/Divider';
 import {
   ColumnConfig,
   TableCanvas,
+  TableFilterSearch,
   TableFilterSelect,
+  TableFilterSelectAll,
   TableFilterSelectListItem,
 } from '@ui-kit/components/TableCanvas';
 import { IconStar } from '@ui-kit/icons';
@@ -47,7 +49,9 @@ import { IconStar } from '@daisforge/ui/icons';
 import {
   ColumnConfig,
   TableCanvas,
+  TableFilterSearch,
   TableFilterSelect,
+  TableFilterSelectAll,
   TableFilterSelectListItem,
 } from '@daisforge/ui/components/TableCanvas';
 
@@ -175,19 +179,25 @@ export const FilteringTable: StoryObj = {
           key: 'issueType',
           name: 'Issue Type',
           filtering: {
-            beforeList(props) {
+            listControls: 'slots',
+            beforeList({ headerContextState }) {
               return (
-                <TableFilterSelectListItem
-                  $size={props.headerContextState.rowSize}
-                >
-                  Произвольный вспомогательный элемент заголовка списка с
-                  подсказкой сверху списка
-                </TableFilterSelectListItem>
+                <>
+                  <TableFilterSearch />
+                  <TableFilterSelectListItem
+                    as="div"
+                    $size={headerContextState.rowSize}
+                  >
+                    Произвольный вспомогательный элемент заголовка списка с
+                    подсказкой сверху списка
+                  </TableFilterSelectListItem>
+                  <TableFilterSelectAll />
+                </>
               );
             },
             afterList({ headerContextState, setPopoverIsOpen }) {
               return (
-                <li
+                <div
                   style={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -214,7 +224,7 @@ export const FilteringTable: StoryObj = {
                   >
                     Закрыть
                   </Button>
-                </li>
+                </div>
               );
             },
             component: 'select',

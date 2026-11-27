@@ -251,10 +251,25 @@ function slotExample(
         'dialog',
       );
       await check(dialog, onChange);
+      // После выбора панель чипсов может сдвинуть заголовок при открытом фильтре.
+      // Для снимка открываем его у итогового положения заголовка.
+      if (onChange.mock.calls.length && dialog.isConnected) {
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(dialog).not.toBeInTheDocument());
+      }
       if (!dialog.isConnected) {
         await waitForHeaderPosition(canvasElement);
         await open();
-        await within(canvasElement.ownerDocument.body).findByRole('dialog');
+        const reopened = await within(
+          canvasElement.ownerDocument.body,
+        ).findByRole('dialog');
+        await waitFor(() => {
+          const header = ref.current?.getBounds(0, -1);
+          if (!header) throw new Error('Границы заголовка недоступны');
+          expect(reopened.getBoundingClientRect().top).toBeGreaterThan(
+            header.y + header.height / 2,
+          );
+        });
       }
     },
   };
