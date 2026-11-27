@@ -17,6 +17,7 @@ import {
   invalidateOverflowTextCache,
   resolveOverflowText,
   resolveWrappedOverflowText,
+  splitGraphemes,
 } from '../utils/textOverflow';
 
 /*
@@ -89,6 +90,7 @@ const fontMetricsCache = new Map<
 >();
 const textWidthCache = new Map<string, number>();
 const splitLinesCache = new Map<string, string[]>();
+const maxGraphemeWidthCache = new Map<string, number>();
 
 // Разделяемый ctx для измерений вне paint (авто-тултип в hover-пути).
 // measureText не зависит от DPR-трансформаций рендерного ctx, поэтому
@@ -793,19 +795,23 @@ function getSplitLines(
     // шрифтом встают в одну строку. Поэтому абзацы делим сами, пустые не меряем.
     const paragraphLines = text
       .split('\n')
-      .flatMap((paragraph) =>
-        paragraph === ''
-          ? ['']
-          : normalizeSplitResult(
-              split(
-                ctx,
-                paragraph,
-                splitFontKey,
-                normalizedWrapWidth,
-                hyperWrappingAllowed
-              )
-            )
-      )
+      .flatMap((paragraph) => {
+        if (paragraph === '') return [''];
+        // Символ шире места canvas-hypertxt не может забрать в строку и
+        // зацикливается, поэтому такой абзац переносим сами.
+        if (getMaxGraphemeWidth(ctx, paragraph, font) > normalizedWrapWidth) {
+          return wrapByWords(ctx, paragraph, normalizedWrapWidth);
+        }
+        return normalizeSplitResult(
+          split(
+            ctx,
+            paragraph,
+            splitFontKey,
+            normalizedWrapWidth,
+            hyperWrappingAllowed
+          )
+        );
+      })
       // Обрезка пробелов как у split для всего текста сразу
       .map((line, index) => (index === 0 ? line.trimEnd() : line.trim()));
     lines = rewrapOverflowingLines(ctx, paragraphLines, normalizedWrapWidth);
@@ -837,7 +843,10 @@ function rewrapOverflowingLines(
     const line = lines[i] ?? '';
     if (ctx.measureText(line).width > wrapWidth) {
       result ??= lines.slice(0, i);
-      result.push(...wrapByWords(ctx, line, wrapWidth));
+      // По одной: spread сотен тысяч строк превышает лимит аргументов движка
+      for (const wrapped of wrapByWords(ctx, line, wrapWidth)) {
+        result.push(wrapped);
+      }
     } else if (result !== null) {
       result.push(line);
     }
@@ -845,21 +854,30 @@ function rewrapOverflowingLines(
   return result ?? lines;
 }
 
-/** Жадный перенос по пробелам; слово шире места делится по символам */
+/**
+ * Жадный перенос по пробелам; слово шире места делится по символам. Каждая
+ * строка забирает хотя бы одно слово или символ, даже если он шире места.
+ */
 function wrapByWords(
   ctx: CanvasRenderingContext2D,
   text: string,
   wrapWidth: number
 ): string[] {
   const lines: string[] = [];
-  let current = '';
-  for (const word of text.split(' ')) {
-    const candidate = current === '' ? word : `${current} ${word}`;
-    if (current === '' || ctx.measureText(candidate).width <= wrapWidth) {
+  // Отступ первой строки сохраняем, как split из canvas-hypertxt
+  const indent = /^ */.exec(text)?.[0] ?? '';
+  let current = indent;
+  let lineHasWord = false;
+  for (const word of text.slice(indent.length).split(' ')) {
+    const candidate = lineHasWord ? `${current} ${word}` : `${current}${word}`;
+    if (!lineHasWord || ctx.measureText(candidate).width <= wrapWidth) {
       current = candidate;
+      lineHasWord = true;
     } else {
       lines.push(current);
       current = word;
+      // Лишний пробел на стыке строк не переносим в начало новой
+      lineHasWord = word !== '';
     }
   }
   lines.push(current);
@@ -878,17 +896,41 @@ function wrapByChars(
 ): string[] {
   const lines: string[] = [];
   let current = '';
-  for (const char of Array.from(text)) {
-    const candidate = current + char;
+  // По видимым символам: составной эмодзи или флаг не рвётся между строками
+  for (const grapheme of splitGraphemes(text)) {
+    const candidate = current + grapheme;
     if (current !== '' && ctx.measureText(candidate).width > wrapWidth) {
       lines.push(current);
-      current = char;
+      current = grapheme;
     } else {
       current = candidate;
     }
   }
   lines.push(current);
   return lines;
+}
+
+/** Ширина самого широкого видимого символа текста; от ширины места не зависит */
+function getMaxGraphemeWidth(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  font: string
+): number {
+  const key = buildTextWidthKey(font, text);
+  let maxWidth = maxGraphemeWidthCache.get(key);
+  if (maxWidth === undefined) {
+    maxWidth = 0;
+    for (const grapheme of new Set(splitGraphemes(text))) {
+      maxWidth = Math.max(maxWidth, getCachedTextWidth(ctx, grapheme, font));
+    }
+    setBoundedCacheValue(
+      maxGraphemeWidthCache,
+      key,
+      maxWidth,
+      SPLIT_LINES_CACHE_LIMIT
+    );
+  }
+  return maxWidth;
 }
 
 function resolveWrapWidth(
@@ -933,6 +975,7 @@ export function invalidateTextCache(): void {
   fontMetricsCache.clear();
   textWidthCache.clear();
   splitLinesCache.clear();
+  maxGraphemeWidthCache.clear();
   // canvas-hypertxt хранит свои переносы и ширины символов — их тоже считали старым шрифтом.
   clearHypertxtCache();
   invalidateOverflowTextCache();

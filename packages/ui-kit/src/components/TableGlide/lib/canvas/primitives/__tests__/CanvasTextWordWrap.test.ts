@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DrawBatcher } from '../../core/DrawBatcher';
 import { CanvasText, invalidateTextCache } from '../CanvasText';
+import { splitGraphemes } from '../../utils/textOverflow';
 
 vi.mock('canvas-hypertxt', async (importOriginal) => {
   const original = await importOriginal<typeof import('canvas-hypertxt')>();
@@ -17,11 +18,28 @@ const LINE_HEIGHT = 20;
 const WIDTHS = [115, 150, 180, 215, 260];
 const TEXT = '[Риск-решения ГРС] Контроль кредитного риска по глобальным рынка';
 
-const measureWidth = (text: string) =>
-  Array.from(text).reduce(
-    (sum, char) => sum + (WIDE_CHAR.test(char) ? WIDE_CHAR_WIDTH : CHAR_WIDTH),
-    0,
-  );
+const FAMILY = '👩‍👩‍👦‍👦';
+const WIDEST_GLYPH = '﷽';
+// Узкие и широкие видимые символы; составной эмодзи — один символ
+const GRAPHEME_WIDTHS: Record<string, number> = {
+  i: 3,
+  [FAMILY]: 16,
+  [WIDEST_GLYPH]: 40,
+};
+
+const graphemeWidth = (grapheme: string) =>
+  GRAPHEME_WIDTHS[grapheme] ??
+  (WIDE_CHAR.test(grapheme) ? WIDE_CHAR_WIDTH : CHAR_WIDTH);
+
+const measureWidth = (text: string) => {
+  let sum = 0;
+  if (text.includes('‍')) {
+    for (const grapheme of splitGraphemes(text)) sum += graphemeWidth(grapheme);
+    return sum;
+  }
+  for (const char of text) sum += graphemeWidth(char);
+  return sum;
+};
 
 const ctx = {
   font: '',
@@ -60,6 +78,17 @@ const expectWrapped = (node: CanvasText, width: number) => {
   return lines;
 };
 
+/**
+ * Другая колонка с тем же шрифтом: коды из заглавных букв и цифр. Завышают
+ * среднюю ширину символа в canvas-hypertxt, и он отдаёт абзац одной строкой —
+ * так включается резервный перенос.
+ */
+const measureWideCodes = () => {
+  for (let i = 0; i < 20; i += 1) {
+    createText(`S-ZEUSNT-${1000 + i} S-ZEUSNT-${2000 + i}`, 80);
+  }
+};
+
 describe('CanvasText: wordWrap', () => {
   beforeEach(() => {
     invalidateTextCache();
@@ -95,10 +124,7 @@ describe('CanvasText: wordWrap', () => {
   it.each(WIDTHS)(
     'после текстов с широкими символами строки не шире места (%i)',
     (width) => {
-      // Другая колонка с тем же шрифтом: коды из заглавных букв и цифр
-      for (let i = 0; i < 20; i += 1) {
-        createText(`S-ZEUSNT-${1000 + i} S-ZEUSNT-${2000 + i}`, 80);
-      }
+      measureWideCodes();
 
       const lines = expectWrapped(createText(TEXT, width), width);
 
@@ -118,5 +144,33 @@ describe('CanvasText: wordWrap', () => {
     createText('', 200);
 
     expect(paintedLines(createText('Короткий', 215))).toEqual(['Короткий']);
+  });
+
+  it('символ шире ячейки не вешает перенос и занимает строку целиком', () => {
+    const lines = paintedLines(createText(WIDEST_GLYPH.repeat(2), 30));
+
+    expect(lines).toEqual([WIDEST_GLYPH, WIDEST_GLYPH]);
+  });
+
+  describe('резервный перенос', () => {
+    beforeEach(() => {
+      measureWideCodes();
+    });
+
+    it('не разрывает составной эмодзи между строками', () => {
+      const text = `${'i'.repeat(11)}${FAMILY.repeat(3)}`;
+
+      const lines = paintedLines(createText(text, 48));
+
+      expect(lines).toEqual(['i'.repeat(11), FAMILY.repeat(3)]);
+    });
+
+    it('сохраняет начальные пробелы первой строки', () => {
+      const lines = expectWrapped(createText(`    ${'i'.repeat(20)}`, 30), 30);
+
+      // 4 пробела по 5 px и три «i» по 3 px — 29 px из 30
+      expect(lines[0]).toBe('    iii');
+      expect(lines.join('')).toBe(`    ${'i'.repeat(20)}`);
+    });
   });
 });
