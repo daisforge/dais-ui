@@ -33,7 +33,7 @@ export function vitePluginRollupOutputChunkFileNames(): Plugin {
       const finalChunkFileNames = CHUNK_FILE_NAMES_PATTERN(chunkExt);
 
       console.log(
-        `Изменение chunkFileNames: ${options.chunkFileNames} → ${finalChunkFileNames}\n`
+        `Изменение chunkFileNames: ${options.chunkFileNames} → ${finalChunkFileNames}\n`,
       );
       return {
         ...options,

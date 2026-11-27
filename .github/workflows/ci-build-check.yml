@@ -25,11 +25,34 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Prepare MCP for lint
+      - name: Prepare MCP for lint and typecheck
         run: npm run mcp:ci
 
       - name: Lint
         run: npm run lint
+
+      # Файлы *.string.json, на которые опирается Storybook, в .gitignore.
+      # Без генерации storybook:typecheck падает (так же в Dockerfile.screenshots)
+      - name: Generate Storybook docs utils
+        run: npm run generate-storybook-docs-utils
+
+      # tsc по nx-проектам: ui-kit (код и тесты), storybook, mcp-server.
+      # Цели идут параллельно, ~1,5 мин. До этого шага типы проверял только
+      # необязательный job Screenshots, и ошибка типов не блокировала merge.
+      # tsc storybook занимает ~3,1 ГБ и не помещается в кучу node по
+      # умолчанию, поэтому лимит поднят, как у сборки ui-kit
+      - name: Typecheck
+        run: npx nx run-many --targets=typecheck,typecheck-tests
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+
+      # Остальное в test/ уже проверяет storybook:typecheck. Этот шаг нужен
+      # для файлов, которые он не видит: redraw/specs/*.spec.ts (исключены
+      # как *.spec.ts) и .storybook/test-runner.ts (скрытая папка)
+      - name: Typecheck screenshot and redraw tests
+        run: npm run screenshot:typecheck && npm run redraw:typecheck
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       # ESLint (с prettier/prettier) проверяет только код; Markdown форматирует
       # pre-commit через lint-staged. Эта проверка ловит то, что прошло мимо хука:
@@ -54,6 +77,18 @@ jobs:
 
       - name: Test Storybook package scripts
         run: npm run storybook-package:test
+
+      # Плагины сборки (plugins/) тоже вне nx-проектов. Проверки графа чанков
+      # (vite-df-ui-chunks.checks.ts) сборка ui-kit ниже запускает на
+      # настоящем бандле, а тесты проверяют граничные случаи на поддельном.
+      - name: Lint build plugins
+        run: npm run lint:plugins
+
+      - name: Typecheck build plugins
+        run: npm run plugins:typecheck
+
+      - name: Test build plugins
+        run: npm run plugins:test
 
       - name: Build ui-kit
         run: npx nx build ui-kit

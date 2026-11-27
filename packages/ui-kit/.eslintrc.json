@@ -53,6 +53,46 @@
       }
     },
     {
+      "files": ["src/**/*.{ts,tsx}"],
+      "excludedFiles": [
+        "src/index.ts",
+        "src/components/Table/**",
+        "src/components/TableContract/**",
+        "src/components/MassActions/**",
+        "**/*.{test,spec}.{ts,tsx}"
+      ],
+      "rules": {
+        // Ранний сигнал в IDE, не полная защита. ESLint 8 сравнивает строку
+        // импорта по шаблону, а не разрешённый путь: относительные пути
+        // покрыты до 4 уровней, а ../Table из вложенной папки компонента
+        // даст ложное срабатывание (таких папок сейчас нет). Полную проверку
+        // делает сборка: plugins/vite-df-ui-chunks.checks.ts
+        "@typescript-eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "**/components/Table",
+                  "**/components/Table/**",
+                  "../Table",
+                  "../Table/**",
+                  "../../Table",
+                  "../../Table/**",
+                  "../../../Table",
+                  "../../../Table/**",
+                  "../../../../Table",
+                  "../../../../Table/**"
+                ],
+                "allowTypeImports": true,
+                "message": "Импорт из старой Table тянет в чанк компонента всю таблицу и CSS react-data-grid. Вынесите общее в отдельный модуль (как src/constants/tableVisuals.ts) или используйте import type. Правило ловит не все пути, полная проверка выполняется при сборке (plugins/vite-df-ui-chunks.checks.ts)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {}
     },

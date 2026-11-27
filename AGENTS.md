@@ -54,11 +54,12 @@
   выполни `npm run api:update` и закоммить отчёты вместе с кодом: CI (шаг
   `Check public API report`) падает, если API и отчёты расходятся. Удалённые и
   изменённые строки в diff отчёта — возможная поломка, проверь их по правилам
-  ниже. Добавление и снятие `@deprecated` и изменения внутри типов sdds-finai в
-  отчёте не видны — их сверяй по исходникам. Если PR API не менял, а проверка
-  падает после обновления от `develop`, значит, отчёт в `develop` устарел после
-  параллельных PR: выполни `npm run api:update`, напиши об этом в описании PR и
-  не трогай код.
+  ниже. `@deprecated` отчёт показывает у экспортов и полей `interface`, но не у
+  пропсов внутри `type X = { … }`; изменения внутри типов sdds-finai он тоже не
+  видит — их сверяй по исходникам. Если PR API не менял, а проверка падает после
+  обновления от `develop`, значит, отчёт в `develop` устарел после параллельных
+  PR: выполни `npm run api:update`, напиши об этом в описании PR и не трогай
+  код.
 
 ### Ломающие изменения: сначала deprecated, удаление в major
 
@@ -144,8 +145,26 @@ Squash-merge через GitHub заменяет тело коммита опис
   `@ui-kit/constants`. Никаких литералов цветов и инлайн-стилей в коде
   библиотеки (в stories допустимо). Служебные пропсы styled-компонентов — с
   префиксом `$` (`$fullScreened`), чтобы не попадали в DOM.
+- **Анимации:** итоговое состояние элемента задаёт стиль, а не
+  `animation-fill-mode`. Появление — базовый стиль с конечными значениями
+  (`opacity: 1`) и анимация с `backwards`, если есть задержка, или без fill;
+  закрытие — конечные значения в стиле закрывающего состояния (`$closing`).
+  `forwards` и `both` не используй: завершённая анимация остаётся активной и
+  держит элемент в отдельном композитном слое, а при отключённых анимациях
+  элемент с базовой `opacity: 0` не появится. `will-change` — только на время
+  перехода: постоянный слой не перерастеризуется, и текст остаётся со сдвигом
+  из промежуточного кадра. Оба случая дают редкие падения скриншотных тестов
+  на тексте ([разбор](packages/storybook/test/screenshot-tests.md#ограничения-и-разбор-нестабильности)).
+  Если без `forwards` нельзя, объясни причину в комментарии.
 - **Импорты:** алиасы `@ui-kit/...`, без циклических зависимостей (проверка —
   `npm run ui-kit:circular-check`).
+- **Чанки:** импорт из другого компонента загружает потребителю весь чанк этого
+  компонента, включая его CSS. Общие константы и хелперы выноси в отдельный
+  модуль (как `src/constants/tableVisuals.ts`), а не бери из `Table` или
+  соседа. Папке, которую используют несколько компонентов, нужен свой чанк в
+  `MANUAL_UIKIT_COMP_CHUNKS` (`plugins/vite-df-ui-chunks.ts`). Это проверяет
+  сборка: ошибка покажет путь загрузки и что исправить. Подробнее — в
+  [README](README.md#проверка-изоляции-чанков).
 - **Готовые утилиты** (`packages/ui-kit/src/utils/`): `mergeRefs`, `bubble`,
   `eventBus`, `clickStream`, `debounce`, `throttle`, `getTokenValue`,
   `getValue`, `contextStoreWithSelectors`, хуки в `utils/hooks/`. Описание — в
@@ -177,6 +196,7 @@ Codex — `.codex/hooks.json`, работает после доверия про
 | вид компонента        | `npm run screenshot:test -- <Name>` (Docker)        |
 | экспорты, зависимости | `npm run build`, `npm run ui-kit:circular-check`    |
 | публичное API ui-kit  | `npm run api:update`, diff `packages/ui-kit/api`    |
+| импорт из компонента  | `npx nx build ui-kit` (проверка чанков)             |
 | meta-config, MDX, MCP | `npm run mcp:check`                                 |
 | Markdown              | `npm run format:md`                                 |
 
@@ -204,7 +224,9 @@ Codex — `.codex/hooks.json`, работает после доверия про
   `ui-kit:generate-tokens`.
 - Не обновляй и не добавляй зависимости без просьбы.
 - Не повышай допуски скриншотов и не добавляй skip ради зелёного прогона.
-- Не ослабляй правила ESLint, `tsconfig` и проверки CI, чтобы прошёл код.
+- Не ослабляй правила ESLint, `tsconfig` и проверки CI, чтобы прошёл код. В том
+  числе не добавляй точку входа в `allowedEntries` у `RESTRICTED_IMPORTS`, чтобы
+  сборка позеленела: это решение для ревью, а не обход.
 - Не публикуй (`npm publish`, `lerna version/publish`) и не пушь в `main` и
   `develop`.
 
@@ -242,6 +264,7 @@ Codex — `.codex/hooks.json`, работает после доверия про
 - Команды — `package.json` (`npm run`), цели nx — `packages/*/project.json`.
 - Архитектура, токены, сборка чанков — [README](README.md).
 - Процесс контрибьюта и ревью — [Contributing.md](Contributing.md).
-- CI — `.github/workflows/`: обязательный `ci-build-check.yml` (lint, Markdown,
-  сборка); необязательные `screenshots.yml`, `mcp-check.yml`.
+- CI — `.github/workflows/`: обязательный `ci-build-check.yml` (lint,
+  typecheck, Markdown, тесты скриптов и плагинов, сборка с проверкой чанков,
+  отчёт о публичном API); необязательные `screenshots.yml`, `mcp-check.yml`.
 - Storybook: https://daisforge.github.io/dais-ui/
