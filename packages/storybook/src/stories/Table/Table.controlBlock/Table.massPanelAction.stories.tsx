@@ -4,6 +4,7 @@ import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { ColumnConfig, Table } from '@ui-kit/components/Table';
 import React, { useMemo, useState } from 'react';
 
@@ -428,6 +429,119 @@ export const MassPanelActionSizeXS: Story = {
                   text: 'Accent',
                   view: 'accent',
                   onClick: () => alert('Accent'),
+                },
+              ],
+            },
+          },
+        }}
+        columnConfig={columns}
+        rows={rows}
+      />
+    );
+  },
+};
+
+const withDropdownDocs = storySourceDoc({
+  preCode,
+  previewSource: 'shown',
+});
+
+// play проверяет, что дропдаун кнопки открывается в контейнере таблицы.
+// Table подставляет в MassActions свой TableDropdown через контекст: без
+// провайдера панель отрисовала бы обычный Dropdown, и меню ушло бы из таблицы
+export const MassPanelActionWithDropdown: Story = {
+  ...withDropdownDocs,
+  name: 'Кнопка с выпадающим меню',
+  parameters: {
+    ...('parameters' in withDropdownDocs ? withDropdownDocs.parameters : {}),
+    // Меню открывается вниз за пределы таблицы, а по умолчанию снимается
+    // только #storybook-root высотой с таблицу
+    screenshot: { capture: 'page', keepState: true },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Первый чекбокс — выбор всех строк в заголовке, второй — первая строка
+    const firstRowCheckbox = (await canvas.findAllByRole('checkbox'))[1];
+    if (!firstRowCheckbox) throw new Error('Нет чекбокса первой строки');
+    await userEvent.click(firstRowCheckbox);
+
+    // Dropdown ставит триггеру role="combobox" без имени, поэтому ищем по
+    // тексту. Панель держит копии кнопок в скрытом измерительном контейнере
+    // за левым краем экрана (left: -9999px) — берём видимую
+    const exportTrigger = (await canvas.findAllByRole('combobox')).find(
+      (trigger) =>
+        trigger.textContent === 'Экспорт' &&
+        trigger.getBoundingClientRect().left >= 0,
+    );
+    if (!exportTrigger) throw new Error('Нет видимой кнопки «Экспорт»');
+    await userEvent.click(exportTrigger);
+
+    const tableContainer =
+      canvasElement.querySelector<HTMLElement>('.rdg-container-all');
+    if (!tableContainer) throw new Error('Нет контейнера таблицы');
+    const option = await within(tableContainer).findByRole('option', {
+      name: 'В Excel',
+    });
+    await expect(option).toBeVisible();
+    // TableDropdown выносит меню порталом в контейнер таблицы. Обычный
+    // Dropdown держит его внутри своего корня (ближайший к кнопке элемент
+    // с id), а кнопка тоже лежит в контейнере — поэтому проверка выше
+    // одна их не различает
+    const dropdownRoot = exportTrigger.closest('div[id]');
+    await expect(dropdownRoot?.contains(option)).toBe(false);
+  },
+  render: () => {
+    const [rows] = useState(createRows);
+    const selectingRowStateAndSetter = useState(
+      (): ReadonlySet<string | number> => new Set(),
+    );
+
+    const columns = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        {
+          key: 'id',
+          name: 'ID',
+        },
+        {
+          key: 'task',
+          name: 'Title',
+        },
+        {
+          key: 'priority',
+          name: 'Priority',
+        },
+      ],
+      [],
+    );
+
+    return (
+      <Table
+        tableConfig={{
+          containerStyle: { height: 700 },
+          selecting: {
+            state: selectingRowStateAndSetter,
+            rowKeyGetter: (row) => row.id,
+          },
+          controlBlock: {
+            massActionPanel: {
+              buttons: [
+                {
+                  type: 'button',
+                  text: 'Экспорт',
+                  view: 'secondary',
+                  dropdown: {
+                    items: [
+                      { value: 'excel', label: 'В Excel' },
+                      { value: 'csv', label: 'В CSV' },
+                    ],
+                    onItemSelect: (item) => alert(`Экспорт: ${item.label}`),
+                  },
+                },
+                {
+                  type: 'button',
+                  text: 'Архивировать',
+                  view: 'secondary',
+                  onClick: () => alert('Архивирование выбранных строк'),
                 },
               ],
             },
