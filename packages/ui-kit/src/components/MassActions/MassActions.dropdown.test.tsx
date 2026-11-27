@@ -145,8 +145,10 @@ describe('типы MassActions', () => {
     expectTypeOf<MassActionsProps['collapsedDropdownProps']>().toEqualTypeOf<
       TableDropdownConfigProps | undefined
     >();
-    expectTypeOf<DataAttributes>().toMatchTypeOf<
-      Pick<MassActionsButtonPropsButton, `data-${string}`>
-    >();
+    // Сравниваем тип значения data-*: toEqualTypeOf ловит расхождение в обе
+    // стороны, например расширение до string | number только в MassActions
+    expectTypeOf<
+      MassActionsButtonPropsButton[`data-${string}`]
+    >().toEqualTypeOf<DataAttributes[`data-${string}`]>();
   });
 });
