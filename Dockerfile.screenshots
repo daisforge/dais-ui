@@ -6,7 +6,11 @@ COPY package.json package-lock.json .npmrc ./
 COPY packages/ui-kit/package.json packages/ui-kit/package.json
 RUN npm ci --ignore-scripts --no-audit --no-fund
 COPY . .
-RUN npm run generate-storybook-docs-utils \
+# tsc storybook занимает ~3,1 ГБ: в Docker с 8 ГБ памяти куча node по
+# умолчанию меньше, и шаг падает с heap out of memory. Лимит как у сборки
+# Storybook (scripts/screenshots/build.js) и шага Typecheck в CI
+RUN export NODE_OPTIONS=--max_old_space_size=4096 \
+    && npm run generate-storybook-docs-utils \
     && npm run screenshot:typecheck \
     && npm run redraw:typecheck \
     && npx tsc --noEmit --project packages/storybook/tsconfig.lib.json
