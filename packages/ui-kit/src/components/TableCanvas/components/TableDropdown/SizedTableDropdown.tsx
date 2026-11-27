@@ -16,6 +16,7 @@ export const SizedTableDropdown = forwardRef<
 >(({ size, variant, listWidth, $css, ...props }, ref) => {
   const { rowSize } = useHeaderContext();
   const config = getTableDropdownConfig(rowSize, size);
+  const autoWidth = `calc-size(max-content, clamp(${config.minWidth}px, size, ${config.maxWidth}px))`;
   // Plasma интерполирует число как CSS-строку без единиц измерения.
   const width = typeof listWidth === 'number' ? `${listWidth}px` : listWidth;
   return (
@@ -24,20 +25,14 @@ export const SizedTableDropdown = forwardRef<
       ref={ref}
       size={size ?? config.size}
       variant={variant ?? config.variant}
-      listWidth={width ?? 'max-content'}
+      listWidth={width ?? autoWidth}
       $css={{
-        '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
-        // Подменю Plasma портализируется в обёртку родительского списка.
-        '& div:has(> ul[role="tree"]), & div:has(> ul[role="group"])': {
-          ...(listWidth == null && {
-            minWidth: config.minWidth,
-            maxWidth: config.maxWidth,
-          }),
-        },
-        '& .cell-textbox-title': {
-          whiteSpace: 'normal',
-          overflowWrap: 'anywhere',
-        },
+        // У Plasma стрелка подменю S имеет размер 24 px, у таблицы — 16 px.
+        ...(config.size === 's' && {
+          '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
+        }),
+        whiteSpace: 'normal',
+        overflowWrap: 'anywhere',
         ...$css,
       }}
     />

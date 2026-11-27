@@ -18,7 +18,7 @@ describe('TableDropdown', () => {
     expect(props()).toMatchObject({
       size: 'xs',
       variant: 'tight',
-      listWidth: 'max-content',
+      listWidth: 'calc-size(max-content, clamp(120px, size, 300px))',
     });
 
     rerender(
