@@ -79,34 +79,52 @@ export const RowHeight: StoryObj = {
       [],
     );
 
-    const rowHeight: RowHeightFunc<Row> = useCallback((r, currenRowSize) => {
-      const symbolWidth = 11.5;
+    // Функция высоты не знает ширину колонки: после ресайза берём её из onColumnResize.
+    // Новая функция rowHeight нужна, чтобы таблица пересчитала и смещения строк для прокрутки
+    const [loremWidth, setLoremWidth] = useState(500);
 
-      const paddingInline = 16;
-      const widthOfLoremCol = 500 - paddingInline * 2;
-      const symbolsInOneLine = Math.round(widthOfLoremCol / symbolWidth);
-      const heightOfLineInitial = 22; // в css
-      const heightOfLine = heightOfLineInitial - 2; // скорректированный
+    const onColumnResize = useCallback(
+      (column: { id?: string }, newSize: number) => {
+        if (column.id === 'loremIpsum') setLoremWidth(newSize);
+      },
+      [],
+    );
 
-      const allSymbols = r.loremIpsum.length;
+    const rowHeight: RowHeightFunc<Row> = useCallback(
+      (r, currenRowSize) => {
+        const symbolWidth = 11.5;
 
-      const countOfLine = Math.ceil(allSymbols / symbolsInOneLine);
-      const paddingBlock = Number(
-        SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2),
-      );
+        const paddingInline = 16;
+        const widthOfLoremCol = loremWidth - paddingInline * 2;
+        const symbolsInOneLine = Math.max(
+          1,
+          Math.round(widthOfLoremCol / symbolWidth),
+        );
+        const heightOfLineInitial = 22; // в css
+        const heightOfLine = heightOfLineInitial - 2; // скорректированный
 
-      const neededHeight = heightOfLine * countOfLine + paddingBlock * 2;
+        const allSymbols = r.loremIpsum.length;
 
-      return neededHeight > currenRowSize.rowSizeValue
-        ? neededHeight
-        : currenRowSize.rowSizeValue;
-    }, []);
+        const countOfLine = Math.ceil(allSymbols / symbolsInOneLine);
+        const paddingBlock = Number(
+          SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2),
+        );
+
+        const neededHeight = heightOfLine * countOfLine + paddingBlock * 2;
+
+        return neededHeight > currenRowSize.rowSizeValue
+          ? neededHeight
+          : currenRowSize.rowSizeValue;
+      },
+      [loremWidth],
+    );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: 700 },
           rowHeight,
+          onColumnResize,
         }}
         columnConfig={columnConfig}
         rows={rows}

@@ -110,7 +110,7 @@ function getCachedTextWidth(
   return width;
 }
 
-function splitGraphemes(text: string): string[] {
+export function splitGraphemes(text: string): string[] {
   // Grapheme cluster - это один видимый символ для пользователя: например emoji,
   // флаг из двух code point или буква вместе с комбинируемым ударением.
   const Segmenter =
