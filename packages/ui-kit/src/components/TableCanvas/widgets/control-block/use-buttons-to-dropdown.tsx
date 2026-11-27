@@ -389,6 +389,7 @@ export const useButtonsToDropdownItems = (
             ? button.dropdownIconRender(ctx)
             : button['contentLeft'],
           items: processedItems,
+          listMaxHeight: button.dropdown.listMaxHeight,
           className: button['className'],
         });
       } else {

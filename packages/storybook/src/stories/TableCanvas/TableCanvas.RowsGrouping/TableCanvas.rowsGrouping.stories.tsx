@@ -27,18 +27,22 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 
 `;
 
-export const SimpleTable: StoryObj<{ manyColumns: boolean }> = {
+export const SimpleTable: StoryObj<{
+  manyColumns: boolean;
+  narrowPanel: boolean;
+}> = {
   decorators: [(Story, { args }) => <Story key={String(args.manyColumns)} />],
-  args: { manyColumns: false },
+  args: { manyColumns: false, narrowPanel: false },
   argTypes: {
     manyColumns: { name: '24 дополнительных столбца', control: 'boolean' },
+    narrowPanel: { name: 'Узкая панель', control: 'boolean' },
   },
   ...storySourceDoc({
     preCode,
     previewSource: 'shown',
   }),
   name: 'Простая группировка',
-  render: ({ manyColumns }) => {
+  render: ({ manyColumns, narrowPanel }) => {
     const [sourceRows] = useState(createRowsForGrouping);
     const years = useMemo(
       () => (manyColumns ? Array.from({ length: 24 }, (_, i) => 2000 + i) : []),
@@ -119,7 +123,21 @@ export const SimpleTable: StoryObj<{ manyColumns: boolean }> = {
     return (
       <TableCanvas
         tableConfig={{
-          containerStyle: { height: 700 },
+          containerStyle: {
+            height: 700,
+            maxWidth: narrowPanel ? 168 : undefined,
+          },
+          fullScreenEnabled: narrowPanel,
+          controlBlock: narrowPanel
+            ? {
+                rightSideInner: [
+                  {
+                    text: 'Сбросить группировку',
+                    onClick: () => setGroupByArr([]),
+                  },
+                ],
+              }
+            : undefined,
           columnsControl: {
             enable: true,
           },
