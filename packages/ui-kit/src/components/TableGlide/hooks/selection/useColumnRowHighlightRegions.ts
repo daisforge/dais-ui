@@ -43,7 +43,7 @@ export function useColumnRowHighlightRegions({
   headerSelectedRowIndexes,
   selectionRangeStack,
   activeRange,
-  outlineEachRange = false,
+  outlineEachRange = true,
   totalRows,
   firstDataCol,
   columnsCount,

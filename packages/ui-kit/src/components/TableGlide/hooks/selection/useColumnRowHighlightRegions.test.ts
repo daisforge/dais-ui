@@ -20,7 +20,7 @@ const outlinesOf = (
     width: number;
     height: number;
   }[],
-  outlineEachRange = true,
+  outlineEachRange?: boolean,
 ) => {
   const { result } = renderHook(() =>
     useColumnRowHighlightRegions({
@@ -42,7 +42,7 @@ const outlinesOf = (
 };
 
 describe('useColumnRowHighlightRegions — Ctrl-диапазоны (rangeStack)', () => {
-  it('без outlineEachRange накопленные диапазоны не обводятся', () => {
+  it('при outlineEachRange: false накопленные диапазоны не обводятся', () => {
     expect(
       outlinesOf(
         { x: 4, y: 4, width: 1, height: 1 },
@@ -52,7 +52,7 @@ describe('useColumnRowHighlightRegions — Ctrl-диапазоны (rangeStack)'
     ).toEqual([]);
   });
 
-  it('с outlineEachRange обводит каждый накопленный диапазон в области данных', () => {
+  it('по умолчанию обводит каждый накопленный диапазон в области данных', () => {
     expect(
       outlinesOf({ x: 4, y: 4, width: 1, height: 1 }, [
         { x: 2, y: 1, width: 1, height: 1 },
