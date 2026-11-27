@@ -1,0 +1,8 @@
+import{j as e}from"./react-DYHuXpTF.js";import{df as i}from"./vendor-4go4qBMz.js";import{M as s}from"./WithTooltip-KJL26V4Q-vPnt8NfR.js";import{T as r}from"./TypeSourceViewer-Bw3ps8pf.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-DDsYmQNq.js";import"./@tanstack/react-virtual-BBX7Noea.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-CAE-Y7vG.js";import"./types.string-D61Vt0p6.js";function o(n){const t={code:"code",h1:"h1",h2:"h2",p:"p",...i(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Локальные компоненты/TableCanvas/Theme Override/API"}),`
+`,e.jsx(t.h1,{id:"theme-override-api",children:"Theme Override API"}),`
+`,e.jsxs(t.p,{children:["Переопределение темы настраивается через свойство ",e.jsx(t.code,{children:"themeOverride"})," в ",e.jsx(t.code,{children:"columnConfig"}),"."]}),`
+`,e.jsxs(t.p,{children:["Является частью ",e.jsx(t.code,{children:"ColumnConfig"}),"."]}),`
+`,e.jsx(t.h2,{id:"cellthemeoverrideresult",children:"CellThemeOverrideResult"}),`
+`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableGlide/types.ts",typeName:"CellThemeOverrideResult",language:"ts"}),`
+`,e.jsx(t.h2,{id:"cellinfo",children:"CellInfo"}),`
+`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",typeName:"CellInfo",language:"ts"})]})}function T(n={}){const{wrapper:t}={...i(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(o,{...n})}):o(n)}export{T as default};
