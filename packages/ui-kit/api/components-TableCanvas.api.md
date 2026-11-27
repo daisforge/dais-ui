@@ -5255,7 +5255,7 @@ export type TableGlideCustomProps<R extends ObjectForExtending_2, SR = unknown> 
 };
 
 // @public (undocumented)
-export const TableGlideInstance: <R extends ObjectForExtending, SR = unknown>({ columns, className, headerHeight, groupHeaderRowHeight, onColumnResize, onVisibleRegionChanged, refTable, onCellContextMenu, onHeaderContextMenu, rows, portalEventTargetRef, containerProps, contentStateOverlay, renderOverlayFeatures, fullScreened, onRowsChange, CellReadOnlyEditor, onCellClicked: onCellClickedExternal, stickyColumnsConfig, stickyRowsConfig, ...rest }: TableGlideInstanceProps<R, SR>) => JSX_2.Element;
+export const TableGlideInstance: <R extends ObjectForExtending, SR = unknown>({ columns, className, headerHeight, groupHeaderRowHeight, onColumnResize, onColumnProposeMove, onVisibleRegionChanged, refTable, onCellContextMenu, onHeaderContextMenu, rows, portalEventTargetRef, containerProps, contentStateOverlay, renderOverlayFeatures, fullScreened, onRowsChange, CellReadOnlyEditor, onCellClicked: onCellClickedExternal, stickyColumnsConfig, stickyRowsConfig, ...rest }: TableGlideInstanceProps<R, SR>) => JSX_2.Element;
 
 // @public (undocumented)
 export type TableGlideInstanceContextMenu<R extends ObjectForExtending, SR = unknown, CustomCtxs extends ObjectForExtending = {}> = {
