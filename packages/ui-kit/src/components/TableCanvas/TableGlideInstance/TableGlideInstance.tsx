@@ -22,6 +22,7 @@ import { applyBlockEdit } from '../feature-cell-transfer/utils/applyBlockEdit';
 import { collectEditedFields } from '../feature-cell-transfer/utils/collectEditedFields';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
+import { KEY_GROUPED_COL } from '../feature-rows-grouping/constants';
 import { useSelectingRowContext } from '../feature-select-row/selecting-contexts';
 import { useStickyColumnIndexes, useStickyRowIndexes } from '../feature-sticky';
 import { CtxsType } from '../types/ctxs.type';
@@ -36,6 +37,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   headerHeight = 33,
   groupHeaderRowHeight,
   onColumnResize,
+  onColumnProposeMove,
   onVisibleRegionChanged,
   refTable,
   onCellContextMenu,
@@ -108,6 +110,19 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         groupMaxLength,
       };
     }, [columns]);
+
+  const canMoveColumn = useMemo((): typeof onColumnProposeMove => {
+    const groupIndex = columnsGlide.findIndex(
+      ({ id }) => id === KEY_GROUPED_COL,
+    );
+    if (groupIndex === -1) return onColumnProposeMove;
+
+    // Перенос через колонку группировки тоже сдвинул бы её при вставке.
+    return (from, to) =>
+      ((from < groupIndex && to < groupIndex) ||
+        (from > groupIndex && to > groupIndex)) &&
+      (onColumnProposeMove?.(from, to) ?? true);
+  }, [columnsGlide, onColumnProposeMove]);
 
   const stickyColumns = useStickyColumnIndexes(
     columnsInGlideOrder,
@@ -575,6 +590,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       renderGroupHeader={renderGroupHeader}
       groupAlignMap={groupAlignMap}
       onColumnResize={onColumnResize}
+      onColumnProposeMove={canMoveColumn}
       onVisibleRegionChanged={onVisibleRegionChanged}
       refTable={refTable}
       height="100%"

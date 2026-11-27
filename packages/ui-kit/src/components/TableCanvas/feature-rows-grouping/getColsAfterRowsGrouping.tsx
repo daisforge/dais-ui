@@ -41,8 +41,6 @@ export function getColsAfterRowsGrouping<
     key: KEY_GROUPED_COL,
     name: 'Группировка',
     frozen: pinnedCols.length > 0,
-    dragable: false,
-
     ...restTableConfigGroupedColumnProps,
   } as ColumnConfig<RowType, SummaryRowType>;
 
