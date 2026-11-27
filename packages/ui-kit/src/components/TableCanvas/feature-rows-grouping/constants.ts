@@ -1,4 +1,4 @@
-import { ObjectForExtending } from '../types';
+import type { ObjectForExtending } from '../types/utils.type';
 import type { RenderGroupCellProps } from './types';
 
 export const KEYS_ROW_GROUPED: {
