@@ -1,4 +1,4 @@
-import { Dropdown, type DropdownItemOption } from '@ui-kit/components/Dropdown';
+import type { DropdownItemOption } from '@ui-kit/components/Dropdown';
 import React, {
   useCallback,
   useEffect,
@@ -7,8 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { useHeaderContext } from '../../../../contexts';
-import { LIST_WIDTH, SIZES } from '../../../../styles/styles.constants';
+import { SizedTableDropdown } from '../../../../components/TableDropdown/SizedTableDropdown';
 import type { CanvasDropdownApi } from '../../../../TableGlideInstance';
 import type { TablePopoverRenderParams } from '../../../context';
 import { HOVER_ANCHOR_GAP } from '../../core/constants';
@@ -63,7 +62,6 @@ export const CanvasDropdown = ({
   // зону, где курсор держит список открытым, считаем по списку. В типах
   // атомарного Dropdown ref описан как кнопка, нам нужен только HTMLElement.
   const listRef = useRef<HTMLButtonElement>(null);
-  const { rowSize } = useHeaderContext();
 
   const { status, items, error, retry } = useDropdownItems(config);
 
@@ -141,16 +139,16 @@ export const CanvasDropdown = ({
     <DropdownRoot ref={anchorRef}>
       <DropdownPortal ref={setPortal} />
       {portalReady && (
-        <Dropdown
+        <SizedTableDropdown
           ref={listRef}
           alwaysOpened
           items={shownItems}
           portal={portalRef}
           placement={config.placement}
           offset={config.offset}
-          listWidth={config.listWidth ?? LIST_WIDTH[rowSize]}
+          listWidth={config.listWidth}
           listMaxHeight={config.listMaxHeight}
-          size={config.size ?? SIZES[rowSize].input}
+          size={config.size}
           variant={config.variant}
           zIndex={config.zIndex}
           closeOnSelect={config.closeOnSelect}
@@ -163,7 +161,7 @@ export const CanvasDropdown = ({
           aria-label={config.ariaLabel}
         >
           <DropdownAnchor aria-hidden="true" />
-        </Dropdown>
+        </SizedTableDropdown>
       )}
     </DropdownRoot>
   );

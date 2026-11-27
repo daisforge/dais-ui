@@ -12,11 +12,7 @@ import { isEditableCell } from '../feature-edit/typeGuards';
 import { SKELETON_ROW_KEY } from '../feature-infinity-scroll';
 import { getColsWithKeyText } from '../feature-key-text';
 import type { KeyText, KeyTextMap } from '../feature-key-text/types';
-import {
-  calculateFilterPopoverPositionX,
-  calculateFilterPopoverPositionY,
-  TablePopoverContextValue,
-} from '../feature-overlays';
+import { getFilterAnchor, TablePopoverContextValue } from '../feature-overlays';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
@@ -143,11 +139,7 @@ export const useColumns = <
       event: CanvasEvent,
     ) => {
       openTablePopover({
-        // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
-        position: {
-          x: calculateFilterPopoverPositionX(event),
-          y: calculateFilterPopoverPositionY(event),
-        },
+        ...getFilterAnchor(event),
         contentType: 'filter',
         contentData: {
           columnConfig,

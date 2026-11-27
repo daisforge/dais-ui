@@ -7,6 +7,7 @@ import {
   SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
+import { IconRefresh } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
 
 import { createRowsForGrouping, type RowForGrouping } from './dataRowGrouping';
@@ -24,17 +25,44 @@ const meta: Meta = {
 export default meta;
 const preCode = `
 import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconRefresh } from '@daisforge/ui/icons';
 
 `;
 
-export const SimpleTable: StoryObj = {
+export const SimpleTable: StoryObj<{
+  manyColumns: boolean;
+  narrowPanel: boolean;
+}> = {
+  decorators: [(Story, { args }) => <Story key={String(args.manyColumns)} />],
+  args: { manyColumns: false, narrowPanel: false },
+  argTypes: {
+    manyColumns: { name: '24 дополнительных столбца', control: 'boolean' },
+    narrowPanel: { name: 'Узкая панель', control: 'boolean' },
+  },
   ...storySourceDoc({
     preCode,
     previewSource: 'shown',
   }),
   name: 'Простая группировка',
-  render: () => {
-    const [rows] = useState(createRowsForGrouping);
+  render: ({ manyColumns, narrowPanel }) => {
+    const [sourceRows] = useState(createRowsForGrouping);
+    const years = useMemo(
+      () => (manyColumns ? Array.from({ length: 24 }, (_, i) => 2000 + i) : []),
+      [manyColumns],
+    );
+    const rows = useMemo(
+      () =>
+        sourceRows.map((row) => ({
+          ...row,
+          ...Object.fromEntries(
+            years.map((year) => [
+              String(year),
+              row.year === year ? row.gold : 0,
+            ]),
+          ),
+        })),
+      [sourceRows, years],
+    );
 
     const [groupByArr, setGroupByArr] = useState<string[]>([]);
 
@@ -85,14 +113,36 @@ export const SimpleTable: StoryObj = {
             },
           },
         },
+        ...years.map((year) => ({
+          key: String(year),
+          name: String(year),
+          rowsGrouping: { columnGroupLabel: `Золотые медали за ${year} год` },
+        })),
       ],
-      [],
+      [years],
     );
 
     return (
       <TableCanvas
         tableConfig={{
-          containerStyle: { height: 700 },
+          containerStyle: {
+            height: 700,
+            maxWidth: narrowPanel ? 168 : undefined,
+          },
+          fullScreenEnabled: narrowPanel,
+          controlBlock: narrowPanel
+            ? {
+                rightSideInner: [
+                  {
+                    text: 'Сбросить группировку',
+                    contentLeft: <IconRefresh />,
+                    'aria-label': 'Сбросить группировку',
+                    title: 'Сбросить группировку',
+                    onClick: () => setGroupByArr([]),
+                  },
+                ],
+              }
+            : undefined,
           columnsControl: {
             enable: true,
           },

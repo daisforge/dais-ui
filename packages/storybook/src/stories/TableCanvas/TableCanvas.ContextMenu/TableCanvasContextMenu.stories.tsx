@@ -285,7 +285,17 @@ function ExampleAllFeatures() {
 }
 
 // Кастомные свойства Dropdown: size, listWidth, closeOnSelect
-function ExampleCustomDropdownProps() {
+type CustomMenuArgs = {
+  listWidth: number;
+  tallRow: boolean;
+  offsetFromCursor: boolean;
+};
+
+function ExampleCustomDropdownProps({
+  listWidth,
+  tallRow,
+  offsetFromCursor,
+}: CustomMenuArgs) {
   const [rows] = useState(createRows);
 
   const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
@@ -304,10 +314,12 @@ function ExampleCustomDropdownProps() {
   return (
     <TableCanvas
       tableConfig={{
+        rowHeight: tallRow ? 480 : undefined,
         onCellContextMenuDropdown: {
           type: 'dropdown',
           size: 's',
-          listWidth: '580px',
+          listWidth,
+          offset: offsetFromCursor ? [0, 0] : undefined,
           closeOnSelect: true,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           getDropdownItems: ({ column, row }) => [
@@ -438,7 +450,13 @@ ${getFuncAsString(
 )}
 `;
 
-export const ContextMenuCustomDropdownPropsStory: StoryObj = {
+export const ContextMenuCustomDropdownPropsStory: StoryObj<CustomMenuArgs> = {
+  args: { listWidth: 580, tallRow: false, offsetFromCursor: false },
+  argTypes: {
+    listWidth: { name: 'Ширина меню ПКМ, px', control: 'number' },
+    tallRow: { name: 'Высота строки 480 px', control: 'boolean' },
+    offsetFromCursor: { name: 'Явный offset [0, 0]', control: 'boolean' },
+  },
   name: 'Кастомные свойства Dropdown (size, listWidth, closeOnSelect)',
   ...storySourceDoc({
     previewSource: 'shown',

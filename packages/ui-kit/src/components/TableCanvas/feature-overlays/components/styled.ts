@@ -4,14 +4,14 @@ import styled from 'styled-components';
 
 import { COLORS } from '../../styles';
 import {
+  FILTER_POPOVER_PADDING,
   POPOVER_CONTENT_BORDER_RADIUS,
-  POPOVER_CONTENT_PADDING,
 } from '../constants';
 
 /**
  * Якорь поповера: невидимый DOM-элемент на месте canvas-элемента.
  * position: absolute внутри основного контейнера таблицы (не скроллящегося).
- * Фильтр открывается от точки (1×1), Popover на canvas от прямоугольника
+ * Фильтр открывается от прямоугольника иконки, Popover на canvas от прямоугольника
  * элемента или ячейки. С `$passThrough` клики проходят сквозь якорь на canvas.
  */
 export const StyledPopoverContainer = styled.div<{
@@ -32,8 +32,9 @@ export const StyledPopoverContainer = styled.div<{
 /**
  * Контент popover с тенью и скруглением.
  */
-export const PopoverContent = styled.div`
-  padding: ${POPOVER_CONTENT_PADDING}px;
+export const PopoverContent = styled.div<{ $customFilter: boolean }>`
+  padding: ${({ $customFilter }) =>
+    $customFilter ? 4 : FILTER_POPOVER_PADDING}px;
   background-color: ${COLORS.white};
   border-radius: ${POPOVER_CONTENT_BORDER_RADIUS}px;
   box-shadow: ${() => shadowDownSoftS};
@@ -41,12 +42,12 @@ export const PopoverContent = styled.div`
 
 /**
  * Скрытый target button для PopoverBeta.
- * PopoverBeta требует видимый target для позиционирования,
- * но мы управляем открытием программно через .click().
+ * Занимает весь прямоугольник иконки и не перехватывает события грида.
  */
 export const HiddenTriggerButton = styled.button`
-  width: 1px;
-  height: 1px;
+  display: block;
+  width: 100%;
+  height: 100%;
   appearance: none;
   border: none;
   outline: none;

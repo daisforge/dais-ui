@@ -1,5 +1,5 @@
 import { Box } from '@ui-kit/components/Box';
-import { TextFieldSearch } from '@ui-kit/components/TextField';
+import { TextFieldSearch, textFieldTokens } from '@ui-kit/components/TextField';
 import {
   bodyM,
   bodyS,
@@ -55,17 +55,26 @@ export const StyledTotalListItemContainer = styled(Box)<{
 const listStylesMapper = {
   small: () => ({
     ...bodyXS,
-    padding: '10px 12px',
+    lineHeight: '16px',
+    columnGap: '6px',
+    minHeight: 24,
+    padding: '4px 8px',
     borderRadius: '6px',
   }),
   medium: () => ({
     ...bodyS,
+    lineHeight: '20px',
+    columnGap: '6px',
+    minHeight: 40,
     padding: '10px 12px',
     borderRadius: '8px',
   }),
   big: () => ({
     ...bodyM,
-    padding: '10px 12px',
+    lineHeight: '24px',
+    columnGap: '8px',
+    minHeight: 48,
+    padding: '12px 14px',
     borderRadius: '10px',
   }),
 };
@@ -107,6 +116,8 @@ export const StyledListItem = styled.li<{
 
 export const StyledSearchBlockFilter = styled(TextFieldSearch)`
   && .input-wrapper {
+    ${textFieldTokens.leftContentMargin}: 0 4px 0 0;
+    padding-inline: 12px;
     border-radius: 8px;
   }
 `;

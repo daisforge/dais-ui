@@ -6,7 +6,8 @@ import { IconDone } from '@ui-kit/icons';
 import { textAccent } from '@ui-kit/tokens';
 import { ReactNode, useMemo, useState } from 'react';
 
-import { SIZE, SIZES } from '../../styles';
+import { SIZE } from '../../styles';
+import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import {
@@ -39,14 +40,6 @@ function isSingle(
 function isSingle(m: 'single' | 'multiple', _valueOrOnChange: unknown) {
   return m === 'single';
 }
-
-// Контейнер галочки в single-режиме занимает место и когда галочка скрыта,
-// поэтому его ширина повторяет ширину самой иконки выбранного размера.
-const CHECK_ICON_CONTAINER_SIZE: Record<'xs' | 's' | 'm', string> = {
-  xs: '16px',
-  s: '24px',
-  m: '24px',
-};
 
 const getItemIsSelected = (
   o: { text: string; value: string },
@@ -114,9 +107,8 @@ export const ComboboxX = ({
     checked: value?.length !== 0 && value?.length === options.length,
     onChange: () => {},
   };
-  const checkboxSize = size === 'big' ? 'm' : 's';
-  const checkedIconSize = size === 'small' ? 'xs' : 's';
-  const checkedIconContainerSize = CHECK_ICON_CONTAINER_SIZE[checkedIconSize];
+  const { checkboxSize, iconSize, iconWidth, searchSize } =
+    getTableDropdownConfig(size);
 
   return (
     <Box
@@ -125,8 +117,9 @@ export const ComboboxX = ({
       }}
     >
       <StyledSearchBlockFilter
+        data-table-filter-search
         ref={searchInputRef}
-        size={SIZES[size].input as 'xs'}
+        size={searchSize}
         autoComplete="off"
         tabIndex={tabIndex}
         value={inputValue}
@@ -163,7 +156,6 @@ export const ComboboxX = ({
                 size={checkboxSize}
                 style={{
                   pointerEvents: 'none',
-                  marginRight: '8px',
                 }}
               />
               Выбрать всё
@@ -199,16 +191,15 @@ export const ComboboxX = ({
                 {mode === 'single' && (
                   <span
                     style={{
-                      width: checkedIconContainerSize,
-                      minWidth: checkedIconContainerSize,
+                      width: iconWidth,
+                      minWidth: iconWidth,
                       display: 'inline-flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginRight: '8px',
                       visibility: itemIsSelected ? 'visible' : 'hidden',
                     }}
                   >
-                    <IconDone size={checkedIconSize} color={textAccent} />
+                    <IconDone size={iconSize} color={textAccent} />
                   </span>
                 )}
                 {mode === 'multiple' && (
@@ -218,7 +209,6 @@ export const ComboboxX = ({
                     size={checkboxSize}
                     style={{
                       pointerEvents: 'none',
-                      marginRight: '8px',
                     }}
                   />
                 )}

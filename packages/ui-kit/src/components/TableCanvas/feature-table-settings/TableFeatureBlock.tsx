@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { TableDropdown } from '../components/TableDropdown';
 import { useHeaderContext } from '../contexts';
+import { TABLE_SETTINGS_LIST_MAX_HEIGHT } from '../styles/dropdown-sizes';
 import { getDataAttributes } from '../utils';
 import { DropdownRenderCtx, FeatureItem } from '../widgets/control-block/types';
 import {
@@ -122,6 +123,7 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
           >
             <TableDropdown
               offset={tableDropdownOffset}
+              listMaxHeight={TABLE_SETTINGS_LIST_MAX_HEIGHT}
               items={feature.details.options.map((option) => ({
                 value: option.value,
                 label: option.label,

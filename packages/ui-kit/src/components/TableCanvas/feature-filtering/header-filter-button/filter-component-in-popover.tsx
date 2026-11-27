@@ -1,7 +1,10 @@
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-import { SIZES } from '../../styles';
+import { FILTER_POPOVER_PADDING } from '../../feature-overlays/constants';
+import { SIZE } from '../../styles';
+import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import type { ColumnConfig, ObjectForExtending } from '../../types';
 import type { Option } from '../../types/additional.type';
 import { ComboboxX } from '../combobox';
@@ -15,12 +18,49 @@ const PFX = '[FilterComponentInPopover]';
 // Диагностика: общий флаг фильтра window.__TABLE_CANVAS_FILTER_DEBUG__ = true.
 const filterDebug = createDebugLogger('TABLE_CANVAS_FILTER');
 
-// отнимаем везде 8px, так как это padding
-const FILTER_POPOVER_WIDTH = {
-  small: '192px',
-  medium: '232px',
-  big: '232px',
-};
+const FilterListContainer = styled.div<{
+  $size: SIZE;
+  $searchWidth?: string;
+}>(({ $size, $searchWidth }) => {
+  const { minWidth, maxWidth } = getTableDropdownConfig($size);
+  const padding = 2 * FILTER_POPOVER_PADDING;
+  return {
+    width: $searchWidth ?? 'max-content',
+    minWidth: minWidth - padding,
+    maxWidth: maxWidth - padding,
+    // Размер списка задают подписи пунктов. Поле занимает доступную ширину.
+    [`${StyledSearchBlockFilter}`]: { contain: 'inline-size' },
+  };
+});
+
+function HeaderFilterList({
+  size,
+  children,
+}: React.PropsWithChildren<{ size: SIZE }>) {
+  const [searchWidth, setSearchWidth] = useState<string>();
+  return (
+    <FilterListContainer
+      $size={size}
+      $searchWidth={searchWidth}
+      onInputCapture={(event) => {
+        if (
+          searchWidth === undefined &&
+          event.target instanceof Element &&
+          event.target.closest('[data-table-filter-search]')
+        ) {
+          // Измеряем до фильтрации, пока длинные подписи ещё участвуют в вёрстке.
+          setSearchWidth(getComputedStyle(event.currentTarget).width);
+        }
+      }}
+    >
+      {children}
+    </FilterListContainer>
+  );
+}
+
+const StyledFreeTextFilter = styled(StyledSearchBlockFilter)<{
+  $width: number;
+}>(({ $width }) => ({ width: $width }));
 
 /**
  * Инпут текстового фильтра. Вынесен в отдельный компонент, чтобы использовать
@@ -33,13 +73,13 @@ const FreeTextFilterInput = ({
   onChange,
 }: {
   size: 'xs' | 's';
-  width: string;
+  width: number;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const searchInputRef = useFocusSearchInput();
   return (
-    <StyledSearchBlockFilter
+    <StyledFreeTextFilter
       ref={searchInputRef}
       size={size}
       autoComplete="off"
@@ -49,7 +89,7 @@ const FreeTextFilterInput = ({
         e.stopPropagation();
       }}
       onKeyDown={inputStopPropagation}
-      width={width}
+      $width={width}
     />
   );
 };
@@ -110,10 +150,12 @@ const FilterComponentInPopoverInner = <
       }));
     };
 
+    const { searchSize, textFilterPopoverWidth } =
+      getTableDropdownConfig(rowSize);
     return (
       <FreeTextFilterInput
-        size={SIZES[rowSize].input}
-        width={FILTER_POPOVER_WIDTH[rowSize]}
+        size={searchSize}
+        width={textFilterPopoverWidth - 2 * FILTER_POPOVER_PADDING}
         value={filters?.[valueKeyInFilters] as string}
         onChange={handleInputChange}
       />
@@ -175,21 +217,22 @@ const FilterComponentInPopoverInner = <
   const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
 
   return (
-    <ComboboxX
-      // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
-      size={rowSize}
-      mode={mode as 'single'}
-      value={value as string}
-      onChange={onChange as (v: string) => void}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      options={options as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      beforeList={<BeforeList {...(props as any)} />}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      afterList={<AfterList {...(props as any)} />}
-      listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
-      width={FILTER_POPOVER_WIDTH[rowSize]}
-    />
+    <HeaderFilterList key={columnConfig.key} size={rowSize}>
+      <ComboboxX
+        // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
+        size={rowSize}
+        mode={mode as 'single'}
+        value={value as string}
+        onChange={onChange as (v: string) => void}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        options={options as any}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        beforeList={<BeforeList {...(props as any)} />}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        afterList={<AfterList {...(props as any)} />}
+        listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
+      />
+    </HeaderFilterList>
   );
 };
 

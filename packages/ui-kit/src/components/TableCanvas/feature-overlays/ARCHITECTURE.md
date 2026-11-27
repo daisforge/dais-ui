@@ -21,7 +21,7 @@
 ```
 feature-overlays/
 ├── index.ts                          публичный API: PopoverInTable, контекст, хуки, CanvasOverlayListener
-├── constants.ts                      DATA_POPOVER_TRIGGER, POPOVER_OFFSET, POPOVER_Z_INDEX, отступы содержимого
+├── constants.ts                      POPOVER_Z_INDEX, отступы содержимого
 ├── context/
 │   ├── index.ts
 │   └── TablePopoverContext.tsx       TablePopoverState, TablePopoverBehavior, DEFAULT_POPOVER_BEHAVIOR, getPopoverBehavior, useTablePopover
@@ -33,7 +33,7 @@ feature-overlays/
 │   ├── PopoverContainer.tsx          PopoverInTable: якорь на месте элемента, фильтр через PopoverBeta, custom через render
 │   └── styled.ts                     StyledPopoverContainer, PopoverContent, HiddenTriggerButton
 ├── utils/
-│   └── calculatePositionClick.ts     точка якоря фильтра по событию клика в шапке
+│   └── calculatePositionClick.ts     границы иконки фильтра по событию клика в шапке
 ├── __tests__/
 └── canvas/
     ├── core/                         слушатель кликов и наведения, выбор окна, Esc, уход курсора, якорь
@@ -53,7 +53,7 @@ feature-overlays/
 │  Фильтр шапки                              table-hooks/useColumns.tsx       │
 │    клик по иконке фильтра в шапке колонки (onOpenFilter)                   │
 │    open({                                                                   │
-│      position: точка под иконкой (calculatePositionClick.ts),              │
+│      position, anchorSize: границы иконки (getFilterAnchor),              │
 │      contentType: 'filter',                                                 │
 │      contentData: { columnConfig },                                         │
 │      sourceKey: columnConfig.key,                                           │
@@ -139,11 +139,11 @@ feature-overlays/
 `TablePopoverState` описывает единственное открытое окно таблицы. Поля:
 
 - `isOpen`;
-- `position`: координаты якоря во viewport. Для фильтра это точка под
-  иконкой, для canvas-элемента левый верхний угол его прямоугольника.
+- `position`: координаты якоря во viewport. Для фильтра это левый верхний угол
+  иконки, для canvas-элемента левый верхний угол его прямоугольника.
   `PopoverInTable` переводит их в координаты контейнера таблицы, потому что
   якорь лежит внутри него с `position: absolute`;
-- `anchorSize`: размер якоря. Фильтр открывается от точки 1 на 1 px, окно
+- `anchorSize`: размер якоря. Фильтр открывается от прямоугольника иконки, окно
   canvas-элемента от прямоугольника элемента, чтобы placement считался от
   реальных границ;
 - `contentType`: вид содержимого, см. ниже;
@@ -161,11 +161,9 @@ feature-overlays/
 `PopoverContentType` в `context/TablePopoverContext.tsx`:
 
 - `filter`: фильтр колонки из шапки. `contentData` это `{ columnConfig }`.
-  `PopoverInTable` сам рисует `StyledPopoverBeta` со скрытой кнопкой-триггером
-  (`HiddenTriggerButton` с атрибутом `DATA_POPOVER_TRIGGER`) и после монтирования
-  программно кликает по ней через два `requestAnimationFrame`: PopoverBeta
-  подписывается на клик по своему target не сразу. Внутри
-  `FilterComponentInPopover` из `feature-filtering`;
+  `PopoverInTable` открывает управляемый `StyledPopoverBeta` над DOM-якорем
+  размером с иконку. Если справа недостаточно места, выравнивает правые края
+  списка и якоря. `FilterComponentInPopover` рендерит содержимое из `feature-filtering`.
 - `custom`: произвольное содержимое, его рисует открывший через `render`.
   `PopoverInTable` ставит только якорь (`StyledPopoverContainer` размером с
   `anchorSize` и `pointer-events: none`, чтобы клики проходили на canvas) и

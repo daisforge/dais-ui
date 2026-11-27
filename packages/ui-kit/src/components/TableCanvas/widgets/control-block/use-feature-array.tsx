@@ -288,6 +288,7 @@ export const useFeatureArray = <
   }, [pinIconState.action, onUnpinSelectedColumns, onPinSelectedColumns]);
 
   const { rowsGroupingButtonProps } = useGetRowsGroupingBtnProps({
+    rowSize,
     tableConfig,
     columnConfig,
     groupedCols,

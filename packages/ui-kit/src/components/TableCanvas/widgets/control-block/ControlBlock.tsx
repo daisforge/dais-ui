@@ -576,6 +576,7 @@ export const ControlBlock = ({
                     triggerSlot={
                       <LinkButton
                         size={sizeMap.overflowTriggerButton}
+                        aria-label="Дополнительные действия"
                         contentRight={
                           <IconDotsVerticalCenteredOutline
                             size={sizeMap.overflowTriggerIcon}
