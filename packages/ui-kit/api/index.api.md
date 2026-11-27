@@ -4455,21 +4455,21 @@ type CtxsType<Customs extends ObjectForExtending_2 | void = {}> = {
 // @public (undocumented)
 export const CUSTOM_TOKENS: {
     readonly zIndexCell: "var(--zIndexCell)";
-    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     readonly headerColor: "var(--headerColor)";
     readonly editableCellColor: "var(--editableCellColor)";
     readonly editableCellHoverColor: "var(--editableCellHoverColor)";
+    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const CUSTOM_TOKENS_KEYS: {
     readonly zIndexCell: "--zIndexCell";
-    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     readonly headerColor: "--headerColor";
     readonly editableCellColor: "--editableCellColor";
     readonly editableCellHoverColor: "--editableCellHoverColor";
+    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -4492,20 +4492,20 @@ export const customColorGlobalVars: (theme: ActiveTheme) => string;
 
 // @public (undocumented)
 export const customColorTokens: {
-    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     headerColor: "var(--headerColor)";
     editableCellColor: "var(--editableCellColor)";
     editableCellHoverColor: "var(--editableCellHoverColor)";
+    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const customColorTokensKeys: {
-    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     headerColor: "--headerColor";
     editableCellColor: "--editableCellColor";
     editableCellHoverColor: "--editableCellHoverColor";
+    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -4613,6 +4613,11 @@ type DataAttributes_2 = {
 
 // @public (undocumented)
 type DataAttributes_3 = {
+    [K in `data-${string}`]?: string;
+};
+
+// @public
+type DataAttributes_4 = {
     [K in `data-${string}`]?: string;
 };
 
@@ -9020,7 +9025,7 @@ export const MassActionsButton: ({ type, view, showLabel, text, buttonStyles, dr
 export type MassActionsButtonProps = MassActionsButtonPropsButton | MassActionsButtonPropsLinkButton;
 
 // @public (undocumented)
-export type MassActionsButtonPropsButton = DataAttributes & Partial<ButtonCompProps> & {
+export type MassActionsButtonPropsButton = DataAttributes_4 & Partial<ButtonCompProps> & {
     type: 'button';
     view?: ButtonCompProps['view'];
     dropdown?: DropdownProps & {
@@ -9030,7 +9035,7 @@ export type MassActionsButtonPropsButton = DataAttributes & Partial<ButtonCompPr
 };
 
 // @public (undocumented)
-export type MassActionsButtonPropsLinkButton = DataAttributes & Partial<LinkButtonProps> & {
+export type MassActionsButtonPropsLinkButton = DataAttributes_4 & Partial<LinkButtonProps> & {
     type?: 'linkButton';
     view?: LinkView<LinkButtonView>;
     dropdown?: DropdownProps & {
@@ -9055,6 +9060,11 @@ export type MassActionsCounterProps = {
 };
 
 // @public
+type MassActionsDropdownConfigProps = Omit<DropdownProps & {
+    $css?: CSSObject;
+}, 'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'>;
+
+// @public
 export type MassActionsProps = {
     containerRef: RefObject<HTMLElement> | MutableRefObject<HTMLElement | null> | (() => HTMLElement | null);
     leftSection: ReactNode;
@@ -9062,7 +9072,7 @@ export type MassActionsProps = {
     buttons?: MassActionsButtonProps[];
     sidebarConfig?: MassActionsSidebarConfig;
     isHaveSomeFeatureInSidebar?: boolean;
-    collapsedDropdownProps?: TableDropdownConfigProps_2;
+    collapsedDropdownProps?: MassActionsDropdownConfigProps;
     selectedCount: number;
     show?: boolean;
     useTableDropdown?: boolean;

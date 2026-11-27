@@ -6,9 +6,8 @@ import {
 import React, { ReactNode, useMemo, useState } from 'react';
 import { CSSObject } from 'styled-components';
 
-import { TableDropdown } from '../Table/components/TableDropdown';
-import { TableDropdownConfigProps } from '../Table/components/TableDropdown/types';
-import { MassActionsButtonProps } from './types';
+import { useMassActionsDropdown } from './dropdownContext';
+import { MassActionsButtonProps, MassActionsProps } from './types';
 
 const useMassActionsButtonsToDropdownItems = (
   buttons: MassActionsButtonProps[] = [],
@@ -111,10 +110,11 @@ export const MassActionsDropdown = ({
   buttons: MassActionsButtonProps[];
   dividerIndexes?: Array<number>;
   triggerSlot?: ReactNode;
-  dropdownProps?: TableDropdownConfigProps;
-  /** Использовать TableDropdown (для таблиц) вместо обычного Dropdown */
+  dropdownProps?: MassActionsProps['collapsedDropdownProps'];
+  /** Использовать TableDropdown внутри Table; вне Table — обычный Dropdown */
   useTableDropdown?: boolean;
 }) => {
+  const TableDropdown = useMassActionsDropdown();
   const { dropdownItems, handlerMap, $summaryCSS } =
     useMassActionsButtonsToDropdownItems(buttons);
   const handleItemSelect = useDropdownItemClickHandler(handlerMap);
@@ -139,8 +139,8 @@ export const MassActionsDropdown = ({
 
   const { portal, ...forTable } = commonProps;
 
-  // Для таблицы используем TableDropdown
-  if (useTableDropdown) {
+  // Для таблицы используем TableDropdown, который подставляет Table
+  if (useTableDropdown && TableDropdown) {
     return (
       <TableDropdown $css={$summaryCSS} {...forTable}>
         {triggerSlot}
