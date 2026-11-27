@@ -223,6 +223,24 @@ function cellMenu(
             : Math.abs(menuRect.y - cellRect.y - cellRect.height - 4),
         ).toBeLessThanOrEqual(1);
       });
+      if (nearBottom) {
+        const scroller = canvasElement.ownerDocument.scrollingElement;
+        const menu = list.parentElement;
+        if (!scroller || !menu) throw new Error('Меню или страница недоступны');
+        const initialScroll = scroller.scrollTop;
+        const initialTop = menu.getBoundingClientRect().top;
+        try {
+          scroller.scrollTop += 64;
+          await waitFor(() => {
+            const distance = scroller.scrollTop - initialScroll;
+            expect(distance).toBeGreaterThan(0);
+            const displacement = menu.getBoundingClientRect().top - initialTop;
+            expect(Math.abs(displacement + distance)).toBeLessThanOrEqual(1);
+          });
+        } finally {
+          scroller.scrollTop = initialScroll;
+        }
+      }
     },
   };
 }

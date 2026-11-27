@@ -7,6 +7,7 @@ import {
   SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
+import { IconRefresh } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
 
 import { createRowsForGrouping, type RowForGrouping } from './dataRowGrouping';
@@ -24,6 +25,7 @@ const meta: Meta = {
 export default meta;
 const preCode = `
 import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconRefresh } from '@daisforge/ui/icons';
 
 `;
 
@@ -133,6 +135,9 @@ export const SimpleTable: StoryObj<{
                 rightSideInner: [
                   {
                     text: 'Сбросить группировку',
+                    contentLeft: <IconRefresh />,
+                    'aria-label': 'Сбросить группировку',
+                    title: 'Сбросить группировку',
                     onClick: () => setGroupByArr([]),
                   },
                 ],

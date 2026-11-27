@@ -18,6 +18,8 @@ export const HiddenTriggerButton = styled.button<{ $height: number }>`
 `;
 
 export const MenuContainer = styled.div<MenuContainerProps>`
+  anchor-name: --table-context-menu;
+  anchor-scope: --table-context-menu;
   position: ${({ $isFixed }) => ($isFixed ? 'fixed' : 'absolute')};
   display: flex;
   left: ${({ position }) => position.x}px;
@@ -30,9 +32,10 @@ export const MenuContainer = styled.div<MenuContainerProps>`
     `}
 `;
 
-// Портал остаётся в DOM таблицы, но список может выйти за край её скроллера.
+// Меню следует за ячейкой при прокрутке и может выйти за край таблицы.
 export const MenuPortal = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
+  position-anchor: --table-context-menu;
+  top: anchor(top, 0px);
+  left: anchor(left, 0px);
 `;
