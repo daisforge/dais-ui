@@ -1247,7 +1247,7 @@ export function TableCanvas<
                                 true,
                               outlineEachRange:
                                 tableConfig.cellsSelection?.outlineEachRange ??
-                                false,
+                                true,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',

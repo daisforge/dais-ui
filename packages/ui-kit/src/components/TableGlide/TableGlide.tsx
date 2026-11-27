@@ -218,7 +218,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию включено.
   enableSelectAll = true,
   // Рамка у каждого Ctrl-диапазона ячеек, а не только у активного.
-  outlineEachRange = false,
+  outlineEachRange = true,
   enableLowDprHairline,
   // Controlled нативное выделение (значение + сеттер).
   gridSelection: gridSelectionExternal,
