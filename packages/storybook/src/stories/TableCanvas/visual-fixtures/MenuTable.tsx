@@ -1,4 +1,9 @@
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import {
+  ColumnConfig,
+  TableCanvas,
+  TableFilterSearch,
+  TableFilterSelectAll,
+} from '@ui-kit/components/TableCanvas';
 import { SIZE } from '@ui-kit/components/TableCanvas/styles';
 import { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { IconDownload } from '@ui-kit/icons';
@@ -28,6 +33,15 @@ const filterColumn = (
   filtering: {
     component: 'select',
     keyInFilterState: key,
+    ...(multiple && {
+      listControls: 'slots',
+      beforeList: () => (
+        <>
+          <TableFilterSearch />
+          <TableFilterSelectAll />
+        </>
+      ),
+    }),
     selectOptions: {
       type: 'constant',
       options: values.map((value) => ({ value, text: value })),

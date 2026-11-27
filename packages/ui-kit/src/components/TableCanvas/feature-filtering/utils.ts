@@ -1,5 +1,5 @@
-import { ColumnConfig, ObjectForExtending } from '../types';
-import { FilteringConfig, TableConfig } from '../types/table-config.type';
+import type { ColumnConfig, ObjectForExtending } from '../types';
+import type { FilteringConfig, TableConfig } from '../types/table-config.type';
 
 export function inputStopPropagation(
   event: React.KeyboardEvent<HTMLInputElement>,

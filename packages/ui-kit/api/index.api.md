@@ -3740,6 +3740,7 @@ type ColumnConfig_2<Row extends ObjectForExtending_2, SummRow = unknown, CustomC
         filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;
     } | {
         component: 'select';
+        listControls?: 'default' | 'slots';
         beforeList?: (props: FilterComponentInPopoverProps<ObjectForExtending_2, ColumnConfig_2<Row, SummRow>>) => ReactNode;
         afterList?: (props: FilterComponentInPopoverProps<ObjectForExtending_2, ColumnConfig_2<Row, SummRow>>) => ReactNode;
         filter: {
@@ -12904,6 +12905,7 @@ type RowsGrouping<RowType extends ObjectForExtending_2, SummaryRowType = unknown
         }) => boolean;
     };
     groupButton?: {
+        applyMode?: 'instant' | 'confirm';
         getGroupedCount?: (props: {
             currCount: number;
             groupedCols: string[];
@@ -14977,6 +14979,9 @@ type TableDropdownProps_2 = DropdownProps & {
     $css?: CSSObject;
 };
 
+// @public
+export const TableFilterSearch: FC;
+
 // @public (undocumented)
 export const TableFilterSelect: ({ value, onChange, mode, options, tabIndex, beforeList, afterList, size, listMaxHeight, width, }: (Single | Multiple) & {
     options: {
@@ -14990,6 +14995,9 @@ export const TableFilterSelect: ({ value, onChange, mode, options, tabIndex, bef
     listMaxHeight?: string;
     width?: string;
 }) => JSX_2.Element;
+
+// @public
+export const TableFilterSelectAll: FC;
 
 // @public (undocumented)
 export const TableFilterSelectList: StyledComponent<"ul", DefaultTheme, {

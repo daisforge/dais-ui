@@ -1,5 +1,7 @@
 export {
+  TableFilterSearch,
   TableFilterSelect,
+  TableFilterSelectAll,
   TableFilterSelectList,
   TableFilterSelectListItem,
   TableFilterSelectSearchTextfield,

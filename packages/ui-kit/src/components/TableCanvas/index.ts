@@ -22,7 +22,9 @@ export {
   type CellEditorTextAreaProps,
 } from './feature-edit/types';
 export {
+  TableFilterSearch,
   TableFilterSelect,
+  TableFilterSelectAll,
   TableFilterSelectList,
   TableFilterSelectListItem,
   TableFilterSelectSearchTextfield,

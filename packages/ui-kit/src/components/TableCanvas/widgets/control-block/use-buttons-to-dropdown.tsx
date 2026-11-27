@@ -5,7 +5,7 @@ import {
   IconViewScreen4Outline,
   IconViewSplit4Outline,
 } from '@ui-kit/icons';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { isValidElement, ReactNode, useCallback, useId, useMemo } from 'react';
 import { CSSObject } from 'styled-components';
 
 import { useHeaderContext } from '../../contexts';
@@ -15,6 +15,10 @@ import {
   ITEM_ID_GROUPED_ROWS,
   NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from '../../feature-rows-grouping/constants';
+import {
+  GroupingApply,
+  GroupingApplyProps,
+} from '../../feature-rows-grouping/GroupingApply';
 import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import { ControlBlockButtonProps } from './control-block-button.types';
 import { isFeatureItem } from './typeGuards';
@@ -218,6 +222,7 @@ export const useButtonsToDropdownItems = (
 ) => {
   // setRowSize и onRowSizeChange нужны только закомментированной ветке
   // rowSize ниже, вернуть в деструктуризацию вместе с ней
+  const applyItemId = useId();
   const { activeView, setActiveView, rowSize } = useHeaderContext();
   return useMemo(() => {
     // Иконки этих пунктов рисуются в overflow дропдауне
@@ -374,6 +379,19 @@ export const useButtonsToDropdownItems = (
         // дропдаун, можно отметить несколько подряд.
         if (button['itemID'] === ITEM_ID_GROUPED_ROWS) {
           collectItemValues(processedItems, keepOpenItemValues);
+          const footer = button.dropdown.afterList;
+          if (
+            isValidElement<GroupingApplyProps>(footer) &&
+            footer.type === GroupingApply
+          ) {
+            processedItems.push({
+              value: applyItemId,
+              label: 'Применить',
+              dividerBefore: true,
+              contentLeft: <GroupingApply {...footer.props} inSubmenu />,
+            });
+            globalHandlerMap.set(applyItemId, footer.props.onApply);
+          }
         }
 
         if (button.dropdown?.$css) {
@@ -492,7 +510,7 @@ export const useButtonsToDropdownItems = (
 
     // setRowSize вернётся в зависимости вместе с веткой rowSize
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, buttons, setActiveView, rowSize]);
+  }, [activeView, applyItemId, buttons, setActiveView, rowSize]);
 };
 
 export const useDropdownItemClickHandler = (

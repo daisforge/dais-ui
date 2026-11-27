@@ -52,12 +52,14 @@ export const checkIsFilterActive = <
     typeof columnFilter === 'object' && columnFilter.typeOfValue === 'multiple';
 
   if (isMultipleFilter) {
-    if (!Array.isArray(clearedV)) {
+    const selected = currentV ?? [];
+    const cleared = clearedV ?? [];
+    if (!Array.isArray(selected) || !Array.isArray(cleared)) {
       return true;
     }
     return !(
-      currentV.length === clearedV.length &&
-      currentV.sort().join() === clearedV.sort().join()
+      selected.length === cleared.length &&
+      [...selected].sort().join() === [...cleared].sort().join()
     );
   }
 

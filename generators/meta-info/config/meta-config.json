@@ -1479,6 +1479,20 @@
       ]
     },
     {
+      "name": "TableFilterSearch",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Поле поиска в слоте beforeList фильтра заголовка TableCanvas",
+      "keywords": ["фильтр колонки", "поиск вариантов", "beforeList"]
+    },
+    {
+      "name": "TableFilterSelectAll",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Чекбокс выбора всех значений множественного фильтра заголовка TableCanvas",
+      "keywords": ["фильтр колонки", "выбрать всё", "beforeList"]
+    },
+    {
       "name": "TableFilterSelectListItem",
       "type": "composition",
       "category": "Локальные компоненты",
