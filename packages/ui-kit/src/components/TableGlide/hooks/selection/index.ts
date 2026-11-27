@@ -13,6 +13,9 @@
  */
 export { rectContainsCell } from './rectGeometry';
 export { useColoringLayers } from './useColoringLayers';
+export { useGridInteractionGuard } from './useGridInteractionGuard';
+export { useSelectionHeaders } from './useSelectionHeaders';
+export { useSelectionOnViewChange } from './useSelectionOnViewChange';
 export { useGridSelectionState } from './useGridSelectionState';
 export { useSelectionGeometry } from './useSelectionGeometry';
 export { useTableSelectionSystem } from './useTableSelectionSystem';

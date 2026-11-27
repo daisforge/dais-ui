@@ -14,7 +14,11 @@ import {
 } from './resolveSelectionForView';
 import { EMPTY_SELECTION, sameSelection } from './gridSelection';
 
-/** Сверяем координаты с последними показанными данными до отрисовки новой рамки. */
+/**
+ * Возвращает рамку для новых данных в том же рендере, в котором они попадут в Glide.
+ * Если прежняя рамка подходит, возвращает undefined. После применения рендера
+ * сохраняет снимок и передаёт изменившееся выделение владельцу состояния.
+ */
 export function useSelectionOnViewChange<R>({
   view,
   history,

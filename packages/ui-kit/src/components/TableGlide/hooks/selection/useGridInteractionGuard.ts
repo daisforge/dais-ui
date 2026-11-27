@@ -1,8 +1,17 @@
 import isEqual from 'lodash.isequal';
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import type { MutableRefObject, PointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
-import type { SelectionView } from '../../types';
+import type { GlideProps, SelectionView } from '../../types';
+
+type GridHandlers = Pick<
+  GlideProps,
+  | 'onGridSelectionChange'
+  | 'onSelectionCleared'
+  | 'onCellsEdited'
+  | 'onFillPattern'
+  | 'onFinishedEditing'
+>;
 
 interface GridView<R> {
   rows: readonly R[];
@@ -19,10 +28,21 @@ function sameRecord<R>(before: GridView<R>, after: GridView<R>, index: number) {
   return key != null && key === after.data?.rowKey?.(row);
 }
 
-/** Блокирует запись из редактора или протяжки, если по старым координатам теперь другие данные. */
+/**
+ * Пропускает события Glide, пока жест или редактор относятся к тем же данным.
+ * После смены представления позднее событие по старым координатам могло бы
+ * выделить другую запись или записать в неё значение.
+ */
 export function useGridInteractionGuard<R>(
   view: GridView<R>,
   editor: MutableRefObject<readonly [number, number] | undefined>,
+  {
+    onGridSelectionChange,
+    onSelectionCleared,
+    onCellsEdited,
+    onFillPattern,
+    onFinishedEditing,
+  }: GridHandlers,
 ) {
   const staleEditor = useRef(false);
   const staleGesture = useRef(false);
@@ -35,6 +55,7 @@ export function useGridInteractionGuard<R>(
     staleGesture.current = false;
     staleFill.current = false;
   }, []);
+
   useEffect(() => endGesture, [endGesture]);
 
   const beginGesture = useCallback(
@@ -96,5 +117,64 @@ export function useGridInteractionGuard<R>(
     if (changedGeometry || (replacedRows && view.data?.rowKey))
       staleGesture.current = true;
   });
-  return { staleEditor, staleGesture, staleFill, beginGesture };
+
+  const setEditorCell = useCallback(
+    (cell: typeof editor.current) => {
+      editor.current = cell;
+      staleEditor.current = false;
+    },
+    [editor],
+  );
+
+  const changeSelection = useCallback<
+    NonNullable<GridHandlers['onGridSelectionChange']>
+  >(
+    (next) => {
+      if (!staleGesture.current) onGridSelectionChange?.(next);
+    },
+    [onGridSelectionChange],
+  );
+
+  const clearSelection = useCallback(() => {
+    if (!staleGesture.current) onSelectionCleared?.();
+  }, [onSelectionCleared]);
+
+  const editCells = useCallback<NonNullable<GridHandlers['onCellsEdited']>>(
+    (edits) => {
+      if (staleEditor.current || staleFill.current) return true;
+      return onCellsEdited?.(edits);
+    },
+    [onCellsEdited],
+  );
+
+  const fill = useCallback<NonNullable<GridHandlers['onFillPattern']>>(
+    (event) => {
+      if (staleFill.current) event.preventDefault();
+      else onFillPattern?.(event);
+    },
+    [onFillPattern],
+  );
+
+  const finishEditing = useCallback<
+    NonNullable<GridHandlers['onFinishedEditing']>
+  >(
+    (value, movement) => {
+      const cancelled = staleEditor.current;
+      setEditorCell(undefined);
+      onFinishedEditing?.(cancelled ? undefined : value, movement);
+    },
+    [onFinishedEditing, setEditorCell],
+  );
+
+  return {
+    beginGesture,
+    setEditorCell,
+    handlers: {
+      onGridSelectionChange: changeSelection,
+      onSelectionCleared: clearSelection,
+      onCellsEdited: editCells,
+      onFillPattern: fill,
+      onFinishedEditing: finishEditing,
+    },
+  };
 }

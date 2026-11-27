@@ -65,7 +65,7 @@ describe('TableGlide: тема шапки выделенной колонки', 
     vi.restoreAllMocks();
   });
 
-  it('renderHeaderCell выделенной колонки получает цвет выделения в теме, остальные прежнюю тему', () => {
+  it('подсвечивает шапки основного и дополнительного диапазонов, оставляя промежуточную колонку без заливки', () => {
     const themes: Array<{ col: string; bgHeader?: string }> = [];
     const col = (id: string) =>
       ({
@@ -86,7 +86,7 @@ describe('TableGlide: тема шапки выделенной колонки', 
       current: {
         cell: [0, 0],
         range: { x: 0, y: 0, width: 1, height: 1 },
-        rangeStack: [],
+        rangeStack: [{ x: 2, y: 1, width: 1, height: 1 }],
       },
       columns: CompactSelection.empty(),
       rows: CompactSelection.empty(),
@@ -95,18 +95,21 @@ describe('TableGlide: тема шапки выделенной колонки', 
     render(
       <TableGlide
         rows={[{ a: 1 }, { b: 2 }]}
-        columns={[col('a'), col('b')]}
+        columns={[col('a'), col('b'), col('c')]}
+        cellsSelectionMode="multi-range-cell"
         gridSelection={selection}
         onGridSelectionChange={vi.fn()}
       />,
     );
     drawHeaderOf(0);
     drawHeaderOf(1);
+    drawHeaderOf(2);
 
-    expect(themes).toHaveLength(2);
+    expect(themes).toHaveLength(3);
     expect(themes[0]!.bgHeader).not.toBe(HEADER_BG);
     expect(themes[0]!.bgHeader).toBeTruthy();
     expect(themes[1]!.bgHeader).toBe(HEADER_BG);
+    expect(themes[2]!.bgHeader).toBe(themes[0]!.bgHeader);
   });
 
   it('drawHeader и getGroupDetails не пересоздаются от клика, getGroupDetails меняется со сменой выделенных групп', () => {
