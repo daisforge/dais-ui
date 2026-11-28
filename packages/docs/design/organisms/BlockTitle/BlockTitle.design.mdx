@@ -1,0 +1,199 @@
+---
+id: block-title
+title: Block Title
+type: organism
+status: Beta
+version: 1.0
+lastUpdated: 2026-11-28
+pixsoLink: "Pixso URL BlockTitle"
+storybookLink: "?path=/docs/композиции-blocktitle--docs"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+  - page-title
+  - badge
+  - block-gradient-scroll
+tags:
+  - data-display
+  - customizable
+---
+
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as Examples from './BlockTitle.examples.stories';
+
+<Meta of={Examples} name="Docs" />
+
+<div className="dsd">
+
+
+# Block Title
+
+Block Title это заголовок внутри блоков страницы: в левом, центральном или правом блоке. Платформа: Web.
+
+<Canvas of={Examples.Playground} />
+
+<Controls of={Examples.Playground} />
+
+## Размеры и отступы Block Title
+
+- Внешний отступ Block Title на странице и до контента: 16 px
+- Отступ между заголовком и описанием: 4 px, под описанием: 4 px
+- Высота Block Title: Hug, меняется при включении и выключении элементов
+- Ширина Block Title: при внедрении на страницу вставляем в autolayout центрального блока и настраиваем Fill по ширине
+
+<Canvas of={Examples.SpacingLive} />
+
+## Порядок настройки Block Title
+
+Block Title рекомендуем настраивать сверху вниз: сначала Custom Slot, Right Block и Back, потом размер заголовка, в самом конце цвета иконок и баджей.
+
+## Общие настройки Block Title
+
+### Sticky: закрепление Block Title при скролле
+
+Sticky закрепляет Block Title сверху при скролле. Значения: no, white, grey. White и grey добавляют Block Title белый или серый фон. Под закреплённым Block Title используйте компонент [BlockGradientScroll](?path=/docs/локальные-компоненты-blockgradientscroll-для-дизайнеров--docs).
+
+Sticky есть только в макете, в компоненте кода такого свойства нет: закрепление делает продукт на своей стороне, фон задаётся стилями. Поэтому оставьте в макете стикер для разработчика: Sticky, цвет фона и BlockGradientScroll.
+
+### Custom Slot: слот над заголовком
+
+Custom Slot включает и выключает кастомный слот над Title.
+
+<Canvas of={Examples.CustomSlot} />
+
+### Right Block: блок справа от заголовка
+
+Right Block включает и выключает блок справа. В блоке размещается Group Button или Custom Slot.
+
+> **⚠️ Важно:** кнопки в Right Block используем, только если на странице Page Title или Panel Block используются без кнопок. Тонкости использования кнопок описаны в [документации Page Title](?path=/docs/композиции-pagetitle-для-дизайнеров--docs), раздел «Кнопки в Right block Page Title». Если кнопки нужны в двух местах, например в Page Title и Block Title, напишите команде дизайн-системы.
+
+<Canvas of={Examples.PairButtons} />
+
+<Canvas of={Examples.RightBlock} />
+
+### Back: кнопка «Назад»
+
+Back включает и выключает кнопку «Назад».
+
+<Canvas of={Examples.Back} />
+
+## Настройки заголовка Block Title
+
+### TitleSize: размер заголовка Block Title
+
+TitleSize задаёт размер заголовка: H3, H4 или H5.
+
+- H3 используем, если на странице нет Page Title и заголовок внутри Block Title главный
+- H4 и H5 используем, если на странице есть Page Title и заголовок внутри второстепенный
+
+> **⚠️ Важно:** при использовании Block Title заголовок в Left Block должен быть такого же размера.
+
+<Canvas of={Examples.PairTitleSize} />
+
+<Canvas of={Examples.TitleSize} />
+
+### Text: текст заголовка Block Title
+
+Text задаёт значение заголовка, настройка нужна, чтобы текст не слетал. Заголовок занимает 1 строку. Если текст длиннее, он обрезается, а целиком показывается в подсказке при наведении. При длинном заголовке ставьте тексту Fill.
+
+### Description: описание под заголовком
+
+Description включает и выключает описание у заголовка. Длина описания без ограничения, рекомендуем использовать не более 2 строк.
+
+<Canvas of={Examples.Description} />
+
+<Canvas of={Examples.PairDescription} />
+
+### L Icon: иконка слева от заголовка
+
+L Icon включает и выключает иконку слева от заголовка.
+
+<Canvas of={Examples.LIcon} />
+
+### R Content: иконка или бадж справа от заголовка
+
+R Content включает и выключает контент справа от заголовка. Свойство Content выбирает содержимое: Icon или Badge. Размер Badge и Icon привязан к размеру Title: H3, H4 или H5.
+
+<Canvas of={Examples.RContent} />
+
+### TitleCustomSlot: кастомный слот справа от заголовка
+
+TitleCustomSlot включает и выключает Custom Slot справа от Title.
+
+<Canvas of={Examples.TitleCustomSlot} />
+
+## Настройки Right Block в Block Title
+
+Type задаёт содержимое Right Block: Group Button или Custom Slot.
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Что важно |
+|---|---|---|
+| Custom Slot | `topSlot` | Слот над заголовком |
+| Right Block | `rightSlot` | Group Button или Custom Slot передаются в этот слот |
+| Back | `onBackButtonClick` | Кнопка «Назад» появляется, когда передан обработчик |
+| TitleSize | `titleSize` | |
+| Text | `title` | По дизайну заголовок в 1 строку. Код пока обрезает его на второй строке, исправление запрошено |
+| Description | `description` | |
+| L Icon | `titleLeftSlot` | |
+| R Content и TitleCustomSlot | `titleRightSlot` | Оба свойства дизайна используют один слот |
+| Размер Badge и Icon | `titleBadgeSize` и `titleIconSize` | Приходят в callback слота |
+| Sticky, white и grey | настраивает продукт | Свойства в компоненте нет. Закрепление делает продукт, фон задают стилями через `containerProps`, под заголовком используют `BlockGradientScroll`. Делается по стикеру в макете |
+
+## Использование в коде
+
+Пропсы и примеры кода для Block Title: страницы [BlockTitle](?path=/docs/композиции-blocktitle--docs) и [BlockTitle API](?path=/docs/композиции-blocktitle-api--docs).
+
+## Связанные компоненты
+
+- **[Page Title](?path=/docs/композиции-pagetitle-для-дизайнеров--docs)**: кнопки в Right Block зависят от кнопок в Page Title, размер H3 выбираем, когда на странице нет Page Title
+- **Panel Block**: кнопки в Right Block используем, только если Panel Block без кнопок
+- **Left Block**: заголовок в Left Block должен быть такого же размера, как заголовок Block Title
+- **Badge**: контент справа от заголовка в R Content
+- **[BlockGradientScroll](?path=/docs/локальные-компоненты-blockgradientscroll-для-дизайнеров--docs)**: используется под закреплённым Block Title (Sticky white или grey)
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: В каком порядке настраивать Block Title?**
+A: Сверху вниз: сначала Custom Slot, Right Block и Back, потом размер заголовка, в самом конце цвета иконок и баджей.
+
+**Q: Какой размер заголовка выбрать в Block Title?**
+A: H3, если на странице нет Page Title и заголовок главный. H4 или H5, если Page Title есть и заголовок второстепенный.
+
+**Q: Можно поставить кнопки и в Page Title, и в Block Title?**
+A: Кнопки в Right Block используем, только если Page Title или Panel Block без кнопок. Если кнопки нужны в двух местах, напишите команде дизайн-системы.
+
+**Q: Как закрепить Block Title при скролле?**
+A: Выберите в Sticky значение white или grey, так у Block Title появится белый или серый фон. Под Block Title используйте компонент [BlockGradientScroll](?path=/docs/локальные-компоненты-blockgradientscroll-для-дизайнеров--docs). Оставьте в макете стикер для разработчика: Sticky, цвет фона и BlockGradientScroll. В коде закрепление делает продукт.
+
+**Q: Сколько строк можно занять описанием в Block Title?**
+A: Длина описания без ограничения, рекомендуем не более 2 строк.
+
+**Q: Как поменять размер иконки или баджа рядом с заголовком Block Title?**
+A: Размер Badge и Icon привязан к размеру Title. Чтобы поменять их размер, меняйте TitleSize.
+
+**Q: Куда делось свойство R Icon в Block Title?**
+A: R Icon переименовано в R Content. Свойство Content выбирает Icon или Badge.
+
+### Для разработчиков
+
+**Q: Как показать кнопку «Назад» в Block Title?**
+A: Передайте обработчик в `onBackButtonClick`, кнопка появится слева от заголовка.
+
+**Q: Как задать иконке, баджу и кнопкам правильный размер в слотах Block Title?**
+A: Передайте в слот функцию, размеры `titleIconSize`, `titleBadgeSize`, `buttonSize` и `actionIconSize` придут в её аргументе.
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-11-28 | 1.0 | Первая версия в MDX: один файл для агента и страницы в Storybook с живыми примерами. Заголовок в 1 строку, Sticky только в макете, под закреплённым заголовком BlockGradientScroll. |
+| 2026-05-12 | до MDX | Обновление компонента: добавлен кастомный слот рядом с иконкой и Title, добавлены свойство Sticky и варианты с заливкой. |
+| 2026-02-06 | до MDX | Обновление компонента: добавлено свойство Back, добавлено переключение Icon и Badge в R Content (R Icon переименовано в R Content), обновлена документация. |
+
+</div>

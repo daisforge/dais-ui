@@ -1,0 +1,471 @@
+---
+id: filters-actions
+title: FiltersActions
+type: organism
+status: Beta
+version: 1.0
+lastUpdated: 2026-11-20
+pixsoLink: "Pixso URL FiltersActions"
+storybookLink: "?path=/docs/композиции-filtersactions--docs"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+  - page-title
+  - layout
+  - action-buttons-placement
+  - creating-entities
+  - segment
+  - text-field
+  - switch
+  - select
+  - combobox
+  - popover
+  - chip
+  - tooltip
+  - button
+  - dropdown
+  - empty-state-templates
+  - editorial-policy-placeholders
+tags:
+  - filter
+  - search
+  - segment
+  - customizable
+---
+
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as Examples from './FiltersActions.examples.stories';
+import pixsoSettings from './assets/pixso-settings.png';
+import filterWidth from './assets/filter-width.png';
+import filterGroup from './assets/filter-group.png';
+
+<Meta of={Examples} name="Docs" />
+
+<div className="dsd">
+
+# FiltersActions
+
+FiltersActions это панель фильтров. Необязательный элемент интерфейса: с ним пользователь настраивает отображение информации, чтобы быстрее находить нужные данные или ограничивать результаты по определённым критериям. Стоит под Page Title, над контентом страницы. Собирается из сегментов, поиска, блока фильтров, блока кнопок справа и строки выбранных фильтров. Платформа: Web.
+
+<Canvas of={Examples.Playground} />
+
+<Controls of={Examples.Playground} />
+
+## Размеры и отступы FiltersActions
+
+Отступы даны для экрана шириной 1920 px.
+
+- Отступ от Header FinAI до Page Title: 16 px
+- Отступ страницы слева: 32 px
+- Отступ от Page Title до FiltersActions: 24 px, от FiltersActions до контента: 24 px
+- Минимальный отступ от Filters Block до Right Block: 32 px
+- Ширина поиска: от 168 до 600 px
+- Минимальная ширина селекта: 168 px
+
+> **⚠️ Важно:** ознакомьтесь с гайдом по Layout. Там описаны все кейсы, размеры экранов и примеры.
+
+<Canvas of={Examples.SpacingLive} />
+
+## Общие настройки FiltersActions
+
+### Segment: сегменты
+
+Segment включает и выключает сегменты. Сегменты переключают контент.
+
+<Canvas of={Examples.Segment} />
+
+### Search: поиск
+
+Search включает и выключает поле поиска. Ширина поиска от 168 до 600 px.
+
+> **⚠️ Важно:** если контент на странице не таблица, поиск можно включить. Если контент таблица, используйте поиск внутри таблицы.
+
+<Canvas of={Examples.SearchToggle} />
+
+<Canvas of={Examples.PairSearch} />
+
+### Filters Block: блок фильтров
+
+Filters Block включает и выключает блок фильтров: свитчеры, поля и кнопки.
+
+### Right Block: блок кнопок справа
+
+Right Block включает и выключает блок с кнопками справа.
+
+### RowActiveFltrs: строка выбранных фильтров
+
+RowActiveFltrs включает и выключает строку выбранных (активных) фильтров под основной строкой FiltersActions.
+
+<img src={pixsoSettings} alt="Панели свойств FiltersActions в Pixso: общие настройки, Segment settings, Search settings, Filters Block settings, Right Block settings, RowActiveFltrs settings" style={{ maxWidth: '100%', width: 240 }} />
+
+## Настройки Segment в FiltersActions
+
+### Custom Slot: слот слева от сегмента
+
+Custom Slot включает кастомный слот слева от сегмента.
+
+> **⚠️ Важно:** сейчас слот нужен для одного общего сервиса, там в слоте IconButton с плюсом для добавления сегментов. В целом предполагаем, что в слоте будет IconButton или другой небольшой элемент.
+
+<Canvas of={Examples.SegmentCustomSlot} />
+
+### Segment: сегмент
+
+Segment включает и выключает сам сегмент.
+
+> **⚠️ Важно:** если вам не нужны ни Segment, ни Custom Slot, выключайте Segment на уровне выше, в общих настройках FiltersActions.
+
+## Настройки Search в FiltersActions
+
+### View: состояние поля поиска
+
+View выбирает состояние поля: Placeholder или Value.
+
+### NamePlaceholder: текст плейсхолдера
+
+NamePlaceholder задаёт текст плейсхолдера, чтобы текст не слетал. По умолчанию в поле текст «Поиск».
+
+### Focused: фокус на поле
+
+Focused включает состояние focused у поля для Placeholder и для Value.
+
+<Canvas of={Examples.SearchStates} />
+
+## Настройки Filters Block в FiltersActions
+
+### View: вид блока фильтров
+
+View задаёт вид блока фильтров:
+
+- Filter: классический вид, несколько видимых фильтров и кнопка «Ещё фильтры»
+- Button only: только кнопка «Фильтры», видимые фильтры выключены
+- Custom: кастомный слот
+
+<Canvas of={Examples.FiltersBlockView} />
+
+### Switcher 1 и Switcher 2: фильтры-свитчеры
+
+Switcher 1 и Switcher 2 включают и выключают фильтры-свитчеры (Switcher-filter).
+
+### Type: набор кнопок блока фильтров
+
+Type в группе Button Type задаёт набор кнопок:
+
+- Filters+Reset: когда фильтров много и в блоке есть кнопка «Ещё фильтры»
+- Reset only: когда фильтров мало, без кнопки «Ещё фильтры»
+
+<Canvas of={Examples.ButtonType} />
+
+### ResetBtn: кнопка «Сбросить фильтры»
+
+ResetBtn включает и выключает кнопку «Сбросить фильтры».
+
+> **⚠️ Важно:** место под кнопку «Сбросить фильтры» резервируется, даже если кнопка не видна.
+
+<Canvas of={Examples.ResetBtn} />
+
+### Indicator: индикатор на кнопке фильтров
+
+Indicator включает и выключает индикатор на кнопке фильтров. Индикатор это красная точка в правом верхнем углу кнопки, она показывает, что выбраны фильтры.
+
+<Canvas of={Examples.Indicator} />
+
+## Настройки Right Block в FiltersActions
+
+### Custom Slot: слот перед кнопками
+
+Custom Slot включает и выключает кастомный слот перед кнопками.
+
+### MoreBtn: кнопка с тремя точками
+
+MoreBtn включает и выключает IconButton с тремя точками.
+
+### Secondary 1 и Secondary 2: второстепенные кнопки
+
+Secondary 1 и Secondary 2 включают и выключают кнопки Secondary.
+
+### AccentBtn: акцентная кнопка
+
+AccentBtn включает и выключает акцентную кнопку.
+
+<Canvas of={Examples.RightBlock} />
+
+## Настройки RowActiveFltrs в FiltersActions
+
+### Scroll: стрелки прокрутки строки
+
+Scroll включает в макете стрелки прокрутки слева и справа. В интерфейсе стрелки появляются сами, когда выбранные фильтры не помещаются в строку, и пропадают, когда снова помещаются.
+
+### Настройки группы фильтров в строке
+
+Настройки Group name и More (+N) есть у всех групп фильтров в строке. В панели свойств они показаны на примере Filter 1.
+
+- Group name задаёт название группы фильтров. Название в строке повторяет название фильтра выше, в Filters Block
+- More (+N) включает и выключает счётчик (+N), когда в группе выбрано больше 2 значений
+
+<img src={filterGroup} alt="Группа Filter group 1 в строке выбранных фильтров и её свойства в Pixso: View, More (+N), Group name" style={{ maxWidth: '100%', width: 340 }} />
+
+## Кнопки в Right Block FiltersActions
+
+Максимум три кнопки. Дальше всегда ставим IconButton с тремя точками и прячем в него третье и четвёртое действия. На экране всегда не больше 3 кнопок.
+
+Подробнее про кнопки читайте в документации Page Title, механика такая же.
+
+> **⚠️ Важно:** прочитайте гайд «Расположение кнопок действий».
+
+<Canvas of={Examples.PairRightBlock} />
+
+## Блок фильтров FiltersActions
+
+> **⚠️ Важно:** от Filters Block до Right Block минимальный отступ 32 px.
+
+### Ширина фильтров
+
+Ширину каждого фильтра настраиваем отдельно. Внутри каждого Select Block есть слой Change size padding here. Выделите его и в правой панели настроек поменяйте Horizontal padding, ширина фильтра изменится.
+
+Ширина Switcher-filter зависит от текста. Рекомендуем текст не длиннее 2 слов и предлога.
+
+<img src={filterWidth} alt="Слои Filter block в Pixso: Select Block 01 со слоем Change size padding here, справа Auto layout с выделенным Horizontal padding" style={{ maxWidth: '100%', width: 640 }} />
+
+### Количество фильтров и компонент фильтра
+
+В Filters Block 5 полей SelectMultiple 40 S и 2 Switcher-filter. Минимальная ширина селекта 168 px.
+
+В полях Multiple рекомендуем показывать выбранное чипом «Выбрано N». Подробная информация видна в тултипе при наведении.
+
+Switcher-filter в блоке не больше 2. Если свитчеров больше, третий и следующие переезжают в Popover под кнопкой «Ещё фильтры».
+
+<Canvas of={Examples.PairSwitchers} />
+
+<Canvas of={Examples.MultipleChip} />
+
+### Как поменять состав фильтров
+
+- Чтобы заменить Select на другое поле, используйте подмену компонента
+- Чтобы добавить элемент, который не является полем, используйте Custom
+- Чтобы уменьшить количество фильтров, выключите видимость лишних в слоях
+
+## Строка выбранных фильтров RowActiveFltrs
+
+Строка необязательная. Рекомендуем её использовать, с ней работать с фильтрами плавнее и удобнее.
+
+### Filter Group: группа фильтров в строке
+
+В группе показываются 2 тега. Если выбрано больше 2 значений, рядом с тегами появляется (+N). При наведении на (+N) подсказка показывает название группы и все выбранные значения.
+
+Длина одного тега не больше 180 px. Длинный текст тега обрезается многоточием.
+
+<Canvas of={Examples.RowActiveFltrs} />
+
+## Длинный текст в FiltersActions
+
+Старайтесь использовать лаконичные названия сегментов, кнопок и свитчер-фильтров. Если сократить без потери смысла не получается, ограничивайте ширину до 168-200 px. При наведении Tooltip показывает полный текст.
+
+## Popover «Ещё фильтры»
+
+По клику на кнопку «Ещё фильтры» открывается Popover.
+
+### Что показываем в Popover
+
+- Заголовок Popover: «Ещё фильтры»
+- В Popover только фильтры, которые спрятаны в кнопке «Ещё фильтры». Фильтры, которые видны в селектах и комбобоксах до кнопки, в Popover не повторяются
+- Отступ между фильтрами 16 px, до группы фильтров 24 px
+- Рекомендуем поля с Label=Outer
+
+<Canvas of={Examples.PopoverOpen} />
+
+<Canvas of={Examples.PairPopover} />
+
+### Как работает Popover
+
+- Фильтры применяются сразу после выбора в Popover
+- Выбранные в Popover фильтры показываются в общей строке RowActiveFltrs
+- Popover закрывается кликом вне Popover, по иконке крестика или клавишей Esc
+- При расширении Popover фильтры перестраиваются в 2 колонки
+
+### Размер Popover
+
+Popover открывается шириной 360 px и высотой 430 px. Если фильтры не помещаются по высоте, появляется скролл.
+
+Размер Popover можно менять, потянув за правый нижний угол. Ширина от 360 до 700 px, высота от 430 px до 80% высоты окна. Новый размер сохраняется при следующих открытиях.
+
+<Canvas of={Examples.PopoverResize} />
+
+### Наполнение Popover
+
+Наполнение Popover может быть разным: поиск, свитчеры, скролл, TextField, Autocomplete, Select, Combobox, DatePicker, Range и другие поля.
+
+Порядок наполнения сверху вниз:
+
+- Header: заголовок, описание и поиск. Описание и поиск необязательные
+- Scroll: Header остаётся наверху, фильтры под ним прокручиваются, когда не помещаются по высоте
+- Свитчеры: если их больше 2, остальные переезжают в Popover
+- TextField, Autocomplete, Select, Combobox, DatePicker, Range и другие поля: переезжают в Popover, когда им не хватает места на основной панели
+
+<Canvas of={Examples.Adaptive} />
+
+## Пустые состояния FiltersActions
+
+Плейсхолдер в полях фильтров: «Выберите [что-то]» или «Введите [что-то]». Подробнее про плейсхолдеры читайте в редполитике.
+
+- Если по глобальным фильтрам не нашлось подходящего контента, пустое состояние показываем на всей странице целиком
+- Если ничего не найдено в таблице, используйте вариант пустой таблицы
+- В нетабличном контенте пустое состояние уникальное, этот кейс рассматривайте отдельно
+
+<Canvas of={Examples.EmptyStatePage} />
+
+## Маппинг: дизайн → код
+
+В коде FiltersActions собирается из трёх слотов: `mainBlock` (сегменты, поиск и блок фильтров), `activeButtonsBlock` (Right Block) и `listOfFilters` (RowActiveFltrs). Элементы для слотов берутся из вложенных компонентов `FiltersActions.*`.
+
+| Свойство в дизайне | Проп в коде | Что важно |
+|---|---|---|
+| Segment | `SegmentGroup` с `FiltersActions.SegmentItem` в `mainBlock` | `FiltersActions.SegmentItem` по умолчанию `size="s"`, `view="primary"`. В примерах сегменты обёрнуты в `SegmentProvider` |
+| Custom Slot в Segment settings | настраивает разработчик | Элемент ставится в `mainBlock` перед сегментами |
+| Search | `FiltersActions.TextFieldSearch` в `mainBlock` | Размер по умолчанию `s` |
+| View и NamePlaceholder в Search settings | `value` и `placeholder` | Плейсхолдер по умолчанию «Поиск» |
+| Focused | работает по умолчанию | Состояние появляется при фокусе на поле |
+| Ширина поиска 168-600 px | настраивает разработчик | Ширину поля задаёт разработчик в `mainBlock` |
+| Filters Block | `mainBlock` | Поля, свитчеры и кнопки передаются в один слот вместе с сегментами и поиском |
+| View = Filter | `mainBlock` | Видимые поля и `FiltersActions.FiltersButtonWithPopover` |
+| View = Button only | `FiltersActions.FiltersButtonWithPopover` | Текст «Фильтры» передаётся в `buttonProps.text`. По умолчанию текст кнопки «Ещё фильтры» |
+| View = Custom | `mainBlock` | Свой контент в слоте |
+| Switcher 1 и Switcher 2 | `FiltersActions.SwitcherFilter` | |
+| SelectMultiple 40 S | `Combobox` с `size="s"` и `multiple` | Чип «Выбрано N» включает `isTargetAmount`. Тултип со списком выбранного: обёртка `FiltersActions.TooltipList` |
+| Ширина фильтра, минимум 168 px | настраивает разработчик | В примерах разработчиков ширина селекта 168 px |
+| Type = Filters+Reset | `FiltersActions.FiltersButtonWithPopover` и `FiltersActions.ResetAllFiltersButton` | |
+| Type = Reset only | `FiltersActions.ResetAllFiltersButton` | |
+| ResetBtn | `isVisible` в `FiltersActions.ResetAllFiltersButton` | Скрытая кнопка сохраняет своё место |
+| Indicator | `redSquare` в `FiltersActions.FiltersButtonWithPopover` | Красная точка на кнопке. Для своей кнопки из `renderTarget` есть `FiltersActions.RedDot` |
+| Right Block | `activeButtonsBlock` | Отступ 32 px до блока фильтров задан в компоненте, кнопки идут с шагом 8 px |
+| Custom Slot в Right Block settings | `activeButtonsBlock` | Элемент ставится перед кнопками |
+| MoreBtn | `FiltersActions.DotsIconButton` | Действия передаются в `dropdownProps`. Вертикальные точки как в макете: `iconOrientation="vertical"` |
+| Secondary 1 и Secondary 2 | `Button` с `view="secondary"` | В примерах `size="s"` |
+| AccentBtn | `Button` с `view="accent"` | В примерах `size="s"` |
+| RowActiveFltrs | `listOfFilters` с `FiltersActions.ListOfFilters` | Строка показывается, когда `opened` равно `true`. Список и `filterListOpened` возвращает хук `useFiltersList` |
+| Scroll | работает по умолчанию | Стрелки появляются сами при переполнении строки |
+| Group name | `groupLabel` у группы в `items` | В `useFiltersList` берётся из `label` в `filtersInfo` |
+| More (+N) | `maxLengthInGroup` | По умолчанию 2. (+N) и подсказка со списком значений появляются сами |
+| Длина тега 180 px | задана в компоненте | Тег без группы до 150 px |
+| Кнопка «Сбросить все» в строке | `showResetAllFiltersButton` | По умолчанию `true`, в примерах разработчиков `false` |
+| Popover «Ещё фильтры» | `FiltersActions.FiltersButtonWithPopover` | Старое имя `FiltersActions.FilterPopover` тоже работает |
+| Заголовок Popover | `title` | |
+| Описание в Header Popover | `subtitle` | |
+| Поиск в Header Popover | `searchable`, `searchValue`, `onSearchChange` | |
+| Фильтры в Popover | `content` | Контент Popover собирает разработчик. Фильтры в `content` идут столбиком с отступом 16 px |
+| 2 колонки при расширении Popover | настраивает разработчик | |
+| Отступ 24 px до группы фильтров | настраивает разработчик | |
+| Размер Popover | `popoverProps.resizable` | По умолчанию ширина 360-700 px, высота от 430 px до 80% окна, стартовый размер 360 × 430. `resizable: false` выключает изменение размера |
+| Закрытие Popover | работает по умолчанию | Клик вне Popover, крестик и Esc |
+| Перенос фильтров в Popover при сужении экрана | `onResize` и хук `useAdaptiveFilters` | Необязательно, какие фильтры переносить, решает проект |
+| Длинный текст 168-200 px и Tooltip | настраивает разработчик | |
+
+## Использование в коде
+
+Пропсы и примеры кода для FiltersActions: страницы [FiltersActions](?path=/docs/композиции-filtersactions--docs) и [FiltersActions API](?path=/docs/композиции-filtersactions-api--docs).
+
+## Связанные компоненты
+
+- **[Page Title](?path=/docs/композиции-pagetitle-для-дизайнеров--docs)**: стоит над FiltersActions с отступом 24 px. Механика кнопок в Right Block такая же, как в Page Title
+- **[Layout](?path=/docs/композиции-layout-для-дизайнеров--docs)**: гайд с кейсами, размерами экранов и примерами страниц
+- **Расположение кнопок действий**: гайд о зонах кнопок на странице. FiltersActions в нём зона действий над содержимым
+- **Создание сущностей**: гайд о том, где ставить кнопку создания сущности. Кнопка создания стоит справа в Page Title или в FiltersActions
+- **Segment**: сегменты для переключения контента
+- **TextField**: поле поиска в Search
+- **Switch**: фильтры-свитчеры Switcher-filter
+- **Select** и **Combobox**: поля фильтров, чип «Выбрано N» в полях Multiple
+- **Popover**: «Ещё фильтры» со спрятанными фильтрами
+- **Chip**: теги в строке выбранных фильтров
+- **Tooltip**: полный текст длинных названий и список выбранных значений
+- **Button** и **Dropdown**: кнопки в Right Block и меню кнопки с тремя точками
+- **Пустые состояния**: гайд с шаблонами пустых состояний для страницы без результатов
+- **Редполитика, плейсхолдеры**: правила текста в полях фильтров
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Когда включать поиск в FiltersActions?**
+A: Если контент на странице не таблица, поиск можно включить. Если контент таблица, используйте поиск внутри таблицы. Ширина поиска от 168 до 600 px.
+
+**Q: Какой вид Filters Block выбрать?**
+A: Filter, если нужны несколько видимых фильтров и кнопка «Ещё фильтры». Button only, если нужна только кнопка «Фильтры». Custom, если нужен кастомный слот.
+
+**Q: Когда выбрать Type Filters+Reset и когда Reset only?**
+A: Filters+Reset, когда фильтров много и в блоке есть кнопка «Ещё фильтры». Reset only, когда фильтров мало, без кнопки «Ещё фильтры».
+
+**Q: Что будет с местом кнопки «Сбросить фильтры», если её скрыть?**
+A: Место под кнопкой «Сбросить фильтры» резервируется, даже если кнопка не видна.
+
+**Q: Сколько свитчеров можно поставить в Filters Block?**
+A: Не больше 2. Третий и следующие свитчеры переезжают в Popover под кнопкой «Ещё фильтры».
+
+**Q: Как поменять ширину фильтра в FiltersActions?**
+A: Внутри каждого Select Block выделите слой Change size padding here и поменяйте ему Horizontal padding в правой панели настроек. Минимальная ширина селекта 168 px.
+
+**Q: Как заменить Select на другое поле или убрать лишние фильтры?**
+A: Select меняйте через подмену компонента. Элемент, который не является полем, добавляйте через Custom. Лишние фильтры выключайте видимостью в слоях.
+
+**Q: Сколько кнопок можно поставить в Right Block?**
+A: Максимум три. Третье и четвёртое действия прячем в IconButton с тремя точками. На экране всегда не больше 3 кнопок, механика как в Page Title.
+
+**Q: Нужна ли строка выбранных фильтров RowActiveFltrs?**
+A: Строка необязательная. Рекомендуем её использовать, с ней работать с фильтрами плавнее и удобнее.
+
+**Q: Сколько выбранных значений видно в группе в строке RowActiveFltrs?**
+A: 2 тега. Если выбрано больше, рядом появляется (+N), при наведении подсказка показывает все значения. Тег не длиннее 180 px, длинный текст обрезается многоточием.
+
+**Q: Что делать с длинным названием сегмента, кнопки или свитчера?**
+A: Старайтесь сократить название. Если без потери смысла не получается, ограничивайте ширину до 168-200 px, полный текст показывайте в Tooltip при наведении.
+
+**Q: Какие фильтры попадают в Popover «Ещё фильтры»?**
+A: Только фильтры, которые спрятаны в кнопке «Ещё фильтры». Свитчеры сверх двух и поля, которым не хватает места на основной панели. Фильтры, видимые до кнопки, в Popover не повторяются.
+
+**Q: Когда применяются фильтры из Popover?**
+A: Сразу после выбора в Popover. Выбранные фильтры появляются в общей строке RowActiveFltrs.
+
+**Q: Какого размера Popover «Ещё фильтры»?**
+A: Открывается шириной 360 px и высотой 430 px, дальше скролл. Размер можно менять за правый нижний угол: ширина от 360 до 700 px, высота до 80% окна. Новый размер сохраняется при следующих открытиях.
+
+**Q: Что показать, если по фильтрам ничего не нашлось?**
+A: Для глобальных фильтров пустое состояние на всей странице целиком. Для таблицы вариант пустой таблицы. Для нетабличного контента пустое состояние рассматривайте отдельно.
+
+**Q: Какой плейсхолдер писать в полях фильтров?**
+A: «Выберите [что-то]» или «Введите [что-то]». Подробнее про плейсхолдеры в редполитике.
+
+**Q: Какие отступы у FiltersActions на странице?**
+A: 24 px от Page Title и 24 px до контента, слева 32 px. Отступы даны для экрана 1920 px, остальные кейсы в гайде по Layout.
+
+### Для разработчиков
+
+**Q: Из чего собрать FiltersActions в коде?**
+A: Передайте сегменты, поиск и фильтры в `mainBlock`, кнопки справа в `activeButtonsBlock`, строку выбранных фильтров в `listOfFilters`. Элементы берите из `FiltersActions.*`: `SegmentItem`, `TextFieldSearch`, `SwitcherFilter`, `FiltersButtonWithPopover`, `ResetAllFiltersButton`, `DotsIconButton`, `ListOfFilters`.
+
+**Q: Как показать красную точку на кнопке «Ещё фильтры»?**
+A: Передайте `redSquare` в `FiltersActions.FiltersButtonWithPopover`. На своей кнопке из `renderTarget` используйте `RedDot` с `isRedDotVisible`.
+
+**Q: Как скрыть кнопку «Сбросить фильтры» и сохранить её место?**
+A: Передайте `isVisible={false}` в `FiltersActions.ResetAllFiltersButton`. Кнопка станет невидимой и некликабельной, место останется.
+
+**Q: Как собрать строку выбранных фильтров?**
+A: Хук `useFiltersList` возвращает `filterList`, `filterListOpened` и `clearAll`. Передайте их в `items`, `opened` и `clearAll` компонента `FiltersActions.ListOfFilters`.
+
+**Q: Как поменять размер Popover «Ещё фильтры»?**
+A: Передайте объект в `popoverProps.resizable`, он накладывается поверх значений по умолчанию. Размер меняйте через `minWidth`, `maxWidth`, `minHeight`, `maxHeight` и `defaultSize`, стилями его не ограничивайте.
+
+**Q: Почему выпадающий список Combobox в Popover прячется за Popover?**
+A: Передайте реф в `popoverProps.ref`, а каждому Combobox внутри Popover `portal={popoverRef}` и `zIndex="9001"`.
+
+**Q: Как переносить фильтры в Popover при сужении экрана?**
+A: Адаптивность необязательная и решается на стороне проекта. Размеры блоков приходят в `onResize`, распределить фильтры по брейкпоинтам помогает хук `useAdaptiveFilters`.
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-11-20 | 1.0 | Первая версия в MDX: один файл для агента и страницы в Storybook с живыми примерами. |
+| 2026-06-08 | до MDX | Обновление компонента: FiltersActions пересобран и обновлён, старый компонент помечен как Deprecated. Обновлены документация и связанные ссылки. |
+| 2026-02-16 | до MDX | Обновление документации: документация Page Title и Panel block разделена, добавлен раздел «Отступы», документация оптимизирована и обновлена. |
+
+</div>

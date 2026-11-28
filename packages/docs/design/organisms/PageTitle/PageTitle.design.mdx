@@ -1,0 +1,252 @@
+---
+id: page-title
+title: Page Title
+type: organism
+status: Beta
+version: 1.0
+lastUpdated: 2026-11-19
+pixsoLink: "Pixso URL PageTitle"
+storybookLink: "?path=/docs/композиции-pagetitle--docs"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+  - block-title
+  - breadcrumbs
+  - button
+  - dropdown
+  - tooltip
+  - badge
+  - layout
+tags:
+  - navigation
+  - data-display
+  - customizable
+---
+
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as Examples from './PageTitle.examples.stories';
+import pixsoProperties from './assets/pixso-properties.png';
+import pixsoSlotType from './assets/pixso-slot-type.png';
+
+<Meta of={Examples} name="Docs" />
+
+<div className="dsd">
+
+
+# Page Title
+
+Page Title это заголовок страницы. Стоит вверху страницы под Header FinAI, над Panel Block и контентом. Собирается из хлебных крошек, кнопки «Назад», заголовка, описания и блока справа. Платформа: Web.
+
+<Canvas of={Examples.Playground} />
+
+<Controls of={Examples.Playground} />
+
+## Размеры и отступы Page Title
+
+Отступы даны для экрана шириной 1920 px.
+
+- Отступ от Header FinAI до Page Title: 16 px
+- Отступы страницы слева и справа: 32 px, Page Title занимает всю ширину между ними
+- Отступ от Page Title до Panel Block: 24 px, от Panel Block до контента: 24 px
+- Отступ от хлебных крошек до заголовка: 16 px
+- Отступ между заголовком и описанием: 4 px
+- Отступ между кнопкой «Назад», заголовком и Custom block: 16 px
+- Минимальный отступ между заголовком и Right block: 24 px
+- Right block прижат к правому краю и к нижней границе Page Title
+- Заголовок набран стилем H2 жирным, описание стилем Body S вторичным цветом текста
+- На экранах шириной до 1280 px кнопки в Right block и Custom block уменьшаются с размера S до XS
+
+> **⚠️ Важно:** ознакомьтесь с [гайдом по Layout](?path=/docs/композиции-layout-для-дизайнеров--docs). Там описаны все кейсы, размеры экранов и примеры.
+
+<Canvas of={Examples.SpacingLive} />
+
+<Canvas of={Examples.Adaptive} />
+
+## Общие настройки Page Title
+
+> **⚠️ Важно:** если на странице нужны только хлебные крошки, используйте отдельный компонент Breadcrumbs. Перед использованием ознакомьтесь с принципами проектирования.
+
+### BreadCrumbs: хлебные крошки над заголовком
+
+BreadCrumbs включает и выключает хлебные крошки над Title. Свойство необязательное, хлебные крошки включаем по необходимости.
+
+<Canvas of={Examples.BreadCrumbs} />
+
+### Description: описание под заголовком
+
+Description включает и выключает описание под Title. Описание занимает 1 строку. Если текст длиннее, он обрезается, а целиком показывается в подсказке при наведении.
+
+<Canvas of={Examples.Description} />
+
+### Right block: блок справа
+
+Right block включает и выключает блок справа. В блоке размещается GroupButton или Custom Slot для кастомного контента. Правила для кнопок описаны в разделе «Кнопки в Right block Page Title».
+
+<Canvas of={Examples.RightBlock} />
+
+### Custom block: слот справа от заголовка
+
+Custom block включает и выключает Custom Slot справа от Title. Рекомендуем использовать, если вам нужен Badge или Icon справа от Title.
+
+> **⚠️ Важно:** сохраняйте высоту Custom block не больше 40 px.
+
+<Canvas of={Examples.CustomBlock} />
+
+### Back: кнопка «Назад»
+
+Back включает и выключает кнопку «Назад» слева от Title для быстрой навигации.
+
+<Canvas of={Examples.Back} />
+
+## Настройки Right block в Page Title
+
+Type задаёт содержимое Right block: GroupButton или Custom Slot.
+
+## Настройки Title custom slot в Page Title
+
+Slot в группе Title custom slot задаёт компонент в слоте справа от заголовка, например Custom slot.
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'flex-start' }}>
+<img src={pixsoProperties} alt="Панель свойств Page Title в Pixso: BreadCrumbs, Description, Right block, Custom block, Back" style={{ width: 298, maxWidth: '100%' }} />
+<img src={pixsoSlotType} alt="Вложенные свойства в Pixso: Title custom slot со свойством Slot и Right block со свойством Type" style={{ width: 295, maxWidth: '100%' }} />
+</div>
+
+## Кнопки в Right block Page Title
+
+### Сколько кнопок ставить в Right block
+
+На экране всегда не больше 3 кнопок. Если действий больше, третье и четвёртое действия прячем в IconButton с тремя точками.
+
+Например, в Right block стоят три кнопки и нужно добавить четвёртое действие. Вместо третьей кнопки ставим Dropdown с триггером IconButton 40 S и переносим в него действия 3 и 4.
+
+<Canvas of={Examples.ButtonsThree} />
+
+<Canvas of={Examples.ButtonsFour} />
+
+### Порядок кнопок в Right block
+
+Расположение кнопок всегда такое: самая правая Primary, левее Secondary, затем Secondary или IconButton с тремя точками.
+
+### Три точки в Right block
+
+> **⚠️ Важно:** в «трёх точках» нельзя использовать выпадающий список с одним действием.
+
+Если у вас 2 кнопки и одно действие вы решаете перенести в «три точки», переносите туда и Secondary Button. На экране остаются Primary и IconButton с тремя точками, в списке два действия.
+
+<Canvas of={Examples.PairDots} />
+
+### Исключение: четвёртая кнопка
+
+Если есть технические сложности, в виде временного исключения можно добавить 4-ю кнопку подменой на GroupButton. Четвёртая кнопка ставится только через ревью и согласование с командой дизайн-системы. Каждый случай с исключением рассматривается индивидуально и обсуждается с продуктом. Пишите кому-либо из команды дизайн-системы.
+
+<Canvas of={Examples.ButtonsException} />
+
+## Заголовок Page Title
+
+### Title: текст заголовка
+
+Title ограничен одной строкой, рекомендуем использовать короткие названия. Если это невозможно, показываем Tooltip с полным названием при наведении на Title.
+
+При длинном названии выставьте по горизонтали Fill вместо Hug у слоёв Text, Heading и Heading block.
+
+<Canvas of={Examples.LongTitle} />
+
+## Хлебные крошки и кнопка «Назад» в Page Title
+
+Хлебные крошки и кнопка «Назад» нужны для перехода к предыдущему шагу или экрану. BreadCrumbs необязательный элемент, включаем его по необходимости. Вместо хлебных крошек можно использовать кнопку «Назад».
+
+Принципы использования хлебных крошек обязательно читайте в принципах проектирования в Confluence.
+
+<Canvas of={Examples.CrumbsOrBack} />
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Что важно |
+|---|---|---|
+| BreadCrumbs | `breadcrumbs` | Пропсы компонента Breadcrumbs, размер по умолчанию `m` |
+| Description | `subtitle` | Одна строка, при обрезке полный текст в тултипе. Тултип настраивается в `subtitleTypographyProps` |
+| Right block и Type | `rightSlot` | GroupButton или Custom Slot передаются в этот слот |
+| Custom block и Slot | `titleSlot` | Слот справа от заголовка |
+| Back | `showBackButton` и `onBackClick` | `showBackButton` показывает кнопку, `onBackClick` обрабатывает клик |
+| Title | `title` | Одна строка, при обрезке полный текст в тултипе |
+| Tooltip длинного Title | `titleTypographyProps` | Текст тултипа по умолчанию равен `title` |
+| Размер кнопок S и XS | `buttonSize` | Приходит в callback `rightSlot` и `titleSlot`: `s` на экранах шире 1280 px, `xs` до 1280 px |
+
+## Использование в коде
+
+Пропсы и примеры кода для Page Title: страницы [PageTitle](?path=/docs/композиции-pagetitle--docs) и [PageTitle API](?path=/docs/композиции-pagetitle-api--docs).
+
+## Связанные компоненты
+
+- **[Block Title](?path=/docs/композиции-blocktitle-для-дизайнеров--docs)**: заголовок внутри блоков страницы. По документации Block Title кнопки в его Right Block используем, только если Page Title без кнопок. Размер заголовка H3 в Block Title выбирают для страницы без Page Title, H4 и H5 для страницы с Page Title
+- **Panel Block**: стоит под Page Title с отступом 24 px, документация Panel Block ведётся отдельно
+- **[Header FinAI](?path=/docs/композиции-header-finai-для-дизайнеров--docs)**: шапка над Page Title, отступ до Page Title 16 px
+- **[Layout](?path=/docs/композиции-layout-для-дизайнеров--docs)**: гайд с кейсами, размерами экранов и примерами страниц
+- **Breadcrumbs**: хлебные крошки в BreadCrumbs. Если нужны только хлебные крошки, используйте Breadcrumbs отдельно
+- **Button**: GroupButton и IconButton в Right block
+- **Dropdown**: «три точки» с триггером IconButton 40 S для третьего и четвёртого действия
+- **Tooltip**: полный текст длинного Title при наведении
+- **Badge**: контент справа от Title в Custom block
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Сколько кнопок можно поставить в Right block Page Title?**
+A: На экране не больше 3 кнопок. Если действий больше, третье и четвёртое действия прячем в IconButton с тремя точками.
+
+**Q: Как добавить четвёртое действие в Page Title?**
+A: Вместо третьей кнопки поставьте Dropdown с триггером IconButton 40 S и перенесите в него действия 3 и 4.
+
+**Q: В каком порядке ставить кнопки в Right block Page Title?**
+A: Самая правая Primary, левее Secondary, затем Secondary или IconButton с тремя точками.
+
+**Q: Можно убрать в «три точки» одно действие?**
+A: Нельзя, в «трёх точках» список минимум из двух действий. Если у вас 2 кнопки и одно действие уходит в «три точки», переносите туда и Secondary Button.
+
+**Q: Можно поставить в Page Title четыре кнопки?**
+A: Только как временное исключение при технических сложностях, подменой на GroupButton. Четвёртая кнопка ставится через ревью и согласование с командой дизайн-системы.
+
+**Q: Что делать с длинным заголовком Page Title?**
+A: Title ограничен одной строкой, рекомендуем короткие названия. Если сократить невозможно, полное название показываем в Tooltip при наведении, а слоям Text, Heading и Heading block ставим Fill по горизонтали вместо Hug.
+
+**Q: Что поставить в Custom block Page Title?**
+A: Custom block рекомендуем, если нужен Badge или Icon справа от Title. Высота Custom block не больше 40 px.
+
+**Q: Что выбрать: хлебные крошки или кнопку «Назад»?**
+A: BreadCrumbs необязательный элемент, включаем по необходимости. Вместо хлебных крошек можно использовать кнопку «Назад». Принципы использования хлебных крошек описаны в принципах проектирования в Confluence.
+
+**Q: На странице нужны только хлебные крошки. Какой компонент взять?**
+A: Используйте отдельный компонент Breadcrumbs.
+
+**Q: Можно поставить кнопки и в Page Title, и в Block Title?**
+A: По документации Block Title кнопки в его Right Block используем, только если Page Title или Panel Block без кнопок. Если кнопки нужны в двух местах, напишите команде дизайн-системы.
+
+**Q: Какие отступы у Page Title на странице?**
+A: 16 px от Header FinAI, 32 px слева и справа, 24 px до Panel Block. Отступы даны для экрана 1920 px, остальные кейсы и размеры экранов в гайде по Layout.
+
+### Для разработчиков
+
+**Q: Как показать кнопку «Назад» в Page Title?**
+A: Передайте `showBackButton` и обработчик в `onBackClick`. Кнопка появится слева от заголовка.
+
+**Q: Как сделать, чтобы кнопки в слотах Page Title уменьшались на экранах до 1280 px?**
+A: Передайте в `rightSlot` или `titleSlot` функцию и возьмите `buttonSize` из её аргумента: `s` на экранах шире 1280 px, `xs` до 1280 px. С обычным `ReactNode` кнопки остаются того размера, который задан в слоте.
+
+**Q: Как поменять текст тултипа у длинного заголовка Page Title?**
+A: Тултип появляется сам, когда заголовок обрезается, и по умолчанию повторяет `title`. Другой текст передайте в `titleTypographyProps.tooltipText`.
+
+**Q: Какого размера хлебные крошки в Page Title?**
+A: По умолчанию `size='m'`. Размер можно переопределить в пропсах `breadcrumbs`.
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-11-19 | 1.0 | Первая версия в MDX: один файл для агента и страницы в Storybook с живыми примерами. |
+| 2026-02-12 | до MDX | Обновление компонента: Title ограничен 1 строкой (truncate). Обновление документации: документация Page Title и Panel Block разделена, добавлен раздел «Отступы», документация оптимизирована. |
+| 2026-01-28 | до MDX | Обновление компонента: исправлен цвет кнопки Back. |
+
+</div>

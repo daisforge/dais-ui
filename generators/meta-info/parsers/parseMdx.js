@@ -27,6 +27,11 @@ export function parseMdx(filePath, typesMap, argTypesMapping) {
 
   content = content.replace(/<Meta[\s\S]*?\/>/g, '');
   content = content.replace(/<Stories\s*\/>/g, '');
+  // живые примеры, картинки и вёрстка дизайн-страниц: агенту нужен только текст
+  content = content.replace(/<(?:Canvas|Controls|Story)\b[\s\S]*?\/>/g, '');
+  content = content.replace(/<img\b[\s\S]*?\/>/g, '');
+  content = content.replace(/<\/?div\b[^>]*>/g, '');
+  content = content.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
   content = content.replace(/<Title>([\s\S]*?)<\/Title>/g, '# $1');
   content = content.replace(
     /<(?:IconGallery|IconItem|IconSvgSprite)[^>]*\/>/g,

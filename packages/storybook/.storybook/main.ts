@@ -6,6 +6,8 @@ import { readFileSync, utimesSync } from 'fs';
 import { normalizePath } from 'vite';
 import { existsSync } from 'fs';
 import { transformSync } from 'esbuild';
+import remarkFrontmatter from 'remark-frontmatter';
+import remarkGfm from 'remark-gfm';
 
 function getAbsolutePath(value: string): any {
   return dirname(require.resolve(join(value, 'package.json')));
@@ -48,13 +50,33 @@ const isProductionBuild =
 const config: StorybookConfig = {
   stories: [
     '../src/**/*.mdx',
+    // Дизайн-доки нового формата: один файл для агента и для страницы Storybook
+    // Дизайн-доки нового формата. Старые доки со скобками {{…}} (Modal, Drawer, TableCanvas) ломают Storybook, они исключены
+    '../../docs/design/organisms/!(Modal|Drawer|TableCanvas)/*.mdx',
+    '../../docs/design/organisms/!(Modal|Drawer|TableCanvas)/*.stories.tsx',
+    // Гайды нового формата лежат каждый в своей папке, старые гайды плоскими файлами не подключаются
+    '../../docs/design/guides/*/*.mdx',
+    '../../docs/design/guides/*/*.stories.tsx',
     isProductionBuild
       ? '../src/**/!(*.visual).stories.@(js|jsx|mjs|ts|tsx)'
       : '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
 
   addons: [
-    getAbsolutePath('@storybook/addon-essentials'),
+    {
+      name: getAbsolutePath('@storybook/addon-essentials'),
+      options: { docs: false },
+    },
+    {
+      name: getAbsolutePath('@storybook/addon-docs'),
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: {
+            remarkPlugins: [remarkFrontmatter, remarkGfm],
+          },
+        },
+      },
+    },
     getAbsolutePath('@storybook/addon-interactions'),
     getAbsolutePath('@storybook/addon-links'),
   ],

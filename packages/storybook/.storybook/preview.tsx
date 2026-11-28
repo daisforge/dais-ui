@@ -7,6 +7,10 @@ import { previewSourceTransform } from './sourceCode/previewSourceTransform';
 import { globalTypeTheme, withTheme } from './decoratorThemes';
 import { docsPage } from './docsPage';
 import { withCanvasSnapshots } from './decoratorCanvasSnapshots';
+// Оформление дизайн-страниц «Для дизайнеров» из packages/docs
+import '../../docs/design/doc-page.css';
+// Метки вычитки дизайн-страниц, временно: убрать вместе с папкой docs/design/review перед слиянием
+import '../../docs/design/review/reviewMarks';
 
 // Workaround: to make VoiceOver read russian text properly
 if (typeof document !== 'undefined') {
