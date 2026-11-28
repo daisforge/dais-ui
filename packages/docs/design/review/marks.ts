@@ -25,26 +25,6 @@ export const REVIEW_KINDS: Record<ReviewKind, { label: string; color: string; bg
 };
 
 export const REVIEW_MARKS: Record<string, { name: string; marks: ReviewMark[] }> = {
-  "композиции-blocktitle-для-дизайнеров--docs": {
-    "name": "Block Title",
-    "marks": [
-      {
-        "at": "Sticky закрепляет Block Title сверху при скролле",
-        "kind": "source",
-        "text": "В коде свойства Sticky нет, закрепление при скролле делает разработчик по стикеру в макете. Значения no, white, grey и градиент описаны по исходнику. Так ли сейчас в Pixso?"
-      },
-      {
-        "at": "документации Page Title",
-        "kind": "new",
-        "text": "Фраза стала ссылкой на страницу Page Title для дизайнеров. Правила про кнопки там в разделе «Кнопки в Right block Page Title». Ссылка ведёт куда нужно?"
-      },
-      {
-        "at": "Заголовок занимает не больше 2 строк",
-        "kind": "source",
-        "text": "В исходнике заголовок в одну строку, в коде до 2 строк с подсказкой при наведении. В тексте как в коде. Так ли в макетах?"
-      }
-    ]
-  },
   "композиции-pagetitle-для-дизайнеров--docs": {
     "name": "Page Title",
     "marks": [
