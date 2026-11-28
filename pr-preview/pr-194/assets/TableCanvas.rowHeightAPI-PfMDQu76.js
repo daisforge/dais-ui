@@ -1,0 +1,6 @@
+import{j as t}from"./react-UEdzNlUe.js";import{df as r}from"./vendor-BZ4xHhIu.js";import{M as s}from"./WithTooltip-KJL26V4Q-DgAzV8qv.js";import{T as n}from"./TypeSourceViewer-BmerDCih.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CS9xW8RS.js";import"./@tanstack/react-virtual-Cg_9pkjG.js";import"./preload-helper-AhSnpiqA.js";import"./index-Cu4lwwaE.js";import"./index-DbUEVzLn.js";import"./types.string-D61Vt0p6.js";function i(e){const o={h1:"h1",h2:"h2",...r(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{title:"Локальные компоненты/TableCanvas/RowHeight/API"}),`
+`,t.jsx(o.h1,{id:"rowheight-api",children:"RowHeight API"}),`
+`,t.jsx(o.h2,{id:"rowsize",children:"RowSize"}),`
+`,t.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"RowSize"}),`
+`,t.jsx(o.h2,{id:"rowheightfunc",children:"RowHeightFunc"}),`
+`,t.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"RowHeightFunc"})]})}function R(e={}){const{wrapper:o}={...r(),...e.components};return o?t.jsx(o,{...e,children:t.jsx(i,{...e})}):i(e)}export{R as default};
